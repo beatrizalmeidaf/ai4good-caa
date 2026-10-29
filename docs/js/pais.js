@@ -13,7 +13,7 @@ function pinPad(titulo, texto, aoCompletar) {
   $("#gate").innerHTML = `<div class="card"><img src="assets/zuli.png" alt=""><h1>${titulo}</h1><p class="muted">${texto}</p>
     <div class="pindots">${"<i></i>".repeat(4)}</div><p class="small" id="pin-msg" style="min-height:1.4em;color:var(--coral)"></p>
     <div class="pinpad">${[1,2,3,4,5,6,7,8,9,"",0,"⌫"].map(k => k === "" ? "<span></span>" : `<button type="button" data-k="${k}" aria-label="${k === "⌫" ? "apagar" : k}">${k}</button>`).join("")}</div>
-    <a class="small" href="./">Voltar para a prancha</a></div>`;
+    <a class="small" href="./">Voltar ao início</a></div>`;
   const draw = () => $("#gate").querySelectorAll(".pindots i").forEach((d, i) => d.classList.toggle("on", i < pin.length));
   $("#gate .pinpad").onclick = async e => {
     const k = e.target.closest("button")?.dataset.k; if (k == null) return;
@@ -78,7 +78,7 @@ function boasVindas() {
       <div class="wz-dica"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg>
         <p>Para voltar a esta área, <b>segure por 1 segundo</b> o botão com este desenho, no canto de baixo da prancha, e digite o PIN.</p></div>
       <details class="wz-cores"><summary><b>Por que os desenhos têm cores?</b></summary><p class="small muted">Cada tipo de palavra tem sempre a mesma cor (chave Fitzgerald, padrão de comunicação alternativa). Assim a criança aprende onde procurar.</p>${legendaCores()}</details>
-      <a class="btn primary big" href="./">Abrir a prancha de ${esc(d.nome)}</a></div>`;
+      <a class="btn primary big" href="prancha.html">Abrir a prancha de ${esc(d.nome)}</a></div>`;
   }
   $("#gate").onclick = e => {
     const b = e.target.closest("button, [data-ouvir]"); if (!b) return;
@@ -95,9 +95,24 @@ function boasVindas() {
   tela();
 }
 
+// Esqueci o PIN: confirma com o nome de uma criança cadastrada e cria um PIN novo (os dados ficam).
+function esqueciPin() {
+  $("#gate").innerHTML = `<form class="card" id="f-esq"><img src="assets/zuli.png" alt=""><h1>Criar um PIN novo</h1>
+    <p class="muted">Para confirmar que é um adulto, digite o nome de uma criança cadastrada neste aparelho. Os dados dela continuam guardados.</p>
+    <input type="text" id="esq-nome" autocomplete="off" required style="width:100%;font-size:1.1rem;padding:12px">
+    <p class="small" id="esq-msg" style="min-height:1.4em;color:var(--coral)"></p>
+    <button type="submit" class="btn primary big">Continuar</button><a class="small" href="pais.html">Voltar</a></form>`;
+  $("#f-esq").onsubmit = e => {
+    e.preventDefault();
+    const n = $("#esq-nome").value.trim().toLowerCase();
+    if (!perfis.lista().some(p => p.nome.trim().toLowerCase() === n)) { $("#esq-msg").textContent = "Esse nome não está cadastrado aqui."; return; }
+    store.del("pin"); portao();
+  };
+}
+
 async function portao() {
   const h = store.get("pin", null);
-  if (!h && !perfis.lista().length) return boasVindas();
+  if (!perfis.lista().length) return boasVindas();  // nenhuma criança cadastrada: sempre a recepção (mesmo com PIN antigo)
   if (!h) {
     let primeiro = null;
     const pedir = () => pinPad("Bem-vindo ao Zuli", "Crie um PIN de 4 números. Ele protege esta área, para a criança não mudar os ajustes sem querer.", async (p, msg) => {
@@ -109,7 +124,9 @@ async function portao() {
     return pedir();
   }
   if (sess.get()) return entrar();
-  pinPad("Área dos pais", "Digite o PIN.", async (p, msg) => { if (await hashPin(p) === h) { sess.set(true); entrar(); } else msg("PIN errado. Tente de novo."); });
+  pinPad("Área dos adultos", "Digite o PIN.", async (p, msg) => { if (await hashPin(p) === h) { sess.set(true); entrar(); } else msg("PIN errado. Tente de novo."); });
+  $("#gate .card").insertAdjacentHTML("beforeend", `<button type="button" class="btn link small" id="b-esqueci">Esqueci o PIN</button>`);
+  $("#b-esqueci").onclick = esqueciPin;
 }
 
 /* ---------------- entrada ---------------- */
@@ -263,7 +280,7 @@ function renderPerfil(novo) {
   $("#f-perfil").onsubmit = e => {
     e.preventDefault();
     const nome = $("#p-nome").value.trim(), idade = +$("#p-idade").value || null; if (!nome) return;
-    if (novo || !P) { perfis.novo(nome, gen, idade); location.href = "./"; return; }
+    if (novo || !P) { perfis.novo(nome, gen, idade); location.href = "prancha.html"; return; }
     Object.assign(P, { nome, genero: gen, idade }); perfis.salvar(P); cabecalho(); renderPerfil(false);
   };
   el.querySelectorAll("[data-usar]").forEach(b => b.onclick = () => { perfis.usar(b.dataset.usar); P = perfis.ativo(); O = perfis.opt(P); cabecalho(); renderPerfil(false); });

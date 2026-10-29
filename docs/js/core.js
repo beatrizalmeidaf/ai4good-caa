@@ -5,6 +5,7 @@ import { loadSLM } from "./slm.js";
 export const DATA = "data/";
 export const END = "__end__";
 export const pic = id => `p/${id}.webp`;
+export const AUDIO_V = 3;  // aumente quando gerar o áudio de novo
 
 /* ---------------- armazenamento local ---------------- */
 export const store = {
@@ -89,7 +90,8 @@ export class Voz {
     if (!this.ctx) { try { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch {} }
     if (this.ctx?.state === "suspended") this.ctx.resume();
   }
-  url(chave) { return `audio/${this.g}/${chave}.mp3`; }
+  // versão no endereço: quando a voz muda, o aparelho baixa o áudio novo em vez de tocar o guardado no cache
+  url(chave) { return `audio/${this.g}/${chave}.mp3?v=${AUDIO_V}`; }
   async carregar(chave) {
     if (this.buf.has(chave)) return this.buf.get(chave);
     const pr = (async () => {

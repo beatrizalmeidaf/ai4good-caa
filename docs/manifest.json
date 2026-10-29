@@ -2,7 +2,7 @@
   "name": "Zuli",
   "short_name": "Zuli",
   "description": "Prancha de comunicação alternativa com sugestões por IA no próprio aparelho.",
-  "start_url": "./",
+  "start_url": "prancha.html",
   "display": "fullscreen",
   "orientation": "any",
   "background_color": "#f3f6fb",

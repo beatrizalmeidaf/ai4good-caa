@@ -113,6 +113,10 @@ def main(src):
     if not src.exists(): src = R / "frases.jsonl.gz"  # dataset versionado no repositório
     abrir = gzip.open if str(src).endswith(".gz") else open
     raw = [json.loads(l) for l in abrir(src, "rt")]
+    leva2 = OUT / "frases_raw2.jsonl"  # segunda leva (mais situações e variedade)
+    if leva2.exists():
+        for l in open(leva2, encoding="utf-8"):
+            r = json.loads(l); r["conversa"] = "L2:" + str(r.get("conversa")); raw.append(r)
     pairs = Counter((pt.strip(), en.strip()) for r in raw for pt, en in r["pictos"])
     misses = [p for p in pairs if m.map(*p)[0] is None and pairs[p] >= 2 and not p[0][:1].isupper()]
     cache = api_fallback(misses)
@@ -154,8 +158,13 @@ def main(src):
         r["seq"] = seq
     freq = Counter(i for r in rows for i in r["seq"])
     keep = {i for i, c in freq.items() if c >= MIN_FREQ}
+    # prancha estável: o vocabulário anterior fica na mesma ordem; palavras novas entram depois
+    anterior = OUT / "vocab_v1.json"
+    ordem_ant = [w["id"] for w in json.load(open(anterior, encoding="utf-8"))] if anterior.exists() else []
+    keep |= {i for i in ordem_ant if i in freq}
+    pos = {i: k for k, i in enumerate(ordem_ant)}
     vocab = []
-    for pid in sorted(keep, key=lambda i: -freq[i]):
+    for pid in sorted(keep, key=lambda i: (pos.get(i, 10**6), -freq[i])):
         label = clean(lab[pid].most_common(1)[0][0])
         pg, cor = pagina(m.meta[pid], label)
         vocab.append(dict(id=pid, label=label, pagina=pg, cor=cor, freq=freq[pid], en=m.meta[pid]["en"][:3]))
@@ -168,7 +177,17 @@ def main(src):
     held_scen = set(scen[:6])
     convs = sorted({r["conversa"] for r in rows if r["fonte"] == "cenario" and r["cenario"] not in held_scen}); rnd.shuffle(convs)
     held_conv = set(convs[: len(convs) // 10]); val_conv = set(convs[len(convs) // 10: len(convs) // 10 + len(convs) // 20])
+    # segunda leva: testes próprios (6 situações novas fora do treino e 10% das conversas)
+    from cenarios import CENARIOS2
+    rnd2 = random.Random(1)
+    scen2 = sorted({c for c, _, _ in CENARIOS2}); rnd2.shuffle(scen2); held_scen2 = set(scen2[:6])
+    convs2 = sorted({r["conversa"] for r in rows if r["fonte"] == "cenario2" and r["cenario"] not in held_scen | held_scen2}); rnd2.shuffle(convs2)
+    held_conv2 = set(convs2[: len(convs2) // 10]); val_conv2 = set(convs2[len(convs2) // 10: len(convs2) // 10 + len(convs2) // 20])
     for r in rows:
+        if r["fonte"] == "cenario2":
+            r["split"] = ("fora" if r["cenario"] in held_scen else "cenario_novo2" if r["cenario"] in held_scen2
+                          else "conversa_nova2" if r["conversa"] in held_conv2 else "val" if r["conversa"] in val_conv2 else "treino2")
+            continue
         if r["fonte"] == "adaptado": r["split"] = "adaptado"
         elif r["cenario"] in held_scen: r["split"] = "cenario_novo"
         elif r["conversa"] in held_conv: r["split"] = "conversa_nova"

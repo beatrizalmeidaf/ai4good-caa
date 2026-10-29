@@ -9,7 +9,7 @@ const PARCEIRO = [
 ];
 
 const perfil = perfis.ativo();
-if (!perfil) location.replace("pais.html#novo");
+if (!perfil) location.replace("./");  // sem criança cadastrada: volta para a página inicial
 const opt = perfil ? perfis.opt(perfil) : {};
 const S = { vocab: [], by: {}, pg: {}, page: "nucleo", sub: 0, phrase: [], spoken: false, adulto: "nenhuma", top: [],
   toques: 0, daSugestao: 0, toquesFrase: 0 };

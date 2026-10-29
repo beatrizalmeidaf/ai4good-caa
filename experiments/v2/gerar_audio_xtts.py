@@ -2,7 +2,7 @@
 
 Para cada palavra tenta até 3 vezes e fica com a primeira versão que o Whisper reconhece
 e que não tem som sobrando (palavra solta às vezes sai com ruído extra no XTTS).
-Uso: python gerar_audio_xtts.py <f|m> <referencia.wav> [semitons=3]
+Uso: python gerar_audio_xtts.py <f|m> <referencia.wav> [semitons=3] [--tudo]
 Saída: docs/audio/<f|m>/<id>.mp3, docs/audio/<f|m>/zuli_<n>.mp3, out/audio_xtts_<g>.json
 """
 import json, sys, time, pathlib, subprocess, unicodedata
@@ -10,7 +10,7 @@ import numpy as np, lameenc, torch
 
 R = pathlib.Path(__file__).resolve().parent; DOCS = R.parent.parent / "docs"
 FFMPEG = str(pathlib.Path.home() / "bin" / "ffmpeg")
-G, REF = sys.argv[1], sys.argv[2]; SEMI = float(sys.argv[3]) if len(sys.argv) > 3 else 3
+G, REF = sys.argv[1], sys.argv[2]; SEMI = float(sys.argv[3]) if len(sys.argv) > 3 and not sys.argv[3].startswith("--") else 3
 OUT = DOCS / "audio" / G; OUT.mkdir(parents=True, exist_ok=True)
 vocab = json.load(open(DOCS / "data" / "vocab.json", encoding="utf-8"))
 ZULI = json.load(open(DOCS / "data" / "zuli_falas.json", encoding="utf-8"))
@@ -40,7 +40,12 @@ def mp3(a, sr=24000):
 def reconhece(a, alvo):
     x = ff(a, 24000, "anull", 16000)
     t = asr(np.concatenate([np.zeros(8000, np.float32), x, np.zeros(8000, np.float32)]), generate_kwargs=dict(language="portuguese", task="transcribe"))["text"]
-    return norm(alvo) in norm(t), t.strip()
+    return limpo(t, alvo), t.strip()
+def limpo(t, alvo):
+    """a fala é só a palavra: sem 'ponto', número ou palavra a mais."""
+    tt, aa = norm(t).replace("-", " ").split(), norm(alvo).replace("-", " ").split()
+    if any(ch.isdigit() for ch in t) or "ponto" in tt and "ponto" not in aa: return False
+    return aa == tt or (len(tt) == len(aa) and all(a2[:3] == t2[:3] for a2, t2 in zip(aa, tt)))
 
 def sintetizar(texto, temp):
     torch.manual_seed(0)
@@ -50,10 +55,21 @@ def sintetizar(texto, temp):
 stats = dict(ok=0, total=0, tentativas=0, falhas=[])
 itens = [(str(v["id"]), v["label"], True) for v in vocab] + [(f"zuli_{i}", t, False) for i, t in enumerate(ZULI)]
 t0 = time.time()
+TUDO = "--tudo" in sys.argv  # sem --tudo, só gera o que ainda não tem áudio (palavras novas)
+REFAZER = "--refazer-ruins" in sys.argv  # transcreve os áudios existentes e refaz os que têm sobra
+def existente(chave):
+    raw = subprocess.run([FFMPEG, "-loglevel", "quiet", "-i", str(OUT / f"{chave}.mp3"), "-f", "f32le", "-ac", "1", "-ar", "24000", "-"], capture_output=True).stdout
+    return np.frombuffer(raw, dtype=np.float32)
+ruins = []
 for chave, texto, palavra in itens:
+    if REFAZER and palavra and (OUT / f"{chave}.mp3").exists():
+        ok_atual, t_atual = reconhece(existente(chave), texto)
+        if ok_atual: continue
+        ruins.append([texto, t_atual])
+    elif not TUDO and (OUT / f"{chave}.mp3").exists(): continue
     falado = texto.replace("_", " ")
     melhor, ok = None, False
-    for k, (variante, temp) in enumerate([(falado + ".", 0.3), (falado + "!", 0.5), (falado, 0.7)]):
+    for k, (variante, temp) in enumerate([(falado, 0.3), (falado, 0.55), (falado, 0.75), (falado, 0.9)] if palavra else [(falado, 0.3)]):
         a = aparar(sintetizar(variante, temp)); stats["tentativas"] += 1
         if melhor is None: melhor = a
         longo = palavra and len(a) / 24000 > 0.9 + 0.12 * len(falado)  # som sobrando
@@ -64,6 +80,6 @@ for chave, texto, palavra in itens:
     if not ok: stats["falhas"].append(texto)
     (OUT / f"{chave}.mp3").write_bytes(mp3(mais_jovem(melhor)))
     if stats["total"] % 100 == 0: print(stats["total"], "itens", f"{time.time() - t0:.0f}s", flush=True)
-stats["acerto"] = round(100 * stats["ok"] / stats["total"], 1)
+stats["acerto"] = round(100 * stats["ok"] / max(1, stats["total"]), 1); stats["ruins_encontrados"] = ruins
 json.dump(stats, open(R / "out" / f"audio_xtts_{G}.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
 print("pronto:", stats["acerto"], "% reconhecido,", stats["tentativas"], "sínteses,", f"{time.time() - t0:.0f}s")

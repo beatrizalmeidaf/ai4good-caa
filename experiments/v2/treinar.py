@@ -179,12 +179,14 @@ if __name__ == "__main__":
     for r in ROWS: split[r["split"]].append(r)
     rnd = random.Random(0); ad = split["adaptado"][:]; rnd.shuffle(ad)
     ad_tr, ad_te = ad[: len(ad) // 2], ad[len(ad) // 2:]
-    tests = {"conversa_nova": split["conversa_nova"], "cenario_novo": split["cenario_novo"], "mensagem_real": ad_te}
+    tests = {"conversa_nova": split["conversa_nova"], "cenario_novo": split["cenario_novo"], "mensagem_real": ad_te,
+             "conversa_nova2": split["conversa_nova2"], "cenario_novo2": split["cenario_novo2"]}
     tests = {k: v for k, v in tests.items() if v}
     print({k: len(v) for k, v in split.items()}, "vocab", NS, flush=True)
     res = defaultdict(dict)
     tr = split["treino"]
-    tr_mix = tr + ad_tr
+    tr_leva1 = tr + ad_tr                      # só a primeira leva (como o modelo anterior)
+    tr_mix = tr + split["treino2"] + ad_tr     # primeira + segunda leva
     ng = NGram(tr_mix)
     for t, rows in tests.items():
         res[t]["Mais usados (frequência)"] = metrics(unigram_lp(tr_mix, rows), rows)
@@ -198,17 +200,20 @@ if __name__ == "__main__":
         for t, rows in tests.items(): res[t][name] = evaluate_slm(m, rows)
         res["_tempo_treino_s"][name] = round(time.time() - t0, 1)
         if v["top6"] + 10 * v["mrr"] > best_score: best, best_name, best_score = (d, l, h), name, v["top6"] + 10 * v["mrr"]
+    # efeito da segunda leva: mesmo tamanho, treinado só com a primeira leva, nos mesmos testes
+    m1 = train(tr_leva1, *best, log=False)
+    for t, rows in tests.items(): res[t][best_name + " só 1ª leva"] = evaluate_slm(m1, rows)
     # efeito das mensagens reais no treino (mesmo tamanho do melhor)
-    m_sem = train(tr, *best, log=False)
+    m_sem = train(tr + split["treino2"], *best, log=False)
     if ad_te: res["mensagem_real"][best_name + " sem mensagens reais no treino"] = evaluate_slm(m_sem, ad_te)
     res["_melhor"] = best_name
-    json.dump(res, open(OUT / "metricas.json", "w"), ensure_ascii=False, indent=1)
+    json.dump(res, open(OUT / "metricas.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     for t in tests:
         print(f"\n== {t} ==")
         for k, v in sorted(res[t].items(), key=lambda kv: -kv[1]["top6"]):
             print(f"{k:55s} top1={v['top1']:5.1f} top6={v["top6"]:5.1f} mrr={v["mrr"]:.3f} fim6={v["fim_top6"]:5.1f} conc1={v['conceito_top1']:5.1f} toques-={v['economia_toques']:5.1f}%")
     # modelo final: todas as frases (menos o teste de mensagens reais fica de fora? não: o modelo da página usa tudo)
-    final = train([r for r in ROWS if r["split"] != "_"], *best, log=False)
+    final = train([r for r in ROWS if r["split"] != "fora"], *best, log=False)
     export(final, ROWS)
     # n-grama de reserva para a página
     ngf = NGram(ROWS)

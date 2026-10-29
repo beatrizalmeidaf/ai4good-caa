@@ -1,8 +1,8 @@
 // Zuli funciona sem internet depois do primeiro acesso.
 // Página, código e dados: rede primeiro (pega atualizações), cache quando offline.
 // Pictogramas e áudios: cache primeiro (não mudam), e ficam guardados conforme são usados.
-const CACHE = "zuli-v5";
-const BASE = ["./", "index.html", "pais.html", "manifest.json", "js/core.js", "js/crianca.js", "js/slm.js", "js/treino.js", "js/pais.js",
+const CACHE = "zuli-v6";
+const BASE = ["./", "index.html", "prancha.html", "pais.html", "manifest.json", "js/core.js", "js/crianca.js", "js/slm.js", "js/treino.js", "js/pais.js",
   "assets/zuli.png", "assets/zuli-64.png", "data/vocab.json", "data/slm.json", "data/slm.bin"];
 
 self.addEventListener("install", e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(BASE)).then(() => self.skipWaiting())));

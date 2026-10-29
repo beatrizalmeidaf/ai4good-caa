@@ -2,218 +2,100 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Zuli</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="Zuli: prancha de comunicação alternativa com pictogramas e sugestões por IA no próprio aparelho.">
-<meta name="theme-color" content="#f4f7fb">
-<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="description" content="Zuli: prancha de comunicação alternativa para crianças que ainda não falam. Sem cadastro, funciona no próprio aparelho.">
+<meta name="theme-color" content="#fff4d1">
 <link rel="icon" href="assets/zuli-64.png">
 <link rel="apple-touch-icon" href="assets/zuli.png">
 <link rel="manifest" href="manifest.json">
-<link rel="preload" href="data/vocab.json" as="fetch" crossorigin>
-<link rel="modulepreload" href="js/core.js">
-<link rel="modulepreload" href="js/slm.js">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Fredoka:wght@500;600&display=swap">
 <style>
-/* Layout: tela única de tablet, tema claro fixo (previsibilidade visual em CAA).
-   Topo: frase + apagar + Zuli. Sugestões: 6 peças. Centro: grade grande com setas de página.
-   Base: barra de categorias. Peças com fundo suave na cor Fitzgerald da categoria. */
+/* Layout: página inicial de uma coluna centralizada. Topo amarelo do Zuli, cartão com as ações,
+   rodapé com links. Tema claro fixo, igual à prancha. */
 :root {
-  --bg: #f4f7fb; --surface: #ffffff; --ink: #1d3461; --ink-2: #6b7a92; --line: #e1e8f1;
-  --zuli: #f9c440; --zuli-dark: #d9a21c; --zuli-soft: #fff7df; --coral: #ff8466;
-  --c-pessoa: #f2c919; --c-acao: #47a85a; --c-coisa: #ef9437; --c-descricao: #4b8dd0;
-  --c-social: #e27aae; --c-negacao: #df5252; --c-lugar: #9468c8; --c-tempo: #95a2ae;
+  --bg: #f4f7fb; --surface: #ffffff; --ink: #17305e; --ink-2: #5a6b88; --line: #dfe6f0;
+  --zuli: #f9c440; --zuli-dark: #d9a21c; --zuli-soft: #fff4d1;
   --f-display: "Fredoka", "Atkinson Hyperlegible", system-ui, sans-serif;
   --f-body: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --gap: 12px;
-  --topo: 108px;   /* altura da faixa da frase */
-  --sug: 112px;    /* altura das sugestões */
-  --abas: 86px;    /* altura da barra de categorias */
-  --seta: 64px;    /* largura das setas de página */
   color-scheme: light;
 }
 * { box-sizing: border-box; }
-html, body { height: 100%; }
 html { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); background: var(--bg); }
-body {
-  margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.3 var(--f-body);
-  padding-left: max(12px, env(safe-area-inset-left, 0px)); padding-right: max(12px, env(safe-area-inset-right, 0px));
-  overflow: hidden; overscroll-behavior: none; touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none;
-}
-img { max-width: 100%; -webkit-user-drag: none; }
+body { margin: 0; min-height: 100vh; background: linear-gradient(var(--zuli-soft) 0 268px, var(--bg) 268px); color: var(--ink); font: 17px/1.5 var(--f-body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
 [hidden] { display: none !important; }
-button { font: inherit; color: inherit; touch-action: manipulation; }
-:focus-visible { outline: 4px solid var(--coral); outline-offset: 2px; }
-
-.app { height: 100%; display: grid; gap: var(--gap); padding-block: 12px;
-  grid-template-rows: var(--topo) var(--sug) auto minmax(0, 1fr) var(--abas);
-  grid-template-areas: "top" "sug" "adulto" "board" "abas"; }
-.top { grid-area: top; } .sugg { grid-area: sug; } .partner { grid-area: adulto; } .board { grid-area: board; } .abas { grid-area: abas; }
-
-/* ---------- peça ---------- */
-.tile {
-  --cat: var(--c-tempo); position: relative; overflow: hidden;
-  width: 100%; height: 100%; min-width: 0; min-height: 0; padding: 8px 6px 6px; cursor: pointer;
-  display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: 4px; justify-items: center;
-  background: color-mix(in srgb, var(--cat) 15%, #fff); color: var(--ink);
-  border: 3px solid color-mix(in srgb, var(--cat) 55%, #fff); border-radius: 20px;
-  transition: transform .08s ease-out;
-}
-.tile:active { transform: scale(.95); }
-.tile img { width: 100%; height: 100%; min-height: 0; object-fit: contain; pointer-events: none; }
-.tile span { max-width: 100%; font-weight: 700; font-size: clamp(.85rem, 1.1vw + .45rem, 1.25rem); line-height: 1.1;
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; pointer-events: none; }
-.tile.empty { visibility: hidden; }
-.cat-pessoa { --cat: var(--c-pessoa); } .cat-acao { --cat: var(--c-acao); } .cat-coisa { --cat: var(--c-coisa); }
-.cat-descricao { --cat: var(--c-descricao); } .cat-social { --cat: var(--c-social); } .cat-negacao { --cat: var(--c-negacao); }
-.cat-lugar { --cat: var(--c-lugar); } .cat-tempo { --cat: var(--c-tempo); }
-
-/* ---------- topo: frase ---------- */
-.top { display: grid; grid-template-columns: minmax(0, 1fr) var(--topo) calc(var(--topo) * 1.7); gap: var(--gap); min-height: 0; }
-.phrase { height: var(--topo); background: var(--surface); border: 3px solid var(--line); border-radius: 24px; padding: 8px;
-  display: flex; gap: 8px; align-items: center; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; min-width: 0;
-  transition: border-color .25s, background .25s; }
-.phrase::-webkit-scrollbar { display: none; }
-.phrase.spoken { border-color: var(--zuli); background: var(--zuli-soft); }
-.phrase .tile { flex: 0 0 auto; width: calc(var(--topo) - 22px); height: calc(var(--topo) - 22px); border-radius: 16px; padding: 5px 3px 3px; cursor: default; }
-.phrase .tile span { font-size: .78rem; }
-.phrase .tile.say { transform: scale(1.08); border-color: var(--zuli-dark); box-shadow: 0 0 0 4px var(--zuli); }
-.phrase .hint { padding-left: 12px; color: var(--ink-2); font-size: 1.05rem; }
-.iconbtn { height: var(--topo); border: 3px solid var(--line); background: var(--surface); border-radius: 24px; cursor: pointer;
-  display: grid; place-items: center; color: var(--ink-2); }
-.iconbtn svg { width: 46px; height: 46px; }
-.iconbtn:active { transform: scale(.95); }
-.zuli { height: var(--topo); border: 0; border-radius: 28px; background: var(--zuli); cursor: pointer; color: var(--ink);
-  display: flex; align-items: center; justify-content: center; gap: 4px; padding: 0 12px 0 6px;
-  font-family: var(--f-display); font-weight: 600; font-size: 1.45rem; box-shadow: 0 4px 0 var(--zuli-dark); }
-.zuli img { width: calc(var(--topo) - 18px); height: calc(var(--topo) - 18px); object-fit: contain; flex: none; }
-.zuli:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--zuli-dark); }
-.zuli.ready img { animation: wiggle 2.6s ease-in-out infinite; }
-.zuli.talking img { animation: talk .3s ease-in-out infinite alternate; }
-@keyframes wiggle { 0%, 82%, 100% { transform: none } 86% { transform: rotate(-7deg) } 91% { transform: rotate(6deg) } 96% { transform: rotate(-3deg) } }
-@keyframes talk { from { transform: scale(1) } to { transform: scale(1.07, .93) translateY(2px) } }
-
-/* ---------- sugestões ---------- */
-.sugg { height: var(--sug); display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--gap);
-  padding: 8px; background: var(--zuli-soft); border-radius: 24px; }
-.sugg .tile { background: #fff; animation: fade .15s ease-out; }
-.sugg .tile.end { --cat: var(--zuli-dark); background: var(--zuli); }
-.sugg .tile.end span { font-family: var(--f-display); }
-@keyframes fade { from { opacity: .4 } to { opacity: 1 } }
-
-/* ---------- linha do adulto (opcional, ligada pelos pais) ---------- */
-.partner { display: flex; gap: 6px; align-items: center; overflow-x: auto; scrollbar-width: none; }
-.partner::-webkit-scrollbar { display: none; }
-.partner b { font-size: .75rem; color: var(--ink-2); white-space: nowrap; letter-spacing: .05em; text-transform: uppercase; }
-.partner button { border: 2px solid var(--line); background: var(--surface); border-radius: 999px; padding: 3px 12px; cursor: pointer; white-space: nowrap; font-size: .88rem; color: var(--ink-2); }
-.partner button[aria-pressed="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
-
-/* ---------- prancha ---------- */
-.board { display: grid; grid-template-columns: var(--seta) minmax(0, 1fr) var(--seta); gap: var(--gap); min-height: 0; }
-.grid { display: grid; gap: var(--gap); min-height: 0; grid-template-columns: repeat(var(--cols, 5), minmax(0, 1fr)); grid-template-rows: repeat(var(--rows, 3), minmax(0, 1fr)); }
-.seta { border: 0; border-radius: 20px; background: var(--surface); color: var(--ink); cursor: pointer; display: grid; place-items: center; }
-.seta svg { width: 40px; height: 40px; }
-.seta:disabled { background: transparent; color: transparent; cursor: default; }
-.seta:not(:disabled):active { transform: scale(.94); }
-
-/* ---------- categorias ---------- */
-.abas { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; min-width: 0; }
-.abas::-webkit-scrollbar { display: none; }
-.abas button { --cat: var(--c-tempo); flex: 1 0 92px; position: relative; height: 100%; border: 3px solid transparent; border-radius: 20px;
-  background: var(--surface); cursor: pointer; display: grid; grid-template-rows: minmax(0, 1fr) auto; justify-items: center; padding: 6px 4px 5px;
-  font-weight: 700; font-size: .8rem; color: var(--ink); line-height: 1.1; }
-.abas button img, .abas button svg { width: 42px; height: 42px; object-fit: contain; }
-.abas button[aria-pressed="true"] { background: color-mix(in srgb, var(--cat) 20%, #fff); border-color: color-mix(in srgb, var(--cat) 70%, #fff); }
-.abas .likely { position: absolute; top: 6px; right: 8px; width: 14px; height: 14px; border-radius: 50%; background: var(--zuli); opacity: 0; transition: opacity .2s; }
-.abas button.hint .likely { opacity: 1; animation: glow 1.4s ease-in-out infinite; }
-@keyframes glow { 50% { box-shadow: 0 0 0 7px color-mix(in srgb, var(--zuli) 45%, transparent) } }
-.abas #b-treino { --cat: var(--coral); color: var(--ink); }
-.abas #b-treino svg { color: var(--coral); }
-.abas #b-pais { flex: 0 0 56px; background: transparent; color: var(--ink-2); opacity: .5; }
-.abas #b-pais svg { width: 26px; height: 26px; }
-.abas #b-pais .ring { position: absolute; inset: 8px; border-radius: 14px; background: conic-gradient(var(--coral) calc(var(--p, 0) * 1turn), transparent 0); opacity: .5; pointer-events: none; }
-
-/* ---------- treino ---------- */
-.treino { position: fixed; inset: 0; z-index: 40; background: var(--bg); display: grid; grid-template-rows: auto minmax(0, 1fr);
-  padding: calc(14px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) calc(14px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
-.tr-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-.tr-prog { display: flex; gap: 10px; }
-.tr-prog i { width: 22px; height: 22px; border-radius: 50%; background: var(--line); }
-.tr-prog i.on { background: var(--zuli); box-shadow: 0 0 0 4px var(--zuli-soft); }
-.tr-prog i.ok { background: var(--c-acao); }
-.tr-x { border: 0; background: var(--surface); border-radius: 18px; width: 64px; height: 64px; cursor: pointer; display: grid; place-items: center; color: var(--ink-2); }
-.tr-x svg { width: 28px; height: 28px; }
-.tr-centro { display: grid; justify-items: center; align-content: center; gap: 16px; min-height: 0; text-align: center; }
-.tr-centro h2 { font-family: var(--f-display); font-size: 2.2rem; margin: 0; }
-.tr-card { --cat: var(--c-tempo); background: color-mix(in srgb, var(--cat) 15%, #fff); border: 4px solid color-mix(in srgb, var(--cat) 55%, #fff); border-radius: 32px; padding: 16px; width: min(44vmin, 340px); display: grid; gap: 6px; }
-.tr-card img { width: 100%; aspect-ratio: 1; object-fit: contain; }
-.tr-card span { font-family: var(--f-display); font-size: clamp(1.6rem, 5vmin, 2.6rem); font-weight: 600; }
-.tr-msg { font-family: var(--f-display); font-size: clamp(1.1rem, 3vmin, 1.6rem); color: var(--ink-2); min-height: 1.4em; }
-.tr-acoes { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
-.tr-btn { border: 0; background: var(--coral); color: #fff; border-radius: 26px; padding: 14px 30px; min-height: 76px; cursor: pointer;
-  font-family: var(--f-display); font-size: 1.3rem; font-weight: 600; display: inline-flex; gap: 10px; align-items: center; }
-.tr-btn.sec { background: var(--surface); color: var(--ink); }
-.tr-btn:disabled { opacity: .5; }
-.tr-btn svg { width: 36px; height: 36px; }
-.tr-btn:active { transform: scale(.96); }
-.tr-nivel, .carga { width: min(60vw, 320px); height: 14px; border-radius: 7px; background: var(--line); overflow: hidden; }
-.tr-nivel i, .carga i { display: block; height: 100%; width: 0; background: var(--c-acao); transition: width .08s; }
-.carga i { background: var(--zuli); }
-.tr-estrelas { display: flex; gap: 6px; justify-content: center; }
-.tr-estrelas svg { width: 48px; height: 48px; fill: var(--zuli); stroke: var(--zuli-dark); stroke-width: 1; animation: fade .3s ease-out both; }
-.tr-estrelas.grande svg { width: 72px; height: 72px; }
-.tr-zuli { width: min(40vmin, 240px); }
-.tr-zuli.festa { animation: talk .45s ease-in-out infinite alternate; }
-
-/* ---------- carregando ---------- */
-.loading { position: fixed; inset: 0; display: grid; place-items: center; background: var(--bg); z-index: 50; }
-.loading div { display: grid; justify-items: center; gap: 10px; font-family: var(--f-display); color: var(--ink-2); font-size: 1.2rem; text-align: center; padding: 16px; }
-.loading img { width: 110px; animation: talk .5s ease-in-out infinite alternate; }
-
-/* tablets menores e celular deitado */
-@media (max-height: 700px) { :root { --topo: 88px; --sug: 92px; --abas: 74px; --gap: 8px; } .abas button img, .abas button svg { width: 34px; height: 34px; } }
-/* celular em pé */
-@media (max-width: 640px) {
-  :root { --topo: 76px; --sug: 78px; --abas: 72px; --gap: 6px; --seta: 40px; }
-  .top { grid-template-columns: minmax(0, 1fr) 64px 96px; }
-  .iconbtn svg { width: 32px; height: 32px; }
-  .zuli { font-size: 1rem; padding: 0 6px 0 2px; } .zuli img { width: 58px; height: 58px; }
-  .sugg { padding: 5px; gap: 5px; border-radius: 18px; }
-  .tile { border-width: 2px; border-radius: 14px; padding: 4px 2px 3px; }
-  .tile span { font-size: .72rem; }
-  .abas button { flex-basis: 76px; font-size: .7rem; }
-  .seta svg { width: 28px; height: 28px; }
-}
-@media (prefers-reduced-motion: reduce) { *, *::before { animation: none !important; transition: none !important; } }
+.muted { color: var(--ink-2); }
+a { color: var(--ink); }
+:focus-visible { outline: 4px solid var(--zuli-dark); outline-offset: 2px; }
+.wrap { max-width: 560px; margin: 0 auto; padding-block: 28px 40px; display: grid; gap: 18px; justify-items: center; text-align: center; }
+.zuli { width: 140px; height: 140px; animation: oi 2.8s ease-in-out infinite; }
+@keyframes oi { 0%, 80%, 100% { transform: none } 86% { transform: rotate(-6deg) } 93% { transform: rotate(5deg) } }
+h1 { font-family: var(--f-display); font-weight: 600; font-size: 2.6rem; margin: 0; line-height: 1; }
+.lead { margin: 0; font-size: 1.12rem; max-width: 34ch; color: var(--ink); }
+.card { width: 100%; background: var(--surface); border-radius: 28px; padding: 22px; display: grid; gap: 12px; box-shadow: 0 10px 40px rgba(23, 48, 94, .08); }
+.btn { display: flex; align-items: center; justify-content: center; gap: 12px; border-radius: 20px; padding: 16px 20px; text-decoration: none; font-weight: 700; font-size: 1.15rem; border: 3px solid transparent; cursor: pointer; }
+.btn.crianca { background: var(--zuli); color: var(--ink); box-shadow: 0 4px 0 var(--zuli-dark); font-family: var(--f-display); font-weight: 600; font-size: 1.35rem; min-height: 76px; }
+.btn.crianca img { width: 52px; height: 52px; }
+.btn.crianca:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--zuli-dark); }
+.btn.adulto { background: var(--surface); border-color: var(--line); color: var(--ink); }
+.btn.adulto svg { width: 24px; height: 24px; }
+.btn.comecar { background: var(--ink); color: #fff; font-size: 1.25rem; min-height: 64px; }
+.como { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.como div { background: var(--zuli-soft); border-radius: 18px; padding: 12px 8px; display: grid; gap: 4px; justify-items: center; font-size: .9rem; line-height: 1.25; }
+.como b { width: 28px; height: 28px; border-radius: 50%; background: var(--zuli); display: grid; place-items: center; font-family: var(--f-display); }
+.nota { display: flex; gap: 10px; align-items: center; text-align: left; font-size: .92rem; color: var(--ink-2); background: var(--bg); border-radius: 16px; padding: 10px 14px; }
+.nota svg { width: 28px; height: 28px; flex: none; color: var(--ink-2); }
+footer { display: flex; gap: 8px 18px; flex-wrap: wrap; justify-content: center; font-size: .9rem; color: var(--ink-2); }
+footer a { color: var(--ink-2); }
+@media (max-width: 480px) { h1 { font-size: 2.2rem; } .como { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { .zuli { animation: none; } }
 </style>
 </head>
 <body>
-<div class="loading" id="loading"><div><img src="assets/zuli.png" alt=""><span>O Zuli está chegando…</span></div></div>
+<main class="wrap">
+  <img class="zuli" src="assets/zuli.png" alt="Zuli, um balão de fala amarelo sorrindo">
+  <h1>Zuli</h1>
+  <p class="lead">A prancha que ajuda crianças que ainda não falam a dizer o que querem, com desenhos e voz.</p>
 
-<div class="app">
-  <header class="top">
-    <div class="phrase" id="phrase" aria-live="polite"></div>
-    <button type="button" class="iconbtn" id="b-back" aria-label="Apagar o último">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 5H9l-6 7 6 7h12z"/><path d="M17 9l-6 6M11 9l6 6"/></svg>
-    </button>
-    <button type="button" class="zuli" id="b-speak" aria-label="Zuli, falar a frase"><img src="assets/zuli.png" alt=""><span>falar</span></button>
-  </header>
+  <!-- já tem criança cadastrada neste aparelho -->
+  <section class="card" id="com-perfil" hidden>
+    <div id="lista-criancas" style="display:grid;gap:10px"></div>
+    <a class="btn adulto" href="pais.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Área dos adultos</a>
+  </section>
 
-  <div class="sugg" id="sugg" aria-label="Sugestões do Zuli"></div>
-  <div class="partner" id="partner" role="toolbar" aria-label="O que o adulto disse" hidden></div>
+  <!-- primeira vez neste aparelho -->
+  <section class="card" id="sem-perfil" hidden>
+    <div class="como">
+      <div><b>1</b>A criança toca nos desenhos</div>
+      <div><b>2</b>O Zuli sugere o próximo</div>
+      <div><b>3</b>O Zuli fala a frase</div>
+    </div>
+    <a class="btn comecar" href="pais.html#novo">Começar</a>
+    <p style="margin:0;font-size:.9rem" class="muted">Leva 1 minuto: nome da criança, voz e um PIN para os adultos.</p>
+  </section>
 
-  <main class="board">
-    <button type="button" class="seta" id="pg-prev" aria-label="Página anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button>
-    <div class="grid" id="grid"></div>
-    <button type="button" class="seta" id="pg-next" aria-label="Próxima página"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg></button>
-  </main>
+  <div class="nota"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8.5-7 10-4-1.5-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg>
+    <span>Não precisa de cadastro nem de login. Tudo fica guardado só neste aparelho e funciona sem internet depois do primeiro acesso.</span></div>
 
-  <nav class="abas" id="abas" aria-label="Categorias"></nav>
-</div>
-<script type="module" src="js/crianca.js"></script>
+  <footer><a href="resultados.html">Como o Zuli aprende</a><a href="vozes.html">Vozes</a><a href="https://github.com/beatrizalmeidaf/ai4good-caa" target="_blank" rel="noopener">Código</a><span>Pictogramas: ARASAAC (CC BY-NC-SA)</span></footer>
+</main>
+<script type="module">
+import { perfis } from "./js/core.js";
+const lista = perfis.lista();
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+if (lista.length) {
+  document.getElementById("com-perfil").hidden = false;
+  document.getElementById("lista-criancas").innerHTML = lista.map(p =>
+    `<a class="btn crianca" href="prancha.html" data-id="${p.id}"><img src="assets/zuli.png" alt="">Prancha de ${esc(p.nome)}</a>`).join("");
+  document.getElementById("lista-criancas").addEventListener("click", e => { const a = e.target.closest("a[data-id]"); if (a) perfis.usar(a.dataset.id); });
+} else {
+  document.getElementById("sem-perfil").hidden = false;
+}
+if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js").catch(() => {});
+</script>
 </body>
 </html>
