@@ -158,7 +158,7 @@ function renderGrade() {
   ids.slice((S.sub + 1) * n, (S.sub + 2) * n).forEach(id => { const i = new Image(); i.src = pic(id); });
 }
 /* ---------- linha do adulto: o que ele disse vira contexto para as sugestões ---------- */
-const temMic = !!navigator.mediaDevices?.getUserMedia && typeof MediaRecorder !== "undefined";
+const temMic = !!(window.SpeechRecognition || window.webkitSpeechRecognition) || (!!navigator.mediaDevices?.getUserMedia && typeof MediaRecorder !== "undefined");
 const MIC_AD = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 17v5"/></svg>';
 function renderParceiro(estado) {
   const el = $("#partner"), mic = opt.ouvirAdulto !== false;
@@ -185,25 +185,30 @@ function ligarMicAdulto() {
     const b = e.target.closest('[data-acao="mic"]'); if (!b) return;
     e.preventDefault(); voz.desbloquear(); segurando = true;
     mod ??= await import("./adulto.js");
-    mod.carregarEscuta(p => { if (!parar) renderParceiro(`Baixando ${Math.round(p * 100)}%`); }).catch(() => {});  // já começa a baixar o Whisper
+    if (!mod.podeOuvir()) return renderParceiro("Use ✎ para escrever");
+    // computador sem ditado: baixa o Whisper antes (só uma vez), sem gravar ainda
+    if (mod.precisaBaixar() && !S.escutaPronta) {
+      try { await mod.carregarEscuta(p => renderParceiro(`Baixando ${Math.round(p * 100)}%`)); S.escutaPronta = true; return renderParceiro("Pronto! Segure e fale"); }
+      catch { return renderParceiro("Use ✎ para escrever"); }
+    }
     try {
-      const p = await mod.comecarGravacao();
-      if (!segurando) { p(); return renderParceiro("Segure enquanto fala"); }   // soltou antes de o microfone abrir (ex.: pedido de permissão)
+      const p = await mod.comecarEscuta();
+      if (!segurando) { p().catch(() => {}); return renderParceiro("Segure enquanto fala"); }   // soltou antes de o microfone abrir
       parar = p; renderParceiro("ouvindo");
-    } catch { parar = null; renderParceiro("Sem microfone"); }
+    } catch { parar = null; renderParceiro("Sem microfone · use ✎"); }
   });
   const soltar = async () => {
     segurando = false;
     if (!parar) return; const p = parar; parar = null;
     renderParceiro("pensando");
     try {
-      const audio = await p();
-      if (!audio) return renderParceiro("Segure enquanto fala");
-      const texto = await mod.transcrever(audio);
+      const texto = await p();
+      if (!texto) return renderParceiro("Não ouvi · segure e fale");
       await usarFalaDoAdulto(texto);
-    } catch (err) { console.warn(err); renderParceiro("Não entendi"); }
+    } catch (err) { console.warn(err); renderParceiro(String(err.message).includes("not-allowed") ? "Microfone bloqueado · use ✎" : "Não entendi · use ✎"); }
   };
-  ["pointerup", "pointercancel", "pointerleave"].forEach(ev => el.addEventListener(ev, soltar));
+  ["pointerup", "pointercancel"].forEach(ev => el.addEventListener(ev, soltar));
+  el.addEventListener("pointerleave", e => { if (e.target === el) soltar(); });
 }
 
 /* guarda todos os pictogramas no cache aos poucos, sem atrapalhar o uso */

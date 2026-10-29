@@ -2,7 +2,9 @@
 // Reconhecimento de fala local (Whisper no navegador). Nada sai do aparelho.
 import { pic, registro } from "./core.js";
 
-const ASR_MODELO = "onnx-community/whisper-base";
+// celular/tablet: modelo pequeno e sem WebGPU (o grande pode estourar a memória e o navegador recarrega a página)
+const MOVEL = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+const ASR_MODELO = MOVEL ? "onnx-community/whisper-tiny" : "onnx-community/whisper-base";
 const LIB = "https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.5.1";
 let asrPromise = null;
 
@@ -14,7 +16,7 @@ export function carregarOuvido(progresso) {
   if (asrPromise) return asrPromise;
   asrPromise = (async () => {
     const T = await import(LIB);
-    const device = navigator.gpu && (await navigator.gpu.requestAdapter().catch(() => null)) ? "webgpu" : "wasm";
+    const device = !MOVEL && navigator.gpu && (await navigator.gpu.requestAdapter().catch(() => null)) ? "webgpu" : "wasm";
     const cb = p => { if (p.status === "progress" && p.total) progresso?.(p.loaded / p.total); };
     const [proc, tok, model] = await Promise.all([
       T.AutoProcessor.from_pretrained(ASR_MODELO, { progress_callback: cb }),

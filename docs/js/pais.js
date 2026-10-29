@@ -539,7 +539,7 @@ function renderAjustes() {
         ${chk("conceito", "Marcar a página provável do próximo pictograma", "Um ponto amarelo aparece na página onde deve estar a próxima palavra.")}
         ${chk("falarCada", "Falar cada pictograma ao tocar")}
         ${chk("calma", "Atalhos de calma", "Se a criança tocar muito rápido ou repetir o mesmo desenho várias vezes, as sugestões viram pausa, parar, silêncio, abraço, música e ajuda por 20 segundos.")}
-        ${chk("ouvirAdulto", "Botão \"Segure e fale\" para o adulto", "Segure o botão e fale com a criança (\"quer suco ou água?\"). O Zuli transforma o que você disse em pictogramas e sugere a resposta. O áudio não sai do aparelho; na primeira vez ele baixa o reconhecimento de fala (~80 MB).")}
+        ${chk("ouvirAdulto", "Botão \"Segure e fale\" para o adulto", "Segure o botão e fale com a criança (\"quer suco ou água?\"). O Zuli transforma o que você disse em pictogramas e sugere a resposta. Usa o reconhecimento de fala do aparelho (o mesmo do ditado do teclado); se não houver, use o ✎ para escrever.")}
         ${chk("parceiro", "Mostrar os tipos de pergunta na linha \"Adulto\"", "Você também pode tocar no tipo do que perguntou (\"o que você quer?\", \"onde?\").")}
       </div>
       <div class="card"><h3>Contexto e voz</h3>
@@ -550,7 +550,7 @@ function renderAjustes() {
           return `<div class="voz-op" aria-pressed="${on}"><button type="button" class="voz-sel" data-voz="${id}"><b>${n}</b><small>${d}</small></button><button type="button" class="btn" data-ouvir="${id}">▶ ouvir</button></div>`; }).join("")}</div>
           <a class="small" href="vozes.html">Comparar todas as vozes testadas</a></div>
         <div class="field"><span>Velocidade da voz</span>${seg("velocidade", [[0.85, "devagar"], [1, "normal"], [1.12, "rápida"]])}</div>
-        ${chk("treinoMicrofone", "Treino com microfone", "O Zuli escuta e avalia a fala no próprio aparelho (baixa ~80 MB na primeira vez). Desligado, o adulto avalia.")}
+        ${chk("treinoMicrofone", "Treino com microfone", "O Zuli escuta e avalia a fala no próprio aparelho (baixa ~40 MB no celular/tablet, ~80 MB no computador, na primeira vez). Desligado, o adulto avalia.")}
         <div class="field"><span>Preditor</span>${seg("preditor", [["slm", "SLM de símbolos"], ["ngram", "n-grama (comparação)"]])}</div>
       </div>
     </div>

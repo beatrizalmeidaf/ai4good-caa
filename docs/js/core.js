@@ -156,8 +156,15 @@ export class Voz {
     this.vel = velocidade; this.sistema = sistema; this.buf = new Map(); this.ctx = null; this.fontes = [];
   }
   desbloquear() {
+    // iPhone/iPad: sem isto o Web Audio fica mudo com a chave de silencioso ligada
+    try { if (navigator.audioSession && navigator.audioSession.type !== "playback") navigator.audioSession.type = "playback"; } catch {}
     if (!this.ctx) { try { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch {} }
-    if (this.ctx?.state === "suspended") this.ctx.resume();
+    if (this.ctx && this.ctx.state !== "running") this.ctx.resume().catch(() => {});   // "suspended" ou "interrupted" (iOS)
+    if (!this.destravado && this.ctx) {
+      // iOS antigo: tocar um áudio de mídia (silêncio) no primeiro toque troca a sessão para "reprodução"
+      this.destravado = true;
+      try { const a = new Audio("assets/silencio.mp3"); a.setAttribute("playsinline", ""); a.volume = 0.01; a.play().catch(() => {}); } catch {}
+    }
   }
   // versão no endereço: quando a voz muda, o aparelho baixa o áudio novo em vez de tocar o guardado no cache
   url(chave) { return `audio/${this.g}/${chave}.mp3?v=${AUDIO_V}`; }
@@ -186,8 +193,11 @@ export class Voz {
     this.parar(); this.desbloquear();
     // voz do aparelho: fala a frase inteira de uma vez (entonação mais natural), menos as falas do Zuli
     if (this.sistema && !itens.every(i => String(i.chave).startsWith("zuli_"))) return this.falarSistema(itens.map(i => i.texto).join(" "), aoFim, aoPalavra, itens);
+    if (this.ctx && this.ctx.state !== "running") await Promise.race([this.ctx.resume().catch(() => {}), new Promise(r => setTimeout(r, 300))]);
+    // Web Audio parado (alguns iPhones/iPads): toca os mesmos MP3 como mídia comum
+    if (!this.ctx || this.ctx.state !== "running") return this.falarMidia(itens, aoPalavra, aoFim);
     const bufs = await Promise.all(itens.map(it => this.carregar(it.chave)));
-    if (!this.ctx || bufs.some(b => !b)) return this.falarSistema(itens.map(i => i.texto).join(" "), aoFim);
+    if (bufs.some(b => !b)) return this.falarSistema(itens.map(i => i.texto).join(" "), aoFim);
     let t = this.ctx.currentTime + 0.02; const timers = [];
     bufs.forEach((x, i) => {
       const s = this.ctx.createBufferSource(); s.buffer = x.b; s.playbackRate.value = this.vel; s.connect(this.ctx.destination);
@@ -197,6 +207,17 @@ export class Voz {
       t += x.dur / this.vel + 0.06;
     });
     setTimeout(() => aoFim?.(), (t - this.ctx.currentTime) * 1000 + 50);
+  }
+  falarMidia(itens, aoPalavra, aoFim) {
+    let i = 0; const el = this.midia ??= new Audio(); el.setAttribute("playsinline", "");
+    const proximo = () => {
+      if (i >= itens.length) return aoFim?.();
+      aoPalavra?.(i); el.src = this.url(itens[i++].chave); el.playbackRate = this.vel;
+      el.onended = proximo; el.onerror = proximo;
+      el.play().catch(() => this.falarSistema(itens.map(x => x.texto).join(" "), aoFim));
+    };
+    this.fontes.push({ stop: () => { el.onended = null; el.pause(); } });
+    proximo();
   }
   falarSistema(texto, aoFim, aoPalavra, itens) {
     try {
