@@ -1,5 +1,5 @@
 // Área da criança: prancha fixa, sugestões, Zuli fala a frase, botão Treinar.
-import { END, pic, perfis, registro, carregarVocab, PAGINAS, montarPaginas, grupoDe, Voz, Preditor, periodoAgora, vozDoPerfil } from "./core.js";
+import { END, pic, perfis, registro, carregarVocab, PAGINAS, montarPaginas, grupoDe, Voz, Preditor, periodoAgora, vozDoPerfil, carregarFormas, textoParaPictos } from "./core.js";
 
 const $ = s => document.querySelector(s);
 const PARCEIRO = [
@@ -11,7 +11,7 @@ const PARCEIRO = [
 const perfil = perfis.ativo();
 if (!perfil) location.replace("./");  // sem criança cadastrada: volta para a página inicial
 const opt = perfil ? perfis.opt(perfil) : {};
-const S = { vocab: [], by: {}, pg: {}, page: "nucleo", sub: 0, phrase: [], spoken: false, adulto: "nenhuma", top: [],
+const S = { vocab: [], by: {}, pg: {}, page: "nucleo", sub: 0, phrase: [], spoken: false, adulto: "nenhuma", adp: [], adTexto: "", top: [],
   toques: 0, daSugestao: 0, toquesFrase: 0 };
 const vz = vozDoPerfil(perfil, opt), voz = new Voz(vz.pasta, opt.velocidade, vz.sistema);
 let pred;
@@ -20,7 +20,8 @@ function tile(w) {
   if (w === END) return `<button type="button" class="tile end" data-id="${END}" aria-label="Falar a frase"><img src="assets/zuli.png" alt=""><span>falar</span></button>`;
   return `<button type="button" class="tile cat-${w.cor}" data-id="${w.id}" aria-label="${w.label}"><img src="${pic(w.id)}" alt="" decoding="async" draggable="false"><span>${w.label}</span></button>`;
 }
-const ctx = () => ({ periodo: periodoAgora(opt), local: opt.local, adulto: S.adulto });
+// adulto: tipo da fala (escolhido na linha do adulto) ou "desconhecido" quando veio só pelo microfone; adp: pictogramas do que ele disse
+const ctx = () => ({ periodo: periodoAgora(opt), local: opt.local, adulto: S.adp.length && S.adulto === "nenhuma" ? "desconhecido" : S.adulto, adp: S.adp });
 
 /* ---------- sugestões ---------- */
 // Planejamento motor também na faixa: o que continua sugerido fica no mesmo espaço; só os espaços que mudam recebem novidades.
@@ -40,7 +41,9 @@ function prever() {
   const ag = rotinaAgora();
   if (ag && !prefix.includes(ag.id)) ranked = ranked.map(([k, v]) => [k, String(k) === String(ag.id) ? v + 0.15 : v]).sort((a, b) => b[1] - a[1]);
   if (S.calmaAte > Date.now()) return mostrarCalma();
-  const top = estabilizar(ranked.slice(0, 6).map(([k]) => k), S.top);
+  // o que já está na tela não ocupa a faixa (tocar ali custa o mesmo): sobra espaço para palavras de outras páginas
+  const { n } = grade(), naTela = new Set((S.pg[S.page] || []).slice(S.sub * n, S.sub * n + n).map(String));
+  const top = estabilizar(ranked.filter(([k]) => !naTela.has(String(k))).slice(0, 6).map(([k]) => k), S.top);
   S.top = top;
   $("#sugg").classList.remove("calma");
   $("#sugg").innerHTML = (S.agoraHtml || "") + (opt.sugestoes ? S.top.map(k => tile(k === END ? END : S.by[k])).join("") : "");
@@ -118,9 +121,9 @@ function falarFrase() {
   });
   if (!S.spoken) {
     pred.aprender(S.phrase);
-    registro.add(perfil, { tipo: "frase", ids: [...S.phrase], sug: S.daSugestao, toques: S.toquesFrase, adulto: S.adulto, local: opt.local });
+    registro.add(perfil, { tipo: "frase", ids: [...S.phrase], sug: S.daSugestao, toques: S.toquesFrase, adulto: S.adulto, adp: [...S.adp], local: opt.local });
   }
-  S.spoken = true; S.daSugestao = 0; S.toquesFrase = 0; S.adulto = "nenhuma"; renderParceiro();
+  S.spoken = true; S.daSugestao = 0; S.toquesFrase = 0; S.adulto = "nenhuma"; S.adp = []; S.adTexto = ""; renderParceiro();
   renderFrase(); prever();
 }
 
@@ -154,9 +157,53 @@ function renderGrade() {
   // pré-carrega a próxima parte da página
   ids.slice((S.sub + 1) * n, (S.sub + 2) * n).forEach(id => { const i = new Image(); i.src = pic(id); });
 }
-function renderParceiro() {
-  const el = $("#partner"); el.hidden = !opt.parceiro;
-  el.innerHTML = `<b>Adulto:</b>` + PARCEIRO.map(([k, l]) => `<button type="button" data-k="${k}" aria-pressed="${k === S.adulto}">${l}</button>`).join("");
+/* ---------- linha do adulto: o que ele disse vira contexto para as sugestões ---------- */
+const temMic = !!navigator.mediaDevices?.getUserMedia && typeof MediaRecorder !== "undefined";
+const MIC_AD = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 17v5"/></svg>';
+function renderParceiro(estado) {
+  const el = $("#partner"), mic = opt.ouvirAdulto !== false;
+  el.hidden = !opt.parceiro && !mic;
+  const esc = s => s.replace(/[<>&"]/g, "");
+  const ouvido = S.adp.length
+    ? `<span class="adp" title="${esc(S.adTexto)}">${S.adp.map(id => `<img src="${pic(id)}" alt="${esc(S.by[id]?.label || "")}">`).join("")}<button type="button" class="limpar" data-acao="limpar" aria-label="Limpar o que o adulto disse">×</button></span>`
+    : S.adTexto ? `<span class="adp vazio">"${esc(S.adTexto)}"</span>` : "";
+  el.innerHTML = `<b>Adulto</b>`
+    + (mic ? `<button type="button" class="mic-adulto${estado === "ouvindo" ? " on" : ""}" data-acao="mic" ${temMic ? "" : "hidden"} aria-label="Segure e fale com a criança">${MIC_AD}${estado === "ouvindo" ? "Ouvindo…" : estado === "pensando" ? "Entendendo…" : estado || "Segure e fale"}</button>`
+      + `<button type="button" data-acao="escrever" aria-label="Escrever o que você disse">${temMic ? "✎" : "✎ Escrever o que disse"}</button>` : "")
+    + ouvido
+    + (opt.parceiro ? PARCEIRO.map(([k, l]) => `<button type="button" data-k="${k}" aria-pressed="${k === S.adulto}">${l}</button>`).join("") : "");
+}
+async function usarFalaDoAdulto(texto) {
+  const F = await carregarFormas();
+  S.adTexto = texto; S.adp = textoParaPictos(texto, F);
+  if (S.spoken) { S.phrase = []; S.spoken = false; renderFrase(); }   // pergunta nova: frase nova
+  renderParceiro(); prever();
+}
+function ligarMicAdulto() {
+  const el = $("#partner"); let parar = null, mod = null, segurando = false;
+  el.addEventListener("pointerdown", async e => {
+    const b = e.target.closest('[data-acao="mic"]'); if (!b) return;
+    e.preventDefault(); voz.desbloquear(); segurando = true;
+    mod ??= await import("./adulto.js");
+    mod.carregarEscuta(p => { if (!parar) renderParceiro(`Baixando ${Math.round(p * 100)}%`); }).catch(() => {});  // já começa a baixar o Whisper
+    try {
+      const p = await mod.comecarGravacao();
+      if (!segurando) { p(); return renderParceiro("Segure enquanto fala"); }   // soltou antes de o microfone abrir (ex.: pedido de permissão)
+      parar = p; renderParceiro("ouvindo");
+    } catch { parar = null; renderParceiro("Sem microfone"); }
+  });
+  const soltar = async () => {
+    segurando = false;
+    if (!parar) return; const p = parar; parar = null;
+    renderParceiro("pensando");
+    try {
+      const audio = await p();
+      if (!audio) return renderParceiro("Segure enquanto fala");
+      const texto = await mod.transcrever(audio);
+      await usarFalaDoAdulto(texto);
+    } catch (err) { console.warn(err); renderParceiro("Não entendi"); }
+  };
+  ["pointerup", "pointercancel", "pointerleave"].forEach(ev => el.addEventListener(ev, soltar));
 }
 
 /* guarda todos os pictogramas no cache aos poucos, sem atrapalhar o uso */
@@ -207,7 +254,14 @@ async function iniciar() {
     if (b.id === "b-treino") return abrirTreino();
     S.toques++; S.toquesFrase++; S.page = b.dataset.page; S.sub = 0; renderGrade();
   });
-  $("#partner").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; S.adulto = b.dataset.k; renderParceiro(); prever(); });
+  $("#partner").addEventListener("click", e => {
+    const b = e.target.closest("button"); if (!b) return;
+    if (b.dataset.acao === "limpar") { S.adp = []; S.adTexto = ""; renderParceiro(); return prever(); }
+    if (b.dataset.acao === "escrever") { const t = prompt("O que você disse para a criança?", S.adTexto || ""); if (t != null) usarFalaDoAdulto(t.trim()); return; }
+    if (!b.dataset.k) return;
+    S.adulto = b.dataset.k; renderParceiro(); prever();
+  });
+  ligarMicAdulto();
   $("#pg-prev").addEventListener("click", () => { S.sub--; S.toquesFrase++; renderGrade(); });
   $("#pg-next").addEventListener("click", () => { S.sub++; S.toquesFrase++; renderGrade(); });
   $("#b-back").addEventListener("click", () => { voz.desbloquear(); observarToque("apagar"); if (S.spoken) S.spoken = false; else S.phrase.pop(); renderFrase(); prever(); });

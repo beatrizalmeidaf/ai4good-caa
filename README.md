@@ -13,6 +13,8 @@ Prova de conceito para o AI4Good.
   - grade fixa: as palavras nunca mudam de lugar (planejamento motor);
   - faixa de 6 sugestões que muda a cada toque, e o que continua sugerido fica no mesmo espaço;
   - o Zuli fala a frase quando a criança toca nele;
+  - linha do **adulto**: ele segura "Segure e fale" (ou escreve) e o que disse vira pictogramas que guiam as sugestões;
+  - a faixa não repete o que já está na tela;
   - quadro **Agora** com a atividade da rotina;
   - **atalhos de calma** (pausa, parar, silêncio, abraço, música, ajuda) quando os toques ficam muito rápidos ou repetidos;
   - abas de **pranchas por foto**.
@@ -31,18 +33,23 @@ Tudo fica no aparelho (localStorage). Depois do primeiro acesso, funciona sem in
 ## Modelo
 
 Comitê de 3 transformers de 2 camadas sobre pictogramas (190 mil parâmetros cada, ~1,1 MB no total), treinados com
-sementes diferentes; a prancha usa a média das previsões. Contexto: período do dia, lugar e fala do adulto. Prevê o próximo
-pictograma e o fim da frase. Roda em JavaScript puro.
+sementes diferentes; a prancha usa a média das previsões. Contexto: período do dia, lugar, tipo da fala do adulto e
+**as palavras do adulto convertidas em pictogramas** (`texto_pictos.py` / `textoParaPictos` em `core.js`, a mesma regra).
+Prevê o próximo pictograma e o fim da frase. Roda em JavaScript puro (~2 ms por previsão).
 
-Dados de treino: conversas sintéticas (2 levas, 122 situações), mensagens reais de CAA adaptadas e **7.497 falas reais de
-crianças brasileiras** do CHILDES (via IPA-CHILDES) convertidas em pictogramas.
+Dados: conversas sintéticas (2 levas, 122 situações), mensagens reais de CAA adaptadas, **7.497 falas reais de crianças
+brasileiras** do CHILDES convertidas em pictogramas e, só para pré-treino, 27 mil falas de crianças de Portugal (CHILDES)
+e 43 mil falas curtas de legendas pt-BR. O modelo final ainda aprende com um modelo maior (destilação).
 
-| Acerto nas 6 sugestões (nunca vistas no treino) | Mais usados | N-grama | Zuli |
+| Acerto nas 6 sugestões (nunca vistas no treino) | Site anterior | Zuli v3 | Toques a menos (v3) |
 |---|---|---|---|
-| Conversas novas | 33% | 60% | **67%** |
-| Situações novas | 34% | 65% | **70%** |
-| Conversas variadas (2ª leva) | 25% | 44% | **49%** |
-| Conversas reais de crianças (CHILDES) | – | 21% | **25%** |
+| Conversas reais de crianças (CHILDES) | 24,9% | **31,7%** | 14% |
+| Mensagens reais de CAA | 28,3% | **49,4%** | 23% |
+| Conversas novas | 66,2% | **76,4%** | 30% |
+| Situações novas | 69,8% | **77,4%** | 27% |
+
+"Toques a menos": simulação da prancha do site (grade 5x3, abas, setas, Zuli sempre visível), com e sem a faixa de
+sugestões. Detalhes de cada passo em `docs/resultados.html` e `experiments/v2/resultados/metricas3.json`.
 
 ## Vozes
 
@@ -70,6 +77,7 @@ experiments/
   v2/                    rodada atual
     frases.jsonl.gz, frases2.jsonl.gz   conversas geradas (1ª e 2ª leva)
     cenarios.py · gerar_frases.py · mapear_arasaac.py · preparar.py · treinar.py
+    gerar_formas.py · texto_pictos.py · qwen_dados.py · treinar3.py   (rodada 3: fala do adulto, pré-treino, destilação)
     gerar_audio*.py · comparar_vozes*.py · testar_reconhecimento.py · clip_textos.py
     resultados/          métricas finais
 ```
@@ -89,7 +97,9 @@ e abrir http://localhost:8000.
   e UNL-AAC-Phrases (MIT). Verificar a licença do turk9k antes de redistribuir o conjunto.
 - Vozes: XTTS-v2 (Coqui Public Model License, não comercial), F5-TTS pt-BR (firstpixel, CC BY-NC 4.0),
   Referência feminina: Multilingual LibriSpeech (CC BY 4.0).
-- Fala real de criança: CHILDES/TalkBank (corpora pt-BR, via IPA-CHILDES), usada só para treino; os dados não vão para o repositório.
+- Fala real de criança: CHILDES/TalkBank (corpora pt-BR e pt-PT, via IPA-CHILDES), usada só para treino; os dados não vão para o repositório.
+- Legendas: OpenSubtitles v2018 (OPUS), só para pré-treino; os dados não vão para o repositório.
+- Reconhecimento da fala do adulto: Whisper base (OpenAI, MIT), versão ONNX, roda no navegador.
 - Foto → prancha: CLIP ViT-B/32 (OpenAI, MIT), versão ONNX do Xenova.
 - As cores seguem a chave Fitzgerald (explicação na aba "Guia e cores" da área dos adultos).
 - As frases de treino são sintéticas e ainda não foram revisadas por fonoaudiólogo(a).

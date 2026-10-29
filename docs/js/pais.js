@@ -539,7 +539,8 @@ function renderAjustes() {
         ${chk("conceito", "Marcar a página provável do próximo pictograma", "Um ponto amarelo aparece na página onde deve estar a próxima palavra.")}
         ${chk("falarCada", "Falar cada pictograma ao tocar")}
         ${chk("calma", "Atalhos de calma", "Se a criança tocar muito rápido ou repetir o mesmo desenho várias vezes, as sugestões viram pausa, parar, silêncio, abraço, música e ajuda por 20 segundos.")}
-        ${chk("parceiro", "Mostrar a linha \"Adulto\"", "Você toca no que perguntou (\"o que você quer?\", \"onde dói?\") e as sugestões se adaptam.")}
+        ${chk("ouvirAdulto", "Botão \"Segure e fale\" para o adulto", "Segure o botão e fale com a criança (\"quer suco ou água?\"). O Zuli transforma o que você disse em pictogramas e sugere a resposta. O áudio não sai do aparelho; na primeira vez ele baixa o reconhecimento de fala (~80 MB).")}
+        ${chk("parceiro", "Mostrar os tipos de pergunta na linha \"Adulto\"", "Você também pode tocar no tipo do que perguntou (\"o que você quer?\", \"onde?\").")}
       </div>
       <div class="card"><h3>Contexto e voz</h3>
         <div class="field"><span>Onde a prancha está sendo usada</span>${seg("local", [["casa", "casa"], ["escola", "escola"], ["rua", "passeio"], ["saude", "saúde"], ["terapia", "terapia"]])}</div>

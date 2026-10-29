@@ -15,7 +15,7 @@ export const store = {
 };
 
 export const OPT_PADRAO = {
-  grade: "5x3", falarCada: true, sugestoes: true, conceito: true, parceiro: false,
+  grade: "5x3", falarCada: true, sugestoes: true, conceito: true, parceiro: false, ouvirAdulto: true,
   local: "casa", periodoAuto: true, periodo: "manha", velocidade: 1, preditor: "slm",
   treinoPalavras: [], treinoMicrofone: true, fonteVoz: "gravada", rotina: [], calma: true,
 };
@@ -87,6 +87,31 @@ export async function carregarVocab() {
   const vocab = await fetch(DATA + "vocab.json").then(r => r.json());
   const by = {}; vocab.forEach(w => by[w.id] = w);
   return { vocab, by };
+}
+
+/* ---------------- texto → pictogramas ----------------
+   O que o adulto disse vira pictogramas da prancha, e o modelo usa isso para sugerir a resposta.
+   Mesma regra do treino (experiments/v2/texto_pictos.py): formas.json {forma: id}, até 3 palavras juntas. */
+const LIGACAO = new Set(["com", "no", "na", "nos", "nas", "para", "pra", "de", "do", "da", "dos", "das", "e", "mas", "ou", "se", "até", "sem",
+  "em", "ao", "que", "tão", "embora", "o", "a", "os", "as", "um", "uma", "uns", "umas", "é", "lá", "aí", "aqui", "né", "então"]);
+let formasP = null;
+export const carregarFormas = () => formasP ??= fetch(DATA + "formas.json").then(r => r.json());
+const semAcento = s => s.normalize("NFD").replace(/\p{Mn}/gu, "");
+const palavras = t => t.toLowerCase().replace(/’/g, "'").replace(/[^\p{L}\p{N}\s-]/gu, " ").replace(/_/g, " ").split(/[\s-]+/).filter(Boolean);
+export function textoParaPictos(texto, F, maximo = 10) {
+  const w = palavras(texto || ""), out = [];
+  for (let i = 0; i < w.length;) {
+    let n = 3;
+    for (; n >= 1; n--) {
+      if (i + n > w.length) continue;
+      const g = w.slice(i, i + n).join(" "), id = F[g] ?? F[semAcento(g)];
+      if (id === undefined) continue;
+      if (!(n === 1 && LIGACAO.has(w[i])) && !out.includes(id)) out.push(id);
+      break;
+    }
+    i += n >= 1 ? n : 1;
+  }
+  return out.slice(0, maximo);
 }
 
 // Páginas da prancha (poucas, para não poluir): id, nome, cor Fitzgerald, rótulos candidatos a ícone.

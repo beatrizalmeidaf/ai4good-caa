@@ -13,6 +13,11 @@ from cenarios import CENARIOS
 
 MIN_FREQ = 4
 OUT = R / "out"
+# FIXO: vocabulário igual ao do site (docs/data/vocab.json); assim os áudios e imagens publicados continuam valendo
+FIXO = "--novo-vocab" not in sys.argv
+SITE_VOCAB = R.parent.parent / "docs" / "data" / "vocab.json"
+_sv = json.load(open(SITE_VOCAB, encoding="utf-8")) if SITE_VOCAB.exists() else []
+SITE_PG = {w["id"]: (w["pagina"], w["cor"]) for w in _sv}; SITE_FREQ = {w["id"]: w["freq"] for w in _sv}
 
 # Páginas da prancha. Ordem fixa. Cores Fitzgerald por classe gramatical.
 PAGINAS = [  # (id, nome, cor)
@@ -117,6 +122,12 @@ def main(src):
     childes = OUT / "childes_pictos.jsonl"  # fala real de criança (CHILDES pt-BR) convertida em pictogramas
     if childes.exists():
         for l in open(childes, encoding="utf-8"): raw.append(json.loads(l))
+    revisado = OUT / "childes_revisado.jsonl"  # a mesma fala, com a conversão conferida e corrigida pelo Qwen
+    if revisado.exists():
+        for l in open(revisado, encoding="utf-8"): r = json.loads(l); r["fonte"] = "childes_rev"; raw.append(r)
+    extra = OUT / "extra_pictos.jsonl"  # pré-treino: legendas pt-BR e fala de criança de Portugal
+    if extra.exists():
+        for l in open(extra, encoding="utf-8"): raw.append(json.loads(l))
     leva2 = OUT / "frases_raw2.jsonl"  # segunda leva (mais situações e variedade)
     if not leva2.exists() and (R / "frases2.jsonl.gz").exists(): leva2 = R / "frases2.jsonl.gz"  # versão do repositório
     if leva2.exists():
@@ -149,7 +160,7 @@ def main(src):
     def clean(l): return l.replace("_", " ").strip()
     freq0 = Counter(i for r in rows for i in r["seq"])
     # prancha estável: as palavras da versão anterior mantêm o mesmo desenho (id) e o mesmo rótulo
-    anterior = OUT / "vocab_v1.json"
+    anterior = SITE_VOCAB if FIXO else OUT / "vocab_v1.json"
     antigos = {w["id"]: w["label"] for w in json.load(open(anterior, encoding="utf-8"))} if anterior.exists() else {}
     rotulo = lambda pid: antigos.get(pid) or clean(lab[pid].most_common(1)[0][0])
     canon = {l: pid for pid, l in antigos.items() if pid in freq0}
@@ -167,17 +178,20 @@ def main(src):
     freq = Counter(i for r in rows for i in r["seq"])
     keep = {i for i, c in freq.items() if c >= MIN_FREQ}
     # prancha estável: o vocabulário anterior fica na mesma ordem; palavras novas entram depois
-    anterior = OUT / "vocab_v1.json"
     ordem_ant = [w["id"] for w in json.load(open(anterior, encoding="utf-8"))] if anterior.exists() else []
     keep |= {i for i in ordem_ant if i in freq}
     keep = {i for i in keep if rotulo(i)}  # sem rótulo, sem pictograma na prancha
+    if FIXO: keep = set(ordem_ant)  # prancha do site sem mudança: palavra nova vira <unk>
     pos = {i: k for k, i in enumerate(ordem_ant)}
     vocab = []
     for pid in sorted(keep, key=lambda i: (pos.get(i, 10**6), -freq[i])):
         label = rotulo(pid)
         pg, cor = pagina(m.meta[pid], label)
-        vocab.append(dict(id=pid, label=label, pagina=pg, cor=cor, freq=freq[pid], en=m.meta[pid]["en"][:3]))
+        if FIXO: pg, cor = SITE_PG[pid]
+        vocab.append(dict(id=pid, label=label, pagina=pg, cor=cor, freq=SITE_FREQ[pid] if FIXO else freq[pid], en=m.meta[pid]["en"][:3]))
     for r in rows: r["seq"] = [i if i in keep else 0 for i in r["seq"]]  # 0 = fora do vocabulário
+    import texto_pictos
+    for r in rows: r["adp"] = texto_pictos.para_pictos(r.get("adulto") or "")  # o que o adulto disse, em pictogramas
     rows = [r for r in rows if any(r["seq"])]
 
     # divisões
@@ -196,7 +210,11 @@ def main(src):
     held_conv3 = set(convs3[: max(1, len(convs3) // 5)])  # 20% das conversas reais ficam só para teste
     for r in rows:
         if r["fonte"] == "childes":
-            r["split"] = "crianca_real" if r["conversa"] in held_conv3 else "treino3"; continue
+            r["split"] = "crianca_real_v1" if r["conversa"] in held_conv3 else "treino3"; continue
+        if r["fonte"] == "childes_rev":  # mesmas conversas de teste da versão sem revisão
+            r["split"] = "crianca_real" if r["conversa"] in held_conv3 else "treino3r"; continue
+        if r["fonte"] in ("legenda", "childes_pt"):
+            r["split"] = "pre"; continue
         if r["fonte"] == "cenario2":
             r["split"] = ("fora" if r["cenario"] in held_scen else "cenario_novo2" if r["cenario"] in held_scen2
                           else "conversa_nova2" if r["conversa"] in held_conv2 else "val" if r["conversa"] in val_conv2 else "treino2")
@@ -215,4 +233,5 @@ def main(src):
     print(json.dumps(resumo, ensure_ascii=False, indent=1, default=str))
 
 if __name__ == "__main__":
-    main(sys.argv[1] if len(sys.argv) > 1 else OUT / "frases_raw.jsonl")
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    main(args[0] if args else OUT / "frases_raw.jsonl")

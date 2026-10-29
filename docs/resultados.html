@@ -89,6 +89,15 @@ footer { font-size: .85rem; color: var(--ink-2); border-top: 1px solid var(--lin
     <ol class="findings" id="conclusoes"></ol>
   </section>
 
+  <section id="v3" hidden>
+    <h2>O que melhorou as sugestões (rodada 3)</h2>
+    <p class="muted">Cada linha soma uma mudança à anterior; média de 3 modelos treinados com sementes diferentes. <b>Top-6</b>: a palavra certa está entre as 6 sugestões.
+      <b>Toques a menos</b>: simulação da prancha do site (grade 5×3, abas, setas de página, Zuli sempre à mão), com e sem a faixa de sugestões; é o quanto a criança economiza de verdade.
+      A escolha de cada passo usou só dados de validação, nunca os testes.</p>
+    <div class="tbl"><table id="tab-v3"></table></div>
+    <ol class="findings" id="leitura-v3"></ol>
+  </section>
+
   <section>
     <h2>Acerto das 6 sugestões</h2>
     <p class="muted">Porcentagem das vezes em que o pictograma que a criança queria estava entre as sugestões. Três testes, todos com frases que o modelo não viu no treino.</p>
@@ -137,6 +146,16 @@ fetch("data/resultados.json").then(r => r.json()).then(R => {
       html += `<tr class="${n === best ? "hl" : ""}"><td>${title}</td><td>${n}</td>${cols.map(([c]) => `<td class="num">${fmt(v[c])}%</td>`).join("")}</tr>`;
   }
   $("#tabela").innerHTML = html + "</tbody>";
+  const V = R.v3;
+  if (V) {
+    $("#v3").hidden = false;
+    const T3 = { crianca_real: "Conversas reais de crianças", conversa_nova: "Conversas inéditas", cenario_novo: "Situações inéditas", conversa_nova2: "Conversas variadas", mensagem_real: "Mensagens reais de CAA" };
+    const ks = Object.keys(T3).filter(k => V[k]), nomes = Object.keys(V[ks[0]]);
+    let h = `<thead><tr><th>Passo</th>${ks.map(k => `<th class="num" colspan="2">${T3[k]}</th>`).join("")}</tr><tr><th></th>${ks.map(() => `<th class="num">top-6</th><th class="num">toques a menos</th>`).join("")}</tr></thead><tbody>`;
+    for (const n of nomes) h += `<tr class="${n.startsWith("FINAL") && !n.includes("·") ? "hl" : ""}"><td>${n.replace(/^FINAL /, "Site: ")}</td>${ks.map(k => V[k][n] ? `<td class="num">${fmt(V[k][n].top6)}%</td><td class="num">${fmt(V[k][n].economia_toques)}%</td>` : "<td></td><td></td>").join("")}</tr>`;
+    $("#tab-v3").innerHTML = h + "</tbody>";
+    $("#leitura-v3").innerHTML = (R.leitura_v3 || []).map(t => `<li>${t}</li>`).join("");
+  }
   $("#exemplos").innerHTML = (R.exemplos || []).map(t => `<div><div class="a">Adulto: ${t.adulto || "(silêncio)"}</div><div class="c">${t.seq.map(([id, l]) => `<img src="p/${id}.webp" alt="${l}" title="${l}">`).join("")}<span class="muted">${t.frase}</span></div></div>`).join("");
 }).catch(e => { $("#lead").textContent = "Não deu para carregar os resultados: " + e.message; });
 </script>

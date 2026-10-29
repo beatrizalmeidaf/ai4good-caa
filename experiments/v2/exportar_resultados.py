@@ -31,5 +31,16 @@ out = dict(
         [f"{3 * kb / 1024:.1f} MB".replace(".", ","), f"3 modelos de {params / 1e6:.2f} mi parâmetros (comitê), rodam no tablet".replace(".", ",")],
     ],
 )
+# rodada 3: fala do adulto, mais dados, destilação e métrica de toques (treinar3.py)
+if (OUT / "metricas3.json").exists():
+    M3 = json.load(open(OUT / "metricas3.json", encoding="utf-8"))
+    out["v3"] = {k: v for k, v in M3.items() if k in ("crianca_real", "conversa_nova", "cenario_novo", "conversa_nova2", "mensagem_real")}
+    out["leitura_v3"] = [
+        "Saber o que o adulto disse foi o maior ganho: nas conversas reais de crianças o acerto foi de 24,9% para 30,3%, e nas mensagens reais de CAA de 28,3% para 47,1%. No site, o adulto segura o botão \"Segure e fale\" (ou escreve), e as palavras viram pictogramas.",
+        "Pré-treino com 27 mil falas de crianças de Portugal (CHILDES) e 43 mil falas curtas de legendas somou mais 1,4 ponto nas conversas reais (31,7%).",
+        "Destilação de um modelo grande entrou no modelo final (melhor na validação); a destilação com as respostas do Qwen e a revisão do CHILDES pelo Qwen ficaram dentro da variação e não entraram.",
+        "Toques: sem sugestões, uma frase real custa cerca de 11 toques, a maior parte para trocar de aba e passar páginas. A faixa economiza 13% nas conversas reais e 28% nas sintéticas; tirar da faixa o que já está na tela soma mais 1 a 2 pontos (já no site).",
+        "Sem o tipo da pergunta (só a fala pelo microfone) o resultado quase não muda (0,5 ponto). As medidas supõem que a fala do adulto foi entendida; erros do reconhecimento de fala vão tirar parte do ganho.",
+    ]
 json.dump(out, open(SITE / "resultados.json", "w"), ensure_ascii=False, indent=1)
 print("ok")

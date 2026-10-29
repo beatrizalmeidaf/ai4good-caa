@@ -631,8 +631,8 @@
   "_melhor": "SLM P (d64, 2 camadas) comitê de 3"
  },
  "dataset": {
-  "frases_brutas": 60537,
-  "frases": 58864,
+  "frases_brutas": 137768,
+  "frases": 130808,
   "vocab": 1360,
   "held_scen": [
    "almoço em família",
@@ -648,14 +648,17 @@
    "val": 2231,
    "cenario_novo": 2531,
    "adaptado": 2665,
-   "crianca_real": 1263,
+   "crianca_real_v1": 1263,
    "treino3": 5227,
+   "crianca_real": 1131,
+   "treino3r": 4670,
+   "pre": 66143,
    "treino2": 18705,
    "conversa_nova2": 2186,
    "cenario_novo2": 1606,
    "fora": 762
   },
-  "cobertura_tokens": 0.937,
+  "cobertura_tokens": 0.898,
   "paginas": {
    "acoes": 247,
    "conversa": 23,
@@ -672,7 +675,7 @@
    "roupa": 51,
    "corpo": 64
   },
-  "api_fallback": 1
+  "api_fallback": 13
  },
  "exemplos": [
   {
@@ -904,7 +907,7 @@
    "pictogramas na prancha"
   ],
   [
-   "58.864",
+   "130.808",
    "frases de treino e teste, em conversas"
   ],
   [
@@ -915,5 +918,684 @@
    "1,1 MB",
    "3 modelos de 0,19 mi parâmetros (comitê), rodam no tablet"
   ]
+ ],
+ "v3": {
+  "conversa_nova": {
+   "E0 v2 (site atual)": {
+    "top1": 34.5,
+    "top6": 66.2,
+    "top6_flex": 67.4,
+    "mrr": 0.477,
+    "fim_top6": 98.2,
+    "toques_sem": 7.33,
+    "toques_com": 5.8,
+    "economia_toques": 20.8,
+    "sugestao_util": 39.2,
+    "n": 6209
+   },
+   "E1 + fala do adulto": {
+    "top1": 42.1,
+    "top6": 75.5,
+    "top6_flex": 76.4,
+    "mrr": 0.561,
+    "fim_top6": 98.4,
+    "toques_sem": 7.33,
+    "toques_com": 5.34,
+    "economia_toques": 27.2,
+    "sugestao_util": 47.2,
+    "n": 6209
+   },
+   "E2 + CHILDES revisado": {
+    "top1": 42.2,
+    "top6": 76.1,
+    "top6_flex": 76.9,
+    "mrr": 0.561,
+    "fim_top6": 98.0,
+    "toques_sem": 7.33,
+    "toques_com": 5.32,
+    "economia_toques": 27.4,
+    "sugestao_util": 47.9,
+    "n": 6209
+   },
+   "E3 + pré-treino (legendas, CHILDES PT)": {
+    "top1": 41.8,
+    "top6": 75.7,
+    "top6_flex": 76.5,
+    "mrr": 0.56,
+    "fim_top6": 98.1,
+    "toques_sem": 7.33,
+    "toques_com": 5.3,
+    "economia_toques": 27.6,
+    "sugestao_util": 47.9,
+    "n": 6209
+   },
+   "E4 + destilação do Qwen": {
+    "top1": 40.8,
+    "top6": 74.3,
+    "top6_flex": 75.3,
+    "mrr": 0.548,
+    "fim_top6": 98.2,
+    "toques_sem": 7.33,
+    "toques_com": 5.33,
+    "economia_toques": 27.2,
+    "sugestao_util": 46.8,
+    "n": 6209
+   },
+   "modelo grande (d256, 4 camadas)": {
+    "top1": 35.8,
+    "top6": 69.1,
+    "top6_flex": 69.5,
+    "mrr": 0.498,
+    "fim_top6": 88.5,
+    "toques_sem": 7.33,
+    "toques_com": 5.48,
+    "economia_toques": 25.2,
+    "sugestao_util": 43.5,
+    "n": 6209
+   },
+   "E5 + destilação de um modelo grande": {
+    "top1": 42.5,
+    "top6": 76.4,
+    "top6_flex": 77.1,
+    "mrr": 0.564,
+    "fim_top6": 98.0,
+    "toques_sem": 7.33,
+    "toques_com": 5.27,
+    "economia_toques": 28.0,
+    "sugestao_util": 48.3,
+    "n": 6209
+   },
+   "FINAL E5 + destilação de um modelo grande": {
+    "top1": 42.5,
+    "top6": 76.4,
+    "top6_flex": 77.1,
+    "mrr": 0.564,
+    "fim_top6": 98.0,
+    "toques_sem": 7.33,
+    "toques_com": 5.27,
+    "economia_toques": 28.0,
+    "sugestao_util": 48.3,
+    "n": 6209
+   },
+   "FINAL E5 + destilação de um modelo grande · faixa sem o que já está na tela": {
+    "top1": 42.5,
+    "top6": 76.4,
+    "top6_flex": 77.1,
+    "mrr": 0.564,
+    "fim_top6": 98.0,
+    "toques_sem": 7.33,
+    "toques_com": 5.16,
+    "economia_toques": 29.6,
+    "sugestao_util": 50.2,
+    "n": 6209
+   },
+   "FINAL E5 + destilação de um modelo grande · faixa sem o que está na tela e sem 'falar'": {
+    "top1": 42.5,
+    "top6": 76.4,
+    "top6_flex": 77.1,
+    "mrr": 0.564,
+    "fim_top6": 98.0,
+    "toques_sem": 7.33,
+    "toques_com": 5.12,
+    "economia_toques": 30.2,
+    "sugestao_util": 51.2,
+    "n": 6209
+   },
+   "FINAL E5 + destilação de um modelo grande · modo microfone (sem tipo da fala)": {
+    "top1": 41.7,
+    "top6": 75.9,
+    "top6_flex": 77.0,
+    "mrr": 0.557,
+    "fim_top6": 97.9,
+    "toques_sem": 7.33,
+    "toques_com": 5.29,
+    "economia_toques": 27.9,
+    "sugestao_util": 47.9,
+    "n": 6209
+   }
+  },
+  "cenario_novo": {
+   "E0 v2 (site atual)": {
+    "top1": 36.1,
+    "top6": 69.8,
+    "top6_flex": 70.9,
+    "mrr": 0.502,
+    "fim_top6": 98.3,
+    "toques_sem": 6.96,
+    "toques_com": 5.61,
+    "economia_toques": 19.5,
+    "sugestao_util": 37.6,
+    "n": 7046
+   },
+   "E1 + fala do adulto": {
+    "top1": 42.9,
+    "top6": 77.4,
+    "top6_flex": 78.3,
+    "mrr": 0.572,
+    "fim_top6": 97.9,
+    "toques_sem": 6.96,
+    "toques_com": 5.22,
+    "economia_toques": 25.0,
+    "sugestao_util": 43.6,
+    "n": 7046
+   },
+   "E2 + CHILDES revisado": {
+    "top1": 42.5,
+    "top6": 76.7,
+    "top6_flex": 77.7,
+    "mrr": 0.568,
+    "fim_top6": 97.6,
+    "toques_sem": 6.96,
+    "toques_com": 5.25,
+    "economia_toques": 24.5,
+    "sugestao_util": 43.3,
+    "n": 7046
+   },
+   "E3 + pré-treino (legendas, CHILDES PT)": {
+    "top1": 42.9,
+    "top6": 77.3,
+    "top6_flex": 78.4,
+    "mrr": 0.574,
+    "fim_top6": 97.9,
+    "toques_sem": 6.96,
+    "toques_com": 5.21,
+    "economia_toques": 25.2,
+    "sugestao_util": 43.6,
+    "n": 7046
+   },
+   "E4 + destilação do Qwen": {
+    "top1": 42.5,
+    "top6": 76.4,
+    "top6_flex": 77.0,
+    "mrr": 0.566,
+    "fim_top6": 98.0,
+    "toques_sem": 6.96,
+    "toques_com": 5.22,
+    "economia_toques": 25.0,
+    "sugestao_util": 43.2,
+    "n": 7046
+   },
+   "modelo grande (d256, 4 camadas)": {
+    "top1": 35.1,
+    "top6": 69.4,
+    "top6_flex": 69.9,
+    "mrr": 0.494,
+    "fim_top6": 88.1,
+    "toques_sem": 6.96,
+    "toques_com": 5.37,
+    "economia_toques": 22.9,
+    "sugestao_util": 39.1,
+    "n": 7046
+   },
+   "E5 + destilação de um modelo grande": {
+    "top1": 43.4,
+    "top6": 77.4,
+    "top6_flex": 78.1,
+    "mrr": 0.576,
+    "fim_top6": 97.7,
+    "toques_sem": 6.96,
+    "toques_com": 5.22,
+    "economia_toques": 25.1,
+    "sugestao_util": 43.7,
+    "n": 7046
+   },
+   "FINAL E5 + destilação de um modelo grande": {
+    "top1": 43.4,
+    "top6": 77.4,
+    "top6_flex": 78.1,
+    "mrr": 0.576,
+    "fim_top6": 97.7,
+    "toques_sem": 6.96,
+    "toques_com": 5.22,
+    "economia_toques": 25.1,
+    "sugestao_util": 43.7,
+    "n": 7046
+   },
+   "FINAL E5 + destilação de um modelo grande · faixa sem o que já está na tela": {
+    "top1": 43.4,
+    "top6": 77.4,
+    "top6_flex": 78.1,
+    "mrr": 0.576,
+    "fim_top6": 97.7,
+    "toques_sem": 6.96,
+    "toques_com": 5.11,
+    "economia_toques": 26.6,
+    "sugestao_util": 45.6,
+    "n": 7046
+   },
+   "FINAL E5 + destilação de um modelo grande · faixa sem o que está na tela e sem 'falar'": {
+    "top1": 43.4,
+    "top6": 77.4,
+    "top6_flex": 78.1,
+    "mrr": 0.576,
+    "fim_top6": 97.7,
+    "toques_sem": 6.96,
+    "toques_com": 5.07,
+    "economia_toques": 27.2,
+    "sugestao_util": 46.5,
+    "n": 7046
+   },
+   "FINAL E5 + destilação de um modelo grande · modo microfone (sem tipo da fala)": {
+    "top1": 41.9,
+    "top6": 76.9,
+    "top6_flex": 77.9,
+    "mrr": 0.564,
+    "fim_top6": 97.3,
+    "toques_sem": 6.96,
+    "toques_com": 5.24,
+    "economia_toques": 24.7,
+    "sugestao_util": 43.1,
+    "n": 7046
+   }
+  },
+  "mensagem_real": {
+   "E0 v2 (site atual)": {
+    "top1": 8.1,
+    "top6": 28.3,
+    "top6_flex": 29.2,
+    "mrr": 0.17,
+    "fim_top6": 97.0,
+    "toques_sem": 10.84,
+    "toques_com": 10.17,
+    "economia_toques": 6.2,
+    "sugestao_util": 14.6,
+    "n": 4184
+   },
+   "E1 + fala do adulto": {
+    "top1": 18.6,
+    "top6": 47.1,
+    "top6_flex": 48.5,
+    "mrr": 0.305,
+    "fim_top6": 98.3,
+    "toques_sem": 10.84,
+    "toques_com": 8.86,
+    "economia_toques": 18.2,
+    "sugestao_util": 29.1,
+    "n": 4184
+   },
+   "E2 + CHILDES revisado": {
+    "top1": 18.3,
+    "top6": 46.3,
+    "top6_flex": 47.8,
+    "mrr": 0.299,
+    "fim_top6": 98.8,
+    "toques_sem": 10.84,
+    "toques_com": 8.92,
+    "economia_toques": 17.7,
+    "sugestao_util": 28.9,
+    "n": 4184
+   },
+   "E3 + pré-treino (legendas, CHILDES PT)": {
+    "top1": 20.3,
+    "top6": 49.2,
+    "top6_flex": 50.6,
+    "mrr": 0.324,
+    "fim_top6": 98.6,
+    "toques_sem": 10.84,
+    "toques_com": 8.56,
+    "economia_toques": 21.1,
+    "sugestao_util": 31.1,
+    "n": 4184
+   },
+   "E4 + destilação do Qwen": {
+    "top1": 20.3,
+    "top6": 50.0,
+    "top6_flex": 51.6,
+    "mrr": 0.326,
+    "fim_top6": 98.6,
+    "toques_sem": 10.84,
+    "toques_com": 8.33,
+    "economia_toques": 23.2,
+    "sugestao_util": 33.2,
+    "n": 4184
+   },
+   "modelo grande (d256, 4 camadas)": {
+    "top1": 18.0,
+    "top6": 42.0,
+    "top6_flex": 42.7,
+    "mrr": 0.285,
+    "fim_top6": 89.0,
+    "toques_sem": 10.84,
+    "toques_com": 8.89,
+    "economia_toques": 18.0,
+    "sugestao_util": 26.1,
+    "n": 4184
+   },
+   "E5 + destilação de um modelo grande": {
+    "top1": 20.3,
+    "top6": 49.4,
+    "top6_flex": 50.5,
+    "mrr": 0.324,
+    "fim_top6": 98.7,
+    "toques_sem": 10.84,
+    "toques_com": 8.58,
+    "economia_toques": 20.8,
+    "sugestao_util": 31.1,
+    "n": 4184
+   },
+   "FINAL E5 + destilação de um modelo grande": {
+    "top1": 20.3,
+    "top6": 49.4,
+    "top6_flex": 50.5,
+    "mrr": 0.324,
+    "fim_top6": 98.7,
+    "toques_sem": 10.84,
+    "toques_com": 8.58,
+    "economia_toques": 20.8,
+    "sugestao_util": 31.1,
+    "n": 4184
+   },
+   "FINAL E5 + destilação de um modelo grande · faixa sem o que já está na tela": {
+    "top1": 20.3,
+    "top6": 49.4,
+    "top6_flex": 50.5,
+    "mrr": 0.324,
+    "fim_top6": 98.7,
+    "toques_sem": 10.84,
+    "toques_com": 8.38,
+    "economia_toques": 22.7,
+    "sugestao_util": 33.8,
+    "n": 4184
+   },
+   "FINAL E5 + destilação de um modelo grande · faixa sem o que está na tela e sem 'falar'": {
+    "top1": 20.3,
+    "top6": 49.4,
+    "top6_flex": 50.5,
+    "mrr": 0.324,
+    "fim_top6": 98.7,
+    "toques_sem": 10.84,
+    "toques_com": 8.33,
+    "economia_toques": 23.2,
+    "sugestao_util": 34.4,
+    "n": 4184
+   },
+   "FINAL E5 + destilação de um modelo grande · modo microfone (sem tipo da fala)": {
+    "top1": 18.0,
+    "top6": 48.4,
+    "top6_flex": 49.8,
+    "mrr": 0.306,
+    "fim_top6": 98.8,
+    "toques_sem": 10.84,
+    "toques_com": 8.61,
+    "economia_toques": 20.6,
+    "sugestao_util": 30.7,
+    "n": 4184
+   }
+  },
+  "conversa_nova2": {
+   "E0 v2 (site atual)": {
+    "top1": 20.5,
+    "top6": 48.4,
+    "top6_flex": 49.6,
+    "mrr": 0.327,
+    "fim_top6": 98.9,
+    "toques_sem": 12.55,
+    "toques_com": 10.67,
+    "economia_toques": 15.0,
+    "sugestao_util": 31.1,
+    "n": 8027
+   },
+   "E1 + fala do adulto": {
+    "top1": 24.9,
+    "top6": 54.9,
+    "top6_flex": 56.3,
+    "mrr": 0.379,
+    "fim_top6": 99.0,
+    "toques_sem": 12.55,
+    "toques_com": 10.09,
+    "economia_toques": 19.6,
+    "sugestao_util": 36.4,
+    "n": 8027
+   },
+   "E2 + CHILDES revisado": {
+    "top1": 25.0,
+    "top6": 55.5,
+    "top6_flex": 56.6,
+    "mrr": 0.379,
+    "fim_top6": 99.1,
+    "toques_sem": 12.55,
+    "toques_com": 10.04,
+    "economia_toques": 20.0,
+    "sugestao_util": 37.0,
+    "n": 8027
+   },
+   "E3 + pré-treino (legendas, CHILDES PT)": {
+    "top1": 25.2,
+    "top6": 55.6,
+    "top6_flex": 56.5,
+    "mrr": 0.382,
+    "fim_top6": 98.9,
+    "toques_sem": 12.55,
+    "toques_com": 10.02,
+    "economia_toques": 20.1,
+    "sugestao_util": 37.1,
+    "n": 8027
+   },
+   "E4 + destilação do Qwen": {
+    "top1": 24.9,
+    "top6": 54.2,
+    "top6_flex": 55.3,
+    "mrr": 0.374,
+    "fim_top6": 98.9,
+    "toques_sem": 12.55,
+    "toques_com": 10.07,
+    "economia_toques": 19.8,
+    "sugestao_util": 36.2,
+    "n": 8027
+   },
+   "modelo grande (d256, 4 camadas)": {
+    "top1": 21.1,
+    "top6": 49.0,
+    "top6_flex": 49.7,
+    "mrr": 0.33,
+    "fim_top6": 91.9,
+    "toques_sem": 12.55,
+    "toques_com": 10.28,
+    "economia_toques": 18.1,
+    "sugestao_util": 32.4,
+    "n": 8027
+   },
+   "E5 + destilação de um modelo grande": {
+    "top1": 25.2,
+    "top6": 55.9,
+    "top6_flex": 57.2,
+    "mrr": 0.382,
+    "fim_top6": 98.8,
+    "toques_sem": 12.55,
+    "toques_com": 9.98,
+    "economia_toques": 20.5,
+    "sugestao_util": 37.5,
+    "n": 8027
+   },
+   "FINAL E5 + destilação de um modelo grande": {
+    "top1": 25.2,
+    "top6": 55.9,
+    "top6_flex": 57.2,
+    "mrr": 0.382,
+    "fim_top6": 98.8,
+    "toques_sem": 12.55,
+    "toques_com": 9.98,
+    "economia_toques": 20.5,
+    "sugestao_util": 37.5,
+    "n": 8027
+   },
+   "FINAL E5 + destilação de um modelo grande · faixa sem o que já está na tela": {
+    "top1": 25.2,
+    "top6": 55.9,
+    "top6_flex": 57.2,
+    "mrr": 0.382,
+    "fim_top6": 98.8,
+    "toques_sem": 12.55,
+    "toques_com": 9.76,
+    "economia_toques": 22.2,
+    "sugestao_util": 39.4,
+    "n": 8027
+   },
+   "FINAL E5 + destilação de um modelo grande · faixa sem o que está na tela e sem 'falar'": {
+    "top1": 25.2,
+    "top6": 55.9,
+    "top6_flex": 57.2,
+    "mrr": 0.382,
+    "fim_top6": 98.8,
+    "toques_sem": 12.55,
+    "toques_com": 9.67,
+    "economia_toques": 23.0,
+    "sugestao_util": 40.4,
+    "n": 8027
+   },
+   "FINAL E5 + destilação de um modelo grande · modo microfone (sem tipo da fala)": {
+    "top1": 24.8,
+    "top6": 55.3,
+    "top6_flex": 56.5,
+    "mrr": 0.377,
+    "fim_top6": 98.8,
+    "toques_sem": 12.55,
+    "toques_com": 10.01,
+    "economia_toques": 20.3,
+    "sugestao_util": 37.0,
+    "n": 8027
+   }
+  },
+  "crianca_real": {
+   "E0 v2 (site atual)": {
+    "top1": 4.5,
+    "top6": 24.9,
+    "top6_flex": 25.9,
+    "mrr": 0.138,
+    "fim_top6": 96.7,
+    "toques_sem": 11.32,
+    "toques_com": 10.4,
+    "economia_toques": 8.1,
+    "sugestao_util": 18.6,
+    "n": 2783
+   },
+   "E1 + fala do adulto": {
+    "top1": 9.2,
+    "top6": 30.3,
+    "top6_flex": 31.4,
+    "mrr": 0.186,
+    "fim_top6": 98.7,
+    "toques_sem": 11.32,
+    "toques_com": 9.95,
+    "economia_toques": 12.1,
+    "sugestao_util": 23.9,
+    "n": 2783
+   },
+   "E2 + CHILDES revisado": {
+    "top1": 8.9,
+    "top6": 29.8,
+    "top6_flex": 31.2,
+    "mrr": 0.184,
+    "fim_top6": 99.0,
+    "toques_sem": 11.32,
+    "toques_com": 9.97,
+    "economia_toques": 12.0,
+    "sugestao_util": 23.3,
+    "n": 2783
+   },
+   "E3 + pré-treino (legendas, CHILDES PT)": {
+    "top1": 8.9,
+    "top6": 31.7,
+    "top6_flex": 33.1,
+    "mrr": 0.191,
+    "fim_top6": 98.4,
+    "toques_sem": 11.32,
+    "toques_com": 9.84,
+    "economia_toques": 13.1,
+    "sugestao_util": 24.7,
+    "n": 2783
+   },
+   "E4 + destilação do Qwen": {
+    "top1": 9.6,
+    "top6": 31.1,
+    "top6_flex": 32.2,
+    "mrr": 0.192,
+    "fim_top6": 99.2,
+    "toques_sem": 11.32,
+    "toques_com": 9.8,
+    "economia_toques": 13.4,
+    "sugestao_util": 24.6,
+    "n": 2783
+   },
+   "modelo grande (d256, 4 camadas)": {
+    "top1": 7.3,
+    "top6": 22.1,
+    "top6_flex": 22.8,
+    "mrr": 0.146,
+    "fim_top6": 86.1,
+    "toques_sem": 11.32,
+    "toques_com": 10.25,
+    "economia_toques": 9.4,
+    "sugestao_util": 17.6,
+    "n": 2783
+   },
+   "E5 + destilação de um modelo grande": {
+    "top1": 9.5,
+    "top6": 31.7,
+    "top6_flex": 32.9,
+    "mrr": 0.195,
+    "fim_top6": 98.3,
+    "toques_sem": 11.32,
+    "toques_com": 9.83,
+    "economia_toques": 13.2,
+    "sugestao_util": 24.6,
+    "n": 2783
+   },
+   "FINAL E5 + destilação de um modelo grande": {
+    "top1": 9.5,
+    "top6": 31.7,
+    "top6_flex": 32.9,
+    "mrr": 0.195,
+    "fim_top6": 98.3,
+    "toques_sem": 11.32,
+    "toques_com": 9.83,
+    "economia_toques": 13.2,
+    "sugestao_util": 24.6,
+    "n": 2783
+   },
+   "FINAL E5 + destilação de um modelo grande · faixa sem o que já está na tela": {
+    "top1": 9.5,
+    "top6": 31.7,
+    "top6_flex": 32.9,
+    "mrr": 0.195,
+    "fim_top6": 98.3,
+    "toques_sem": 11.32,
+    "toques_com": 9.71,
+    "economia_toques": 14.2,
+    "sugestao_util": 26.7,
+    "n": 2783
+   },
+   "FINAL E5 + destilação de um modelo grande · faixa sem o que está na tela e sem 'falar'": {
+    "top1": 9.5,
+    "top6": 31.7,
+    "top6_flex": 32.9,
+    "mrr": 0.195,
+    "fim_top6": 98.3,
+    "toques_sem": 11.32,
+    "toques_com": 9.66,
+    "economia_toques": 14.6,
+    "sugestao_util": 27.8,
+    "n": 2783
+   },
+   "FINAL E5 + destilação de um modelo grande · modo microfone (sem tipo da fala)": {
+    "top1": 8.7,
+    "top6": 31.1,
+    "top6_flex": 32.1,
+    "mrr": 0.187,
+    "fim_top6": 98.9,
+    "toques_sem": 11.32,
+    "toques_com": 9.84,
+    "economia_toques": 13.1,
+    "sugestao_util": 24.7,
+    "n": 2783
+   }
+  }
+ },
+ "leitura_v3": [
+  "Saber o que o adulto disse foi o maior ganho: nas conversas reais de crianças o acerto foi de 24,9% para 30,3%, e nas mensagens reais de CAA de 28,3% para 47,1%. No site, o adulto segura o botão \"Segure e fale\" (ou escreve), e as palavras viram pictogramas.",
+  "Pré-treino com 27 mil falas de crianças de Portugal (CHILDES) e 43 mil falas curtas de legendas somou mais 1,4 ponto nas conversas reais (31,7%).",
+  "Destilação de um modelo grande entrou no modelo final (melhor na validação); a destilação com as respostas do Qwen e a revisão do CHILDES pelo Qwen ficaram dentro da variação e não entraram.",
+  "Toques: sem sugestões, uma frase real custa cerca de 11 toques, a maior parte para trocar de aba e passar páginas. A faixa economiza 13% nas conversas reais e 28% nas sintéticas; tirar da faixa o que já está na tela soma mais 1 a 2 pontos (já no site).",
+  "Sem o tipo da pergunta (só a fala pelo microfone) o resultado quase não muda (0,5 ponto). As medidas supõem que a fala do adulto foi entendida; erros do reconhecimento de fala vão tirar parte do ganho."
  ]
 }

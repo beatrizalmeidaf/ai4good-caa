@@ -123,6 +123,13 @@ button { font: inherit; color: inherit; touch-action: manipulation; }
 .partner b { font-size: .75rem; color: var(--ink-2); white-space: nowrap; letter-spacing: .05em; text-transform: uppercase; }
 .partner button { border: 2px solid var(--line); background: var(--surface); border-radius: 999px; padding: 3px 12px; cursor: pointer; white-space: nowrap; font-size: .88rem; color: var(--ink-2); }
 .partner button[aria-pressed="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+.partner .mic-adulto { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: var(--ink); touch-action: none; }
+.partner .mic-adulto svg { width: 18px; height: 18px; }
+.partner .mic-adulto.on { background: var(--coral); border-color: var(--coral); color: #fff; animation: respira 1.2s ease-in-out infinite; }
+.partner .adp { display: inline-flex; align-items: center; gap: 4px; padding: 2px 4px 2px 8px; border-radius: 999px; background: var(--surface); border: 2px dashed var(--line); }
+.partner .adp img { width: 30px; height: 30px; object-fit: contain; }
+.partner .adp.vazio { font-size: .85rem; color: var(--ink-2); padding: 4px 10px; white-space: nowrap; }
+.partner .adp .limpar { border: 0; background: none; padding: 0 6px; font-size: 1.2rem; line-height: 1; }
 
 /* ---------- prancha ---------- */
 .board { display: grid; grid-template-columns: var(--seta) minmax(0, 1fr) var(--seta); gap: var(--gap); min-height: 0; }

@@ -102,10 +102,13 @@ export function makeSLM(meta, data) {
   }
 
   // Interface de alto nível: contexto + pictogramas já escolhidos -> {id: logprob} e logprob do fim de frase.
-  // ctx = {periodo, local, adulto}; tokens de contexto que o modelo não conhece são ignorados.
+  // ctx = {periodo, local, adulto, adp}; adp = pictogramas do que o adulto disse (modelo v3, token <a>).
+  // Tokens de contexto que o modelo não conhece são ignorados.
+  const comAdulto = "<a>" in index, maxA = meta.config.max_adulto || 10;
   function predict(ctx, prefix) {
     const c = ["p:" + ctx.periodo, "l:" + ctx.local, "a:" + (ctx.adulto || "nenhuma")].filter(t => t in index).map(t => index[t]);
-    const ids = [...c, index["<s>"], ...prefix.slice(-10).map(s => index[String(s)]).filter(i => i !== undefined)];
+    const a = comAdulto ? [index["<a>"], ...(ctx.adp || []).map(s => index[String(s)]).filter(i => i !== undefined).slice(0, maxA)] : [];
+    const ids = [...c, ...a, index["<s>"], ...prefix.slice(-20).map(s => index[String(s)]).filter(i => i !== undefined)];
     const lp = forward(ids);
     const out = {};
     for (let i = 0; i < n_symbols; i++) out[tokens[i]] = lp[i];
