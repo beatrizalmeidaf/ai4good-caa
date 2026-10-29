@@ -114,6 +114,9 @@ def main(src):
     if not src.exists(): src = R / "frases.jsonl.gz"  # dataset versionado no repositório
     abrir = gzip.open if str(src).endswith(".gz") else open
     raw = [json.loads(l) for l in abrir(src, "rt")]
+    childes = OUT / "childes_pictos.jsonl"  # fala real de criança (CHILDES pt-BR) convertida em pictogramas
+    if childes.exists():
+        for l in open(childes, encoding="utf-8"): raw.append(json.loads(l))
     leva2 = OUT / "frases_raw2.jsonl"  # segunda leva (mais situações e variedade)
     if not leva2.exists() and (R / "frases2.jsonl.gz").exists(): leva2 = R / "frases2.jsonl.gz"  # versão do repositório
     if leva2.exists():
@@ -189,7 +192,11 @@ def main(src):
     scen2 = sorted({c for c, _, _ in CENARIOS2}); rnd2.shuffle(scen2); held_scen2 = set(scen2[:6])
     convs2 = sorted({r["conversa"] for r in rows if r["fonte"] == "cenario2" and r["cenario"] not in held_scen | held_scen2}); rnd2.shuffle(convs2)
     held_conv2 = set(convs2[: len(convs2) // 10]); val_conv2 = set(convs2[len(convs2) // 10: len(convs2) // 10 + len(convs2) // 20])
+    convs3 = sorted({r["conversa"] for r in rows if r["fonte"] == "childes"}); random.Random(3).shuffle(convs3)
+    held_conv3 = set(convs3[: max(1, len(convs3) // 5)])  # 20% das conversas reais ficam só para teste
     for r in rows:
+        if r["fonte"] == "childes":
+            r["split"] = "crianca_real" if r["conversa"] in held_conv3 else "treino3"; continue
         if r["fonte"] == "cenario2":
             r["split"] = ("fora" if r["cenario"] in held_scen else "cenario_novo2" if r["cenario"] in held_scen2
                           else "conversa_nova2" if r["conversa"] in held_conv2 else "val" if r["conversa"] in val_conv2 else "treino2")

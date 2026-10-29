@@ -113,3 +113,22 @@ export function makeSLM(meta, data) {
   }
   return { predict, forward, config: meta.config };
 }
+
+// Comitê: o mesmo modelo treinado 3 vezes (sementes diferentes). A média das previsões erra menos.
+// Carrega slm.bin + slm_1.bin + slm_2.bin (mesmo slm.json); se algum faltar, segue com os que vieram.
+export async function loadComite(base = "data/") {
+  const meta = await fetch(base + "slm.json").then(r => r.json());
+  const bins = await Promise.all(["slm.bin", "slm_1.bin", "slm_2.bin"].map(f =>
+    fetch(base + f).then(r => r.ok ? r.arrayBuffer() : null).catch(() => null)));
+  const membros = bins.filter(Boolean).map(buf => makeSLM(meta, meta.config.dtype === "float16" ? f16to32(new Uint16Array(buf)) : new Float32Array(buf)));
+  if (!membros.length) throw new Error("modelo indisponível");
+  if (membros.length === 1) return membros[0];
+  return {
+    config: meta.config, membros: membros.length,
+    predict(ctx, prefix) {
+      const outs = membros.map(m => m.predict(ctx, prefix)), n = outs.length, symbols = {};
+      for (const k of Object.keys(outs[0].symbols)) symbols[k] = Math.log(outs.reduce((s, o) => s + Math.exp(o.symbols[k]), 0) / n);
+      return { symbols, end: Math.log(outs.reduce((s, o) => s + Math.exp(o.end), 0) / n) };
+    },
+  };
+}

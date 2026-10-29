@@ -30,15 +30,19 @@ Tudo fica no aparelho (localStorage). Depois do primeiro acesso, funciona sem in
 
 ## Modelo
 
-Transformer de 2 camadas sobre pictogramas (180 mil parâmetros, 350 KB). Usa como contexto o período do dia,
-o lugar e a fala do adulto, e prevê o próximo pictograma e o fim da frase. Roda em JavaScript puro, em ~5 ms por toque.
+Comitê de 3 transformers de 2 camadas sobre pictogramas (190 mil parâmetros cada, ~1,1 MB no total), treinados com
+sementes diferentes; a prancha usa a média das previsões. Contexto: período do dia, lugar e fala do adulto. Prevê o próximo
+pictograma e o fim da frase. Roda em JavaScript puro.
 
-| Acerto nas 6 sugestões (frases nunca vistas) | Mais usados | N-grama | SLM |
+Dados de treino: conversas sintéticas (2 levas, 122 situações), mensagens reais de CAA adaptadas e **7.497 falas reais de
+crianças brasileiras** do CHILDES (via IPA-CHILDES) convertidas em pictogramas.
+
+| Acerto nas 6 sugestões (nunca vistas no treino) | Mais usados | N-grama | Zuli |
 |---|---|---|---|
-| Conversas novas | 33% | 60% | **66%** |
-| Situações novas | 34% | 65% | **69%** |
-| Conversas variadas (2ª leva) | 25% | 44% | **48%** |
-| Situações novas (2ª leva) | 26% | 40% | **44%** |
+| Conversas novas | 33% | 60% | **67%** |
+| Situações novas | 34% | 65% | **70%** |
+| Conversas variadas (2ª leva) | 25% | 44% | **49%** |
+| Conversas reais de crianças (CHILDES) | – | 21% | **25%** |
 
 ## Vozes
 
@@ -46,7 +50,6 @@ o lugar e a fala do adulto, e prevê o próximo pictograma e o fim da frase. Rod
 |---|---|---|
 | Feminina | XTTS-v2 clonando uma leitura do LibriVox (falante 12114), tom 3 semitons mais alto | ~90% |
 | Masculina (criança) | F5-TTS pt-BR clonando uma voz de menino gerada por IA | ~83% |
-| Masculina (adulto) | Kokoro-82M | ~65% |
 | Voz do aparelho | speechSynthesis do navegador | depende do aparelho |
 
 ## Organização
@@ -60,7 +63,7 @@ docs/                    site publicado no GitHub Pages
   js/                    core (perfis, áudio, previsão), slm (modelo em JS), crianca, treino, pais, foto
   data/                  vocabulário, modelo (slm.json + slm.bin), n-grama de reserva, vetores do CLIP
   p/                     pictogramas (WebP 160 px)
-  audio/f, mc, m         áudio de cada pictograma em cada voz
+  audio/f, mc            áudio de cada pictograma (voz feminina e masculina de criança)
   vozes/                 amostras das vozes testadas
 experiments/
   v1/                    primeira rodada (cobertura do ARASAAC, LLMs sem treino vs. n-grama vs. SLM)
@@ -85,7 +88,8 @@ e abrir http://localhost:8000.
 - Mensagens de CAA usadas como base para adaptação: turk9k (crowdsourcing de mensagens de CAA)
   e UNL-AAC-Phrases (MIT). Verificar a licença do turk9k antes de redistribuir o conjunto.
 - Vozes: XTTS-v2 (Coqui Public Model License, não comercial), F5-TTS pt-BR (firstpixel, CC BY-NC 4.0),
-  Kokoro-82M (Apache 2.0). Referência feminina: Multilingual LibriSpeech (CC BY 4.0).
+  Referência feminina: Multilingual LibriSpeech (CC BY 4.0).
+- Fala real de criança: CHILDES/TalkBank (corpora pt-BR, via IPA-CHILDES), usada só para treino; os dados não vão para o repositório.
 - Foto → prancha: CLIP ViT-B/32 (OpenAI, MIT), versão ONNX do Xenova.
 - As cores seguem a chave Fitzgerald (explicação na aba "Guia e cores" da área dos adultos).
 - As frases de treino são sintéticas e ainda não foram revisadas por fonoaudiólogo(a).

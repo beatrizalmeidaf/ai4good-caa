@@ -8,191 +8,311 @@
    "conceito_top1": 32.2,
    "conceito_top3": 59.1,
    "economia_toques": 0.0,
-   "n": 6208
+   "n": 6209
   },
   "N-grama + contexto": {
-   "top1": 30.6,
-   "top6": 60.5,
-   "mrr": 0.434,
+   "top1": 30.1,
+   "top6": 60.3,
+   "mrr": 0.43,
    "fim_top6": 100.0,
-   "conceito_top1": 56.2,
+   "conceito_top1": 56.0,
    "conceito_top3": 81.3,
-   "economia_toques": 8.2,
-   "n": 6208
+   "economia_toques": 8.1,
+   "n": 6209
   },
   "SLM P (d64, 2 camadas)": {
-   "top1": 34.0,
-   "top6": 65.7,
-   "mrr": 0.473,
-   "fim_top6": 97.3,
-   "conceito_top1": 59.4,
-   "conceito_top3": 83.4,
-   "economia_toques": 11.1,
-   "n": 6208
+   "top1": 33.9,
+   "top6": 65.4,
+   "mrr": 0.47,
+   "fim_top6": 97.5,
+   "conceito_top1": 58.8,
+   "conceito_top3": 82.2,
+   "economia_toques": 10.8,
+   "n": 6209
   },
   "SLM M (d128, 3 camadas)": {
    "top1": 33.4,
-   "top6": 64.9,
-   "mrr": 0.464,
-   "fim_top6": 93.5,
-   "conceito_top1": 58.7,
-   "conceito_top3": 82.9,
+   "top6": 64.4,
+   "mrr": 0.463,
+   "fim_top6": 94.1,
+   "conceito_top1": 58.9,
+   "conceito_top3": 83.0,
    "economia_toques": 10.5,
-   "n": 6208
+   "n": 6209
   },
   "SLM G (d192, 4 camadas)": {
-   "top1": 32.7,
-   "top6": 63.2,
-   "mrr": 0.456,
-   "fim_top6": 89.7,
-   "conceito_top1": 57.2,
-   "conceito_top3": 81.5,
-   "economia_toques": 10.0,
-   "n": 6208
+   "top1": 32.1,
+   "top6": 63.1,
+   "mrr": 0.451,
+   "fim_top6": 92.7,
+   "conceito_top1": 57.4,
+   "conceito_top3": 82.3,
+   "economia_toques": 9.9,
+   "n": 6209
   },
   "SLM P (d64, 2 camadas) só 1ª leva": {
-   "top1": 33.0,
-   "top6": 63.0,
-   "mrr": 0.458,
-   "fim_top6": 95.8,
-   "conceito_top1": 58.8,
-   "conceito_top3": 81.8,
-   "economia_toques": 10.0,
-   "n": 6208
+   "top1": 32.9,
+   "top6": 63.4,
+   "mrr": 0.457,
+   "fim_top6": 95.9,
+   "conceito_top1": 58.3,
+   "conceito_top3": 82.2,
+   "economia_toques": 10.2,
+   "n": 6209
+  },
+  "SLM P (d64, 2 camadas) sem fala real de criança": {
+   "top1": 34.2,
+   "top6": 64.6,
+   "mrr": 0.473,
+   "fim_top6": 97.2,
+   "conceito_top1": 59.8,
+   "conceito_top3": 82.9,
+   "economia_toques": 10.6,
+   "n": 6209
+  },
+  "SLM P (d64, 2 camadas) comitê de 3": {
+   "top1": 34.2,
+   "top6": 66.8,
+   "mrr": 0.475,
+   "fim_top6": 98.4,
+   "conceito_top1": 59.8,
+   "conceito_top3": 83.3,
+   "economia_toques": 11.3,
+   "n": 6209
+  },
+  "SLM P (d64, 2 camadas) comitê + n-grama (0.1)": {
+   "top1": 34.3,
+   "top6": 66.4,
+   "mrr": 0.475,
+   "fim_top6": 99.1,
+   "conceito_top1": 59.8,
+   "conceito_top3": 83.8,
+   "economia_toques": 11.1,
+   "n": 6209
+  },
+  "SLM P (d64, 2 camadas) comitê, ligação rebaixada": {
+   "top1": 34.2,
+   "top6": 66.5,
+   "mrr": 0.475,
+   "fim_top6": 98.4,
+   "conceito_top1": 59.3,
+   "conceito_top3": 83.1,
+   "economia_toques": 11.3,
+   "n": 6209
   }
  },
  "cenario_novo": {
   "Mais usados (frequência)": {
    "top1": 0.0,
-   "top6": 34.4,
+   "top6": 34.3,
    "mrr": 0.151,
    "fim_top6": 100.0,
    "conceito_top1": 35.4,
    "conceito_top3": 62.7,
    "economia_toques": 0.0,
-   "n": 7038
+   "n": 7046
   },
   "N-grama + contexto": {
-   "top1": 32.0,
+   "top1": 31.5,
    "top6": 65.0,
-   "mrr": 0.461,
+   "mrr": 0.458,
    "fim_top6": 100.0,
-   "conceito_top1": 58.5,
-   "conceito_top3": 83.5,
+   "conceito_top1": 58.3,
+   "conceito_top3": 83.3,
    "economia_toques": 6.0,
-   "n": 7038
+   "n": 7046
   },
   "SLM P (d64, 2 camadas)": {
-   "top1": 36.6,
-   "top6": 69.4,
-   "mrr": 0.502,
-   "fim_top6": 96.8,
-   "conceito_top1": 61.4,
-   "conceito_top3": 84.7,
-   "economia_toques": 8.5,
-   "n": 7038
+   "top1": 35.9,
+   "top6": 69.5,
+   "mrr": 0.497,
+   "fim_top6": 97.2,
+   "conceito_top1": 61.0,
+   "conceito_top3": 84.8,
+   "economia_toques": 8.3,
+   "n": 7046
   },
   "SLM M (d128, 3 camadas)": {
-   "top1": 35.3,
-   "top6": 67.6,
-   "mrr": 0.49,
-   "fim_top6": 94.0,
-   "conceito_top1": 59.5,
-   "conceito_top3": 84.1,
+   "top1": 35.0,
+   "top6": 67.5,
+   "mrr": 0.487,
+   "fim_top6": 94.5,
+   "conceito_top1": 59.6,
+   "conceito_top3": 84.7,
    "economia_toques": 7.7,
-   "n": 7038
+   "n": 7046
   },
   "SLM G (d192, 4 camadas)": {
-   "top1": 34.2,
-   "top6": 66.1,
-   "mrr": 0.476,
-   "fim_top6": 90.6,
-   "conceito_top1": 58.7,
+   "top1": 34.3,
+   "top6": 65.6,
+   "mrr": 0.477,
+   "fim_top6": 91.7,
+   "conceito_top1": 58.6,
    "conceito_top3": 83.1,
-   "economia_toques": 7.4,
-   "n": 7038
+   "economia_toques": 7.6,
+   "n": 7046
   },
   "SLM P (d64, 2 camadas) só 1ª leva": {
-   "top1": 36.2,
-   "top6": 67.6,
-   "mrr": 0.494,
-   "fim_top6": 97.1,
-   "conceito_top1": 60.8,
-   "conceito_top3": 84.0,
+   "top1": 34.6,
+   "top6": 67.9,
+   "mrr": 0.484,
+   "fim_top6": 96.6,
+   "conceito_top1": 60.9,
+   "conceito_top3": 84.1,
    "economia_toques": 7.9,
-   "n": 7038
+   "n": 7046
+  },
+  "SLM P (d64, 2 camadas) sem fala real de criança": {
+   "top1": 36.4,
+   "top6": 69.2,
+   "mrr": 0.501,
+   "fim_top6": 96.2,
+   "conceito_top1": 60.9,
+   "conceito_top3": 85.0,
+   "economia_toques": 8.2,
+   "n": 7046
+  },
+  "SLM P (d64, 2 camadas) comitê de 3": {
+   "top1": 36.1,
+   "top6": 70.0,
+   "mrr": 0.502,
+   "fim_top6": 98.7,
+   "conceito_top1": 61.0,
+   "conceito_top3": 85.6,
+   "economia_toques": 8.6,
+   "n": 7046
+  },
+  "SLM P (d64, 2 camadas) comitê + n-grama (0.1)": {
+   "top1": 36.2,
+   "top6": 69.8,
+   "mrr": 0.502,
+   "fim_top6": 99.3,
+   "conceito_top1": 61.4,
+   "conceito_top3": 85.5,
+   "economia_toques": 8.5,
+   "n": 7046
+  },
+  "SLM P (d64, 2 camadas) comitê, ligação rebaixada": {
+   "top1": 36.3,
+   "top6": 70.1,
+   "mrr": 0.502,
+   "fim_top6": 98.8,
+   "conceito_top1": 61.0,
+   "conceito_top3": 85.8,
+   "economia_toques": 8.7,
+   "n": 7046
   }
  },
  "mensagem_real": {
   "Mais usados (frequência)": {
    "top1": 0.0,
-   "top6": 16.3,
-   "mrr": 0.077,
+   "top6": 15.2,
+   "mrr": 0.073,
    "fim_top6": 100.0,
-   "conceito_top1": 32.8,
-   "conceito_top3": 55.0,
+   "conceito_top1": 32.0,
+   "conceito_top3": 54.3,
    "economia_toques": 0.0,
-   "n": 4201
+   "n": 4191
   },
   "N-grama + contexto": {
-   "top1": 7.1,
-   "top6": 25.3,
-   "mrr": 0.155,
-   "fim_top6": 100.0,
-   "conceito_top1": 38.0,
-   "conceito_top3": 66.8,
-   "economia_toques": 3.5,
-   "n": 4201
+   "top1": 6.5,
+   "top6": 24.2,
+   "mrr": 0.146,
+   "fim_top6": 99.9,
+   "conceito_top1": 37.2,
+   "conceito_top3": 66.3,
+   "economia_toques": 3.2,
+   "n": 4191
   },
   "SLM P (d64, 2 camadas)": {
-   "top1": 9.2,
-   "top6": 27.4,
-   "mrr": 0.175,
-   "fim_top6": 94.0,
-   "conceito_top1": 37.7,
+   "top1": 8.2,
+   "top6": 26.8,
+   "mrr": 0.166,
+   "fim_top6": 95.5,
+   "conceito_top1": 37.5,
    "conceito_top3": 66.3,
    "economia_toques": 4.0,
-   "n": 4201
+   "n": 4191
   },
   "SLM M (d128, 3 camadas)": {
-   "top1": 9.8,
-   "top6": 26.9,
-   "mrr": 0.178,
-   "fim_top6": 87.9,
-   "conceito_top1": 37.2,
-   "conceito_top3": 65.7,
-   "economia_toques": 4.3,
-   "n": 4201
+   "top1": 8.4,
+   "top6": 25.7,
+   "mrr": 0.164,
+   "fim_top6": 89.7,
+   "conceito_top1": 36.8,
+   "conceito_top3": 65.6,
+   "economia_toques": 4.0,
+   "n": 4191
   },
   "SLM G (d192, 4 camadas)": {
-   "top1": 9.7,
-   "top6": 26.7,
-   "mrr": 0.174,
-   "fim_top6": 85.0,
-   "conceito_top1": 36.7,
-   "conceito_top3": 65.3,
-   "economia_toques": 4.1,
-   "n": 4201
+   "top1": 8.3,
+   "top6": 26.3,
+   "mrr": 0.165,
+   "fim_top6": 86.1,
+   "conceito_top1": 36.9,
+   "conceito_top3": 64.9,
+   "economia_toques": 4.4,
+   "n": 4191
   },
   "SLM P (d64, 2 camadas) só 1ª leva": {
-   "top1": 9.5,
-   "top6": 28.4,
-   "mrr": 0.18,
-   "fim_top6": 91.9,
-   "conceito_top1": 36.8,
-   "conceito_top3": 67.2,
-   "economia_toques": 4.4,
-   "n": 4201
+   "top1": 8.5,
+   "top6": 27.2,
+   "mrr": 0.168,
+   "fim_top6": 89.4,
+   "conceito_top1": 36.7,
+   "conceito_top3": 66.6,
+   "economia_toques": 4.3,
+   "n": 4191
+  },
+  "SLM P (d64, 2 camadas) sem fala real de criança": {
+   "top1": 8.9,
+   "top6": 26.1,
+   "mrr": 0.168,
+   "fim_top6": 93.2,
+   "conceito_top1": 37.4,
+   "conceito_top3": 65.8,
+   "economia_toques": 3.7,
+   "n": 4191
+  },
+  "SLM P (d64, 2 camadas) comitê de 3": {
+   "top1": 8.2,
+   "top6": 28.3,
+   "mrr": 0.17,
+   "fim_top6": 97.1,
+   "conceito_top1": 38.3,
+   "conceito_top3": 68.1,
+   "economia_toques": 4.3,
+   "n": 4191
+  },
+  "SLM P (d64, 2 camadas) comitê + n-grama (0.1)": {
+   "top1": 8.2,
+   "top6": 28.3,
+   "mrr": 0.171,
+   "fim_top6": 98.3,
+   "conceito_top1": 38.4,
+   "conceito_top3": 68.7,
+   "economia_toques": 4.3,
+   "n": 4191
+  },
+  "SLM P (d64, 2 camadas) comitê, ligação rebaixada": {
+   "top1": 8.4,
+   "top6": 28.3,
+   "mrr": 0.171,
+   "fim_top6": 97.1,
+   "conceito_top1": 38.1,
+   "conceito_top3": 67.4,
+   "economia_toques": 4.3,
+   "n": 4191
   },
   "SLM P (d64, 2 camadas) sem mensagens reais no treino": {
-   "top1": 7.2,
-   "top6": 22.3,
-   "mrr": 0.138,
-   "fim_top6": 89.0,
-   "conceito_top1": 34.4,
-   "conceito_top3": 63.5,
-   "economia_toques": 2.6,
-   "n": 4201
+   "top1": 6.9,
+   "top6": 20.9,
+   "mrr": 0.134,
+   "fim_top6": 89.6,
+   "conceito_top1": 34.9,
+   "conceito_top3": 61.4,
+   "economia_toques": 2.1,
+   "n": 4191
   }
  },
  "conversa_nova2": {
@@ -201,60 +321,100 @@
    "top6": 25.3,
    "mrr": 0.109,
    "fim_top6": 100.0,
-   "conceito_top1": 28.5,
+   "conceito_top1": 28.4,
    "conceito_top3": 48.2,
    "economia_toques": 0.0,
-   "n": 8017
+   "n": 8032
   },
   "N-grama + contexto": {
-   "top1": 17.8,
-   "top6": 44.0,
-   "mrr": 0.292,
+   "top1": 17.4,
+   "top6": 43.8,
+   "mrr": 0.289,
    "fim_top6": 100.0,
-   "conceito_top1": 43.7,
-   "conceito_top3": 69.9,
-   "economia_toques": 6.9,
-   "n": 8017
+   "conceito_top1": 43.8,
+   "conceito_top3": 69.7,
+   "economia_toques": 6.8,
+   "n": 8032
   },
   "SLM P (d64, 2 camadas)": {
-   "top1": 20.4,
-   "top6": 47.9,
-   "mrr": 0.323,
-   "fim_top6": 98.2,
-   "conceito_top1": 45.9,
-   "conceito_top3": 72.3,
-   "economia_toques": 8.8,
-   "n": 8017
+   "top1": 20.3,
+   "top6": 47.2,
+   "mrr": 0.321,
+   "fim_top6": 98.4,
+   "conceito_top1": 45.4,
+   "conceito_top3": 72.2,
+   "economia_toques": 8.7,
+   "n": 8032
   },
   "SLM M (d128, 3 camadas)": {
-   "top1": 20.4,
-   "top6": 46.4,
-   "mrr": 0.317,
-   "fim_top6": 95.1,
-   "conceito_top1": 44.3,
-   "conceito_top3": 71.1,
-   "economia_toques": 8.5,
-   "n": 8017
+   "top1": 20.2,
+   "top6": 46.1,
+   "mrr": 0.314,
+   "fim_top6": 95.4,
+   "conceito_top1": 44.4,
+   "conceito_top3": 70.2,
+   "economia_toques": 8.4,
+   "n": 8032
   },
   "SLM G (d192, 4 camadas)": {
-   "top1": 20.1,
+   "top1": 19.8,
    "top6": 45.4,
-   "mrr": 0.311,
-   "fim_top6": 93.3,
-   "conceito_top1": 42.8,
-   "conceito_top3": 70.8,
+   "mrr": 0.309,
+   "fim_top6": 94.2,
+   "conceito_top1": 43.3,
+   "conceito_top3": 70.2,
    "economia_toques": 8.1,
-   "n": 8017
+   "n": 8032
   },
   "SLM P (d64, 2 camadas) só 1ª leva": {
-   "top1": 17.1,
-   "top6": 39.8,
-   "mrr": 0.271,
-   "fim_top6": 96.9,
-   "conceito_top1": 40.5,
-   "conceito_top3": 66.2,
+   "top1": 16.8,
+   "top6": 39.9,
+   "mrr": 0.269,
+   "fim_top6": 96.6,
+   "conceito_top1": 39.8,
+   "conceito_top3": 66.1,
    "economia_toques": 5.2,
-   "n": 8017
+   "n": 8032
+  },
+  "SLM P (d64, 2 camadas) sem fala real de criança": {
+   "top1": 20.4,
+   "top6": 47.5,
+   "mrr": 0.322,
+   "fim_top6": 98.3,
+   "conceito_top1": 45.5,
+   "conceito_top3": 71.9,
+   "economia_toques": 8.8,
+   "n": 8032
+  },
+  "SLM P (d64, 2 camadas) comitê de 3": {
+   "top1": 20.2,
+   "top6": 48.5,
+   "mrr": 0.326,
+   "fim_top6": 99.3,
+   "conceito_top1": 46.1,
+   "conceito_top3": 73.0,
+   "economia_toques": 9.1,
+   "n": 8032
+  },
+  "SLM P (d64, 2 camadas) comitê + n-grama (0.1)": {
+   "top1": 20.2,
+   "top6": 48.7,
+   "mrr": 0.326,
+   "fim_top6": 99.5,
+   "conceito_top1": 46.4,
+   "conceito_top3": 72.9,
+   "economia_toques": 9.1,
+   "n": 8032
+  },
+  "SLM P (d64, 2 camadas) comitê, ligação rebaixada": {
+   "top1": 20.2,
+   "top6": 48.3,
+   "mrr": 0.325,
+   "fim_top6": 99.3,
+   "conceito_top1": 46.2,
+   "conceito_top3": 73.0,
+   "economia_toques": 9.1,
+   "n": 8032
   }
  },
  "cenario_novo2": {
@@ -264,65 +424,208 @@
    "mrr": 0.111,
    "fim_top6": 100.0,
    "conceito_top1": 28.1,
-   "conceito_top3": 49.2,
+   "conceito_top3": 49.1,
    "economia_toques": 0.0,
-   "n": 5777
+   "n": 5787
   },
   "N-grama + contexto": {
-   "top1": 17.7,
-   "top6": 40.3,
-   "mrr": 0.279,
+   "top1": 17.2,
+   "top6": 40.2,
+   "mrr": 0.276,
    "fim_top6": 100.0,
-   "conceito_top1": 42.7,
-   "conceito_top3": 67.6,
-   "economia_toques": 4.8,
-   "n": 5777
+   "conceito_top1": 42.6,
+   "conceito_top3": 67.7,
+   "economia_toques": 4.9,
+   "n": 5787
   },
   "SLM P (d64, 2 camadas)": {
+   "top1": 18.7,
+   "top6": 44.1,
+   "mrr": 0.298,
+   "fim_top6": 98.7,
+   "conceito_top1": 44.9,
+   "conceito_top3": 70.4,
+   "economia_toques": 7.0,
+   "n": 5787
+  },
+  "SLM M (d128, 3 camadas)": {
+   "top1": 18.7,
+   "top6": 42.0,
+   "mrr": 0.291,
+   "fim_top6": 96.5,
+   "conceito_top1": 43.7,
+   "conceito_top3": 68.7,
+   "economia_toques": 6.4,
+   "n": 5787
+  },
+  "SLM G (d192, 4 camadas)": {
+   "top1": 18.2,
+   "top6": 41.5,
+   "mrr": 0.284,
+   "fim_top6": 93.6,
+   "conceito_top1": 42.4,
+   "conceito_top3": 68.1,
+   "economia_toques": 6.2,
+   "n": 5787
+  },
+  "SLM P (d64, 2 camadas) só 1ª leva": {
+   "top1": 17.9,
+   "top6": 39.5,
+   "mrr": 0.275,
+   "fim_top6": 97.4,
+   "conceito_top1": 41.7,
+   "conceito_top3": 66.1,
+   "economia_toques": 5.0,
+   "n": 5787
+  },
+  "SLM P (d64, 2 camadas) sem fala real de criança": {
+   "top1": 19.5,
+   "top6": 43.6,
+   "mrr": 0.302,
+   "fim_top6": 98.7,
+   "conceito_top1": 44.9,
+   "conceito_top3": 70.6,
+   "economia_toques": 6.7,
+   "n": 5787
+  },
+  "SLM P (d64, 2 camadas) comitê de 3": {
+   "top1": 18.8,
+   "top6": 44.7,
+   "mrr": 0.303,
+   "fim_top6": 99.2,
+   "conceito_top1": 45.7,
+   "conceito_top3": 70.9,
+   "economia_toques": 7.2,
+   "n": 5787
+  },
+  "SLM P (d64, 2 camadas) comitê + n-grama (0.1)": {
+   "top1": 18.9,
+   "top6": 44.7,
+   "mrr": 0.303,
+   "fim_top6": 99.4,
+   "conceito_top1": 45.9,
+   "conceito_top3": 70.9,
+   "economia_toques": 7.1,
+   "n": 5787
+  },
+  "SLM P (d64, 2 camadas) comitê, ligação rebaixada": {
    "top1": 18.8,
    "top6": 44.2,
    "mrr": 0.301,
-   "fim_top6": 98.9,
-   "conceito_top1": 45.0,
-   "conceito_top3": 69.9,
-   "economia_toques": 6.9,
-   "n": 5777
+   "fim_top6": 99.2,
+   "conceito_top1": 45.8,
+   "conceito_top3": 70.8,
+   "economia_toques": 7.2,
+   "n": 5787
+  }
+ },
+ "crianca_real": {
+  "Mais usados (frequência)": {
+   "top1": 0.0,
+   "top6": 13.7,
+   "mrr": 0.051,
+   "fim_top6": 100.0,
+   "conceito_top1": 29.0,
+   "conceito_top3": 54.7,
+   "economia_toques": 0.0,
+   "n": 3182
+  },
+  "N-grama + contexto": {
+   "top1": 4.0,
+   "top6": 20.5,
+   "mrr": 0.116,
+   "fim_top6": 100.0,
+   "conceito_top1": 33.2,
+   "conceito_top3": 61.2,
+   "economia_toques": 3.9,
+   "n": 3182
+  },
+  "SLM P (d64, 2 camadas)": {
+   "top1": 4.5,
+   "top6": 24.0,
+   "mrr": 0.133,
+   "fim_top6": 95.4,
+   "conceito_top1": 35.3,
+   "conceito_top3": 62.4,
+   "economia_toques": 5.1,
+   "n": 3182
   },
   "SLM M (d128, 3 camadas)": {
-   "top1": 19.3,
-   "top6": 43.1,
-   "mrr": 0.298,
-   "fim_top6": 95.4,
-   "conceito_top1": 43.6,
-   "conceito_top3": 69.1,
-   "economia_toques": 6.7,
-   "n": 5777
+   "top1": 5.0,
+   "top6": 22.6,
+   "mrr": 0.13,
+   "fim_top6": 89.4,
+   "conceito_top1": 34.2,
+   "conceito_top3": 61.2,
+   "economia_toques": 4.7,
+   "n": 3182
   },
   "SLM G (d192, 4 camadas)": {
-   "top1": 18.5,
-   "top6": 41.1,
-   "mrr": 0.286,
-   "fim_top6": 92.8,
-   "conceito_top1": 42.2,
-   "conceito_top3": 68.6,
-   "economia_toques": 5.8,
-   "n": 5777
+   "top1": 5.2,
+   "top6": 21.7,
+   "mrr": 0.128,
+   "fim_top6": 85.2,
+   "conceito_top1": 33.0,
+   "conceito_top3": 59.2,
+   "economia_toques": 4.6,
+   "n": 3182
   },
   "SLM P (d64, 2 camadas) só 1ª leva": {
-   "top1": 17.3,
-   "top6": 39.4,
-   "mrr": 0.271,
-   "fim_top6": 95.8,
-   "conceito_top1": 41.1,
-   "conceito_top3": 66.9,
-   "economia_toques": 4.8,
-   "n": 5777
+   "top1": 3.4,
+   "top6": 15.4,
+   "mrr": 0.092,
+   "fim_top6": 74.4,
+   "conceito_top1": 29.4,
+   "conceito_top3": 55.5,
+   "economia_toques": 1.6,
+   "n": 3182
+  },
+  "SLM P (d64, 2 camadas) sem fala real de criança": {
+   "top1": 3.2,
+   "top6": 15.0,
+   "mrr": 0.09,
+   "fim_top6": 76.3,
+   "conceito_top1": 31.5,
+   "conceito_top3": 54.7,
+   "economia_toques": 1.7,
+   "n": 3182
+  },
+  "SLM P (d64, 2 camadas) comitê de 3": {
+   "top1": 4.7,
+   "top6": 24.5,
+   "mrr": 0.137,
+   "fim_top6": 97.5,
+   "conceito_top1": 35.8,
+   "conceito_top3": 63.6,
+   "economia_toques": 5.2,
+   "n": 3182
+  },
+  "SLM P (d64, 2 camadas) comitê + n-grama (0.1)": {
+   "top1": 4.5,
+   "top6": 24.6,
+   "mrr": 0.136,
+   "fim_top6": 98.8,
+   "conceito_top1": 35.6,
+   "conceito_top3": 63.6,
+   "economia_toques": 5.2,
+   "n": 3182
+  },
+  "SLM P (d64, 2 camadas) comitê, ligação rebaixada": {
+   "top1": 4.7,
+   "top6": 24.3,
+   "mrr": 0.137,
+   "fim_top6": 97.5,
+   "conceito_top1": 36.0,
+   "conceito_top3": 63.0,
+   "economia_toques": 5.2,
+   "n": 3182
   }
  },
  "_tempo_treino_s": {
-  "SLM P (d64, 2 camadas)": 26.4,
-  "SLM M (d128, 3 camadas)": 30.1,
-  "SLM G (d192, 4 camadas)": 35.6
+  "SLM P (d64, 2 camadas)": 28.5,
+  "SLM M (d128, 3 camadas)": 32.3,
+  "SLM G (d192, 4 camadas)": 39.4
  },
+ "_alfa_ngrama": 0.1,
  "_melhor": "SLM P (d64, 2 camadas)"
 }

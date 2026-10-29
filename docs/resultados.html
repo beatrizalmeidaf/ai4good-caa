@@ -117,7 +117,7 @@ footer { font-size: .85rem; color: var(--ink-2); border-top: 1px solid var(--lin
 <script type="module">
 const $ = s => document.querySelector(s);
 const fmt = v => String(v).replace(".", ",");
-const TESTES = { conversa_nova: "Conversas inéditas", cenario_novo: "Situações inéditas", conversa_nova2: "Conversas variadas (2ª leva)", cenario_novo2: "Situações novas (2ª leva)", mensagem_real: "Mensagens reais de CAA, adaptadas" };
+const TESTES = { conversa_nova: "Conversas inéditas", cenario_novo: "Situações inéditas", conversa_nova2: "Conversas variadas (2ª leva)", cenario_novo2: "Situações novas (2ª leva)", crianca_real: "Conversas reais de crianças (CHILDES)", mensagem_real: "Mensagens reais de CAA, adaptadas" };
 fetch("data/resultados.json").then(r => r.json()).then(R => {
   const M = R.metricas, best = M._melhor, d = R.dataset;
   $("#lead").textContent = R.lead;

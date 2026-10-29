@@ -1,18 +1,18 @@
 {
- "lead": "O Zuli sugere o próximo pictograma com um modelo de 180 mil parâmetros (350 KB) que roda no próprio tablet em cerca de 5 ms por toque. Em conversas que nunca viu, o pictograma certo está entre as 6 sugestões em 65,7% das vezes.",
+ "lead": "O Zuli sugere o próximo pictograma com um comitê de 3 modelos pequenos (190 mil parâmetros cada) que rodam no próprio tablet. Em conversas que nunca viu, o pictograma certo está entre as 6 sugestões em 66,8% das vezes; em conversas reais de crianças, 24,5%.",
  "conclusoes": [
-  "A segunda leva de conversas (situações novas, idade e interesse da criança, menos frases repetidas) melhorou as previsões nas situações variadas: de 39,8% para 47,9% nas conversas novas e de 39,4% para 44,2% nas situações que o modelo nunca viu.",
-  "Nos testes da primeira rodada também subiu: 63,0% → 65,7% (conversas) e 67,6% → 69,4% (situações).",
-  "O modelo pequeno continua o melhor: as versões maiores não ganharam com o dobro de dados. O limite segue nos dados, não no tamanho.",
-  "A prancha ficou estável entre as versões: as 768 palavras anteriores continuam no mesmo lugar, com o mesmo desenho e o mesmo rótulo; as 431 novas entraram no fim de cada categoria.",
-  "O botão falar aparece nas sugestões quando a frase acabou em 97,3% das vezes, e a página certa (conceito) é a mais provável em cerca de 60%.",
-  "Mensagens reais de usuários de CAA adaptadas continuam o teste mais difícil (27,4%). Dados de uso real devem ser o maior ganho a seguir.",
-  "Voz: a voz feminina (XTTS, tom jovem) é reconhecida pelo Whisper em ~90% das palavras, contra ~60% da voz anterior. A voz masculina de criança (F5-TTS) chegou a 83% no teste."
+  "Fala real de criança fez a maior diferença: com 7.497 falas de crianças brasileiras do CHILDES convertidas em pictogramas, o acerto em conversas reais de crianças que o modelo nunca viu subiu de 15,0% para 24,5%.",
+  "Um comitê de 3 modelos (o mesmo modelo treinado com sementes diferentes, com a média das previsões) ganhou cerca de 1 ponto em todos os testes: conversas novas 65,4% → 66,8%, situações novas 69,5% → 70,0%.",
+  "A segunda leva de conversas sintéticas (mais situações, idade e interesses) levou as conversas variadas de 39,9% para 48,5%.",
+  "Testado e não adotado: misturar com o n-grama não melhorou; rebaixar palavras de ligação (com, no, de) piorou um pouco.",
+  "A prancha ficou estável entre as versões: as palavras anteriores continuam no mesmo lugar, com o mesmo desenho e o mesmo rótulo; as novas entram no fim de cada categoria.",
+  "Conversas reais de crianças são difíceis (24,5%): as crianças falam de tudo, em frases longas. É o melhor indicador do que esperar no uso real, e o próximo ganho virá de dados de uso com consentimento.",
+  "Vozes: a feminina (XTTS, tom jovem) e a masculina de criança (F5-TTS) foram revisadas palavra por palavra com o Whisper; as que soavam erradas foram refeitas."
  ],
  "metodo": [
   "Vocabulário: catálogo completo do ARASAAC, mapeado pelo termo em inglês e conferido pelo termo em português. 1.199 pictogramas em 9 categorias, com cores da chave Fitzgerald.",
-  "Conversas: o Qwen3-30B-A3B gerou conversas curtas entre adulto e criança em 122 situações do dia a dia e 11 tipos de fala do adulto, em duas levas, e adaptou mensagens reais de usuários de CAA (turk9k e UNL-AAC-Phrases).",
-  "Total: 52.372 frases. Testes com conversas e situações que ficaram fora do treino em cada leva. e metade das mensagens reais adaptadas.",
+  "Conversas: o Qwen3-30B-A3B gerou conversas curtas entre adulto e criança em 122 situações do dia a dia e 11 tipos de fala do adulto, em duas levas; adaptou mensagens reais de usuários de CAA (turk9k e UNL-AAC-Phrases); e converteu falas reais de crianças brasileiras (CHILDES pt-BR, via IPA-CHILDES) nos pictogramas que a criança tocaria.",
+  "Total: 58.864 frases. Testes com conversas e situações fora do treino em cada leva, metade das mensagens reais adaptadas e 20% das conversas reais do CHILDES.",
   "Modelo: transformer de 2 camadas sobre pictogramas, com período do dia, lugar e fala do adulto como contexto. Prevê o próximo pictograma e o fim da frase. Roda em JavaScript puro."
  ]
 }

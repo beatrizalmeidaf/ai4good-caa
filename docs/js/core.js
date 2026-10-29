@@ -1,11 +1,11 @@
 // Zuli: código comum à área da criança e à área dos pais.
 // Perfis, registros de uso, dados, áudio e previsão. Tudo fica neste aparelho.
-import { loadSLM } from "./slm.js";
+import { loadSLM, loadComite } from "./slm.js";
 
 export const DATA = "data/";
 export const END = "__end__";
 export const pic = id => `p/${id}.webp`;
-export const AUDIO_V = 3;  // aumente quando gerar o áudio de novo
+export const AUDIO_V = 4;  // aumente quando gerar o áudio de novo
 
 /* ---------------- armazenamento local ---------------- */
 export const store = {
@@ -117,15 +117,15 @@ export function montarPaginas(vocab) {
 export const VOZES = [
   { id: "f", nome: "Feminina", desc: "Voz jovem, clara (XTTS)" },
   { id: "mc", nome: "Masculina (criança)", desc: "Voz de menino (F5-TTS)" },
-  { id: "m", nome: "Masculina (adulto)", desc: "Voz de homem (Kokoro)" },
 ];
 // voz escolhida para a criança: o que os adultos escolheram, ou pelo gênero do perfil
 export function vozDoPerfil(p, o) {
-  return { pasta: o?.voz || (p?.genero === "m" ? "mc" : "f"), sistema: o?.fonteVoz === "aparelho" };
+  const v = o?.voz === "m" ? "mc" : o?.voz;  // a voz de adulto saiu: quem usava passa para a de criança
+  return { pasta: v || (p?.genero === "m" ? "mc" : "f"), sistema: o?.fonteVoz === "aparelho" };
 }
 
 export class Voz {
-  // pasta: "f" (feminina), "mc" (masculina, criança), "m" (masculina, adulto); sistema = voz do aparelho
+  // pasta: "f" (feminina), "mc" (masculina, criança); sistema = voz do aparelho
   constructor(pasta = "f", velocidade = 1, sistema = false) {
     this.g = VOZES.some(v => v.id === pasta) ? pasta : "f"; this.feminina = this.g === "f";
     this.vel = velocidade; this.sistema = sistema; this.buf = new Map(); this.ctx = null; this.fontes = [];
@@ -193,7 +193,7 @@ export class Voz {
 export class Preditor {
   constructor(vocab, by, p) { this.vocab = vocab; this.by = by; this.p = p; this.slm = null; this.ngram = null; this.pessoal = store.get(`pessoal-${p.id}`, { n: 0, bi: {}, tri: {} }); }
   async iniciar() {
-    try { this.slm = await loadSLM(DATA); } catch (e) { console.warn("SLM indisponível", e); await this.carregarNgram(); }
+    try { this.slm = await loadComite(DATA); } catch (e) { console.warn("SLM indisponível", e); await this.carregarNgram(); }
   }
   async carregarNgram() { if (!this.ngram) this.ngram = await fetch(DATA + "ngram.json").then(r => r.json()); }
   ngramProbs(ctx, prefix) {

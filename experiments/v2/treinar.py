@@ -180,13 +180,14 @@ if __name__ == "__main__":
     rnd = random.Random(0); ad = split["adaptado"][:]; rnd.shuffle(ad)
     ad_tr, ad_te = ad[: len(ad) // 2], ad[len(ad) // 2:]
     tests = {"conversa_nova": split["conversa_nova"], "cenario_novo": split["cenario_novo"], "mensagem_real": ad_te,
-             "conversa_nova2": split["conversa_nova2"], "cenario_novo2": split["cenario_novo2"]}
+             "conversa_nova2": split["conversa_nova2"], "cenario_novo2": split["cenario_novo2"], "crianca_real": split["crianca_real"]}
     tests = {k: v for k, v in tests.items() if v}
     print({k: len(v) for k, v in split.items()}, "vocab", NS, flush=True)
     res = defaultdict(dict)
     tr = split["treino"]
     tr_leva1 = tr + ad_tr                      # só a primeira leva (como o modelo anterior)
-    tr_mix = tr + split["treino2"] + ad_tr     # primeira + segunda leva
+    tr_mix = tr + split["treino2"] + split["treino3"] + ad_tr     # sintético (2 levas) + fala real de criança (CHILDES)
+    tr_sem_childes = tr + split["treino2"] + ad_tr
     ng = NGram(tr_mix)
     for t, rows in tests.items():
         res[t]["Mais usados (frequência)"] = metrics(unigram_lp(tr_mix, rows), rows)
@@ -203,6 +204,27 @@ if __name__ == "__main__":
     # efeito da segunda leva: mesmo tamanho, treinado só com a primeira leva, nos mesmos testes
     m1 = train(tr_leva1, *best, log=False)
     for t, rows in tests.items(): res[t][best_name + " só 1ª leva"] = evaluate_slm(m1, rows)
+    # efeito da fala real de criança no treino
+    if split["treino3"]:
+        m_sc = train(tr_sem_childes, *best, log=False)
+        for t, rows in tests.items(): res[t][best_name + " sem fala real de criança"] = evaluate_slm(m_sc, rows)
+    # comitê: média de 3 treinos com sementes diferentes
+    comite = [m] if False else []
+    lps = {t: [] for t in tests}; lps_val = []
+    for sd in (0, 1, 2):
+        mm = train(tr_mix, *best, seed=sd, log=False); comite.append(mm)
+        for t, rows in tests.items(): lps[t].append(np.exp(slm_logprobs(mm, rows)))
+        lps_val.append(np.exp(slm_logprobs(mm, split["val"])))
+    for t, rows in tests.items(): res[t][best_name + " comitê de 3"] = metrics(np.log(np.mean(lps[t], 0)), rows)
+    # mistura com n-grama (peso escolhido na validação)
+    ng_all = NGram(tr_mix); pv = np.mean(lps_val, 0); ngv = np.exp(ng_all.logprobs(split["val"]))
+    alfa = max([0.0, 0.1, 0.2, 0.3], key=lambda a: (lambda r: r["top6"] + 10 * r["mrr"])(metrics(np.log((1 - a) * pv + a * ngv), split["val"])))
+    res["_alfa_ngrama"] = alfa
+    for t, rows in tests.items(): res[t][best_name + f" comitê + n-grama ({alfa})"] = metrics(np.log((1 - alfa) * np.mean(lps[t], 0) + alfa * np.exp(ng_all.logprobs(rows))), rows)
+    # rebaixar palavras de ligação (com, no, de...) nas sugestões
+    LIG = {"com", "no", "na", "nos", "nas", "para", "pra", "de", "do", "da", "e", "mas", "ou", "se", "até", "sem", "em", "ao", "que", "tão", "embora"}
+    peso = np.array([0.5 if v["label"] in LIG else 1.0 for v in VOCAB] + [1.0])
+    for t, rows in tests.items(): res[t][best_name + " comitê, ligação rebaixada"] = metrics(np.log(np.mean(lps[t], 0) * peso), rows)
     # efeito das mensagens reais no treino (mesmo tamanho do melhor)
     m_sem = train(tr + split["treino2"], *best, log=False)
     if ad_te: res["mensagem_real"][best_name + " sem mensagens reais no treino"] = evaluate_slm(m_sem, ad_te)
@@ -213,8 +235,11 @@ if __name__ == "__main__":
         for k, v in sorted(res[t].items(), key=lambda kv: -kv[1]["top6"]):
             print(f"{k:55s} top1={v['top1']:5.1f} top6={v["top6"]:5.1f} mrr={v["mrr"]:.3f} fim6={v["fim_top6"]:5.1f} conc1={v['conceito_top1']:5.1f} toques-={v['economia_toques']:5.1f}%")
     # modelo final: todas as frases (menos o teste de mensagens reais fica de fora? não: o modelo da página usa tudo)
-    final = train([r for r in ROWS if r["split"] != "fora"], *best, log=False)
-    export(final, ROWS)
+    finais = [train([r for r in ROWS if r["split"] != "fora"], *best, seed=sd, log=False) for sd in (0, 1, 2)]
+    export(finais[0], ROWS)
+    for k, mm in enumerate(finais[1:], 1):   # membros extras do comitê: slm_1.bin, slm_2.bin (mesmo slm.json)
+        sd = {kk: v.cpu().numpy().astype(np.float16) for kk, v in mm.cpu().state_dict().items()}
+        np.concatenate([v.ravel() for v in sd.values()]).astype("<f2").tofile(SITE / f"slm_{k}.bin")
     # n-grama de reserva para a página
     ngf = NGram(ROWS)
     json.dump(dict(lambdas=NGram.L, counts={k: {kk: dict(v) for kk, v in d.items()} for k, d in ngf.c.items()}),

@@ -11,7 +11,7 @@ from huggingface_hub import hf_hub_download
 
 R = pathlib.Path(__file__).resolve().parent; DOCS = R.parent.parent / "docs"
 FFMPEG = str(pathlib.Path.home() / "bin" / "ffmpeg")
-PASTA, REF = sys.argv[1], sys.argv[2]; TUDO = "--tudo" in sys.argv
+PASTA, REF = sys.argv[1], sys.argv[2]; TUDO = "--tudo" in sys.argv; REFAZER = "--refazer-ruins" in sys.argv
 OUT = DOCS / "audio" / PASTA; OUT.mkdir(parents=True, exist_ok=True)
 vocab = json.load(open(DOCS / "data" / "vocab.json", encoding="utf-8"))
 ZULI = json.load(open(DOCS / "data" / "zuli_falas.json", encoding="utf-8"))
@@ -52,11 +52,18 @@ def gerar(texto, seed):
 
 stats = dict(ok=0, total=0, falhas=[]); t0 = time.time()
 itens = [(str(v["id"]), v["label"], True) for v in vocab] + [(f"zuli_{i}", t, False) for i, t in enumerate(ZULI)]
+def existente(chave):
+    raw = subprocess.run([FFMPEG, "-loglevel", "quiet", "-i", str(OUT / f"{chave}.mp3"), "-f", "f32le", "-ac", "1", "-ar", "24000", "-"], capture_output=True).stdout
+    return np.frombuffer(raw, dtype=np.float32)
+ruins = []
 for chave, texto, palavra in itens:
-    if not TUDO and (OUT / f"{chave}.mp3").exists(): continue
+    if REFAZER and palavra and (OUT / f"{chave}.mp3").exists():
+        if reconhece(existente(chave), 24000, texto): continue
+        ruins.append(texto)
+    elif not TUDO and (OUT / f"{chave}.mp3").exists(): continue
     falado = texto.replace("_", " ")
     melhor, ok = None, False
-    for seed in ([1, 2, 3] if palavra else [1]):
+    for seed in (([4, 5, 6, 7, 8, 9] if REFAZER else [1, 2, 3]) if palavra else [1]):
         a, sr = gerar(falado, seed)
         if melhor is None: melhor = (a, sr)
         if not palavra or reconhece(a, sr, texto): melhor, ok = (a, sr), True; break
@@ -64,6 +71,6 @@ for chave, texto, palavra in itens:
     if not ok: stats["falhas"].append(texto)
     (OUT / f"{chave}.mp3").write_bytes(mp3(*melhor))
     if stats["total"] % 100 == 0: print(stats["total"], "itens", f"{time.time() - t0:.0f}s", flush=True)
-stats["acerto"] = round(100 * stats["ok"] / max(1, stats["total"]), 1)
+stats["acerto"] = round(100 * stats["ok"] / max(1, stats["total"]), 1); stats["ruins_encontrados"] = ruins
 json.dump(stats, open(R / "out" / f"audio_f5_{PASTA}.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
 print("pronto:", stats["acerto"], "% reconhecido,", f"{time.time() - t0:.0f}s")

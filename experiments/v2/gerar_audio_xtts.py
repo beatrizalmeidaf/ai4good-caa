@@ -48,7 +48,7 @@ def limpo(t, alvo):
     return aa == tt or (len(tt) == len(aa) and all(a2[:3] == t2[:3] for a2, t2 in zip(aa, tt)))
 
 def sintetizar(texto, temp):
-    torch.manual_seed(0)
+    torch.manual_seed(int(temp * 100))
     out = m.inference(texto, "pt", lat[0], lat[1], temperature=temp, enable_text_splitting=False, repetition_penalty=5.0)
     return np.array(out["wav"], dtype=np.float32)
 
@@ -69,7 +69,9 @@ for chave, texto, palavra in itens:
     elif not TUDO and (OUT / f"{chave}.mp3").exists(): continue
     falado = texto.replace("_", " ")
     melhor, ok = None, False
-    for k, (variante, temp) in enumerate([(falado, 0.3), (falado, 0.55), (falado, 0.75), (falado, 0.9)] if palavra else [(falado, 0.3)]):
+    tentativas = [(falado, 0.3), (falado, 0.55), (falado, 0.75), (falado, 0.9)]
+    if REFAZER: tentativas = [(falado, 0.45), (falado, 0.65), (falado, 0.85), (falado + "!", 0.5), (falado + "?", 0.6), (falado, 1.0)]
+    for k, (variante, temp) in enumerate(tentativas if palavra else [(falado, 0.3)]):
         a = aparar(sintetizar(variante, temp)); stats["tentativas"] += 1
         if melhor is None: melhor = a
         longo = palavra and len(a) / 24000 > 0.9 + 0.12 * len(falado)  # som sobrando

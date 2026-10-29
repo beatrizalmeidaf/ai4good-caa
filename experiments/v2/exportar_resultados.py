@@ -2,7 +2,7 @@
 import json, pathlib, random
 R = pathlib.Path(__file__).resolve().parent
 OUT = R / "out"; SITE = R.parent.parent / "docs" / "data"
-M = json.load(open(OUT / "metricas.json"))
+M = json.load(open(OUT / ("metricas_site.json" if (OUT / "metricas_site.json").exists() else "metricas.json"), encoding="utf-8"))
 D = json.load(open(OUT / "dataset.json"))
 res = D["resumo"]; vocab = {v["id"]: v["label"] for v in D["vocab"]}
 raw_n = sum(1 for _ in open(OUT / "frases_raw.jsonl"))
@@ -28,7 +28,7 @@ out = dict(
         [f"{len(vocab)}", "pictogramas na prancha"],
         [f"{res['frases']:,}".replace(",", "."), "frases de treino e teste, em conversas"],
         [f"{fmt(sn[best]['top6'])}%", "acerto das 6 sugestões em situações que o modelo nunca viu"],
-        [f"{kb / 1024:.1f} MB".replace(".", ","), f"modelo inteiro ({params / 1e6:.2f} mi parâmetros), roda no tablet".replace(".", ",")],
+        [f"{3 * kb / 1024:.1f} MB".replace(".", ","), f"3 modelos de {params / 1e6:.2f} mi parâmetros (comitê), rodam no tablet".replace(".", ",")],
     ],
 )
 json.dump(out, open(SITE / "resultados.json", "w"), ensure_ascii=False, indent=1)
