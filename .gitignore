@@ -11,3 +11,9 @@ __pycache__/
 *.npz
 experiments/v1/cache/
 experiments/v2/out/
+
+# vozes de referência para clonagem (podem ser de crianças reais: não publicar sem autorização)
+clonar_vozes/
+docs/vozes/*crianca*
+vozes/
+ideia.txt

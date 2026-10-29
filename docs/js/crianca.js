@@ -13,7 +13,7 @@ if (!perfil) location.replace("pais.html#novo");
 const opt = perfil ? perfis.opt(perfil) : {};
 const S = { vocab: [], by: {}, pg: {}, page: "nucleo", sub: 0, phrase: [], spoken: false, adulto: "nenhuma", top: [],
   toques: 0, daSugestao: 0, toquesFrase: 0 };
-const voz = new Voz(perfil?.genero, opt.velocidade);
+const voz = new Voz(perfil?.genero, opt.velocidade, opt.fonteVoz === "aparelho");
 let pred;
 
 function tile(w) {

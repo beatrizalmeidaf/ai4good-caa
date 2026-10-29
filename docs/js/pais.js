@@ -21,8 +21,82 @@ function pinPad(titulo, texto, aoCompletar) {
     if (pin.length === 4) { const p = pin; pin = ""; setTimeout(draw, 150); aoCompletar(p, m => $("#pin-msg").textContent = m); }
   };
 }
+/* ---------------- primeiro acesso: assistente em 5 passos ---------------- */
+function boasVindas() {
+  const d = { nome: "", genero: "f", idade: "", fonteVoz: "gravada" };
+  let passo = 0, pin1 = null;
+  const PASSOS = 5;
+  const topo = () => `<div class="wz-top">${passo > 0 && passo < 4 ? `<button type="button" class="btn link" data-a="voltar">← voltar</button>` : "<span></span>"}
+    <div class="wz-dots" aria-label="Passo ${passo + 1} de ${PASSOS}">${Array.from({ length: PASSOS }, (_, i) => `<i class="${i < passo ? "ok" : i === passo ? "on" : ""}"></i>`).join("")}</div><span></span></div>`;
+  const voz = g => { const v = new Voz(g); v.desbloquear(); v.falar([{ chave: "zuli_0", texto: "Oi! Eu sou o Zuli!" }]); };
+  function tela() {
+    const el = $("#gate");
+    if (passo === 0) el.innerHTML = `<div class="wizard">${topo()}
+      <img class="wz-zuli" src="assets/zuli.png" alt="">
+      <h1>Oi! Eu sou o Zuli.</h1>
+      <p class="lead">Eu ajudo crianças que ainda não falam (ou falam pouco) a se comunicar com desenhos.</p>
+      <div class="wz-como">
+        <div><span class="n">1</span><b>A criança toca nos desenhos</b><small>Os desenhos ficam sempre no mesmo lugar.</small></div>
+        <div><span class="n">2</span><b>Eu sugiro o próximo</b><small>Uma faixa amarela mostra os desenhos mais prováveis.</small></div>
+        <div><span class="n">3</span><b>Eu falo a frase</b><small>Quando a criança toca em mim, eu falo em voz alta.</small></div>
+      </div>
+      <p class="muted small">Vamos configurar em 1 minuto. Tudo fica guardado só neste aparelho.</p>
+      <button type="button" class="btn primary big" data-a="seguir">Começar</button></div>`;
+    if (passo === 1) el.innerHTML = `<form class="wizard" id="wz-f">${topo()}
+      <h1>Quem vai usar o Zuli?</h1>
+      <label class="field"><span>Nome ou apelido da criança</span><input type="text" id="wz-nome" required maxlength="30" value="${esc(d.nome)}" placeholder="ex.: Lia" autocomplete="off"></label>
+      <div class="field"><span>A criança é</span><div class="seg big" id="wz-gen"><button type="button" data-v="f" aria-pressed="${d.genero === "f"}">menina</button><button type="button" data-v="m" aria-pressed="${d.genero === "m"}">menino</button></div>
+        <small class="muted">Isso escolhe a voz do Zuli (feminina ou masculina). Dá para mudar depois.</small></div>
+      <label class="field"><span>Idade (opcional)</span><input type="number" id="wz-idade" min="1" max="99" value="${esc(d.idade)}" style="max-width:120px"></label>
+      <button type="submit" class="btn primary big">Continuar</button></form>`;
+    if (passo === 2) el.innerHTML = `<div class="wizard">${topo()}
+      <h1>Como o Zuli vai falar?</h1>
+      <p class="muted">Toque para ouvir e escolha.</p>
+      <div class="wz-vozes">
+        <button type="button" class="wz-voz" data-voz="gravada" aria-pressed="${d.fonteVoz === "gravada"}"><b>Voz do Zuli</b><small>Gravada, ${d.genero === "m" ? "masculina" : "feminina"}. Responde na hora e funciona sem internet.</small><span class="ouvir" data-ouvir="${d.genero}">▶ ouvir</span></button>
+        <button type="button" class="wz-voz" data-voz="aparelho" aria-pressed="${d.fonteVoz === "aparelho"}"><b>Voz do tablet</b><small>A voz do próprio aparelho. Pode soar mais natural em frases longas.</small><span class="ouvir" data-ouvir="sistema">▶ ouvir</span></button>
+      </div>
+      <button type="button" class="btn primary big" data-a="seguir">Continuar</button></div>`;
+    if (passo === 3) {
+      pinPad(pin1 ? "Confirme o PIN" : "Crie um PIN para os adultos",
+        pin1 ? "Digite os mesmos 4 números de novo." : `A prancha é de ${esc(d.nome)}. Os ajustes e o acompanhamento ficam numa área separada, protegida por este PIN, para ninguém mudar nada sem querer.`,
+        async (p, msg) => {
+          if (!pin1) { pin1 = p; return tela(); }
+          if (p !== pin1) { pin1 = null; msg("Os PINs não batem. Vamos de novo."); setTimeout(tela, 1200); return; }
+          store.set("pin", await hashPin(p)); sess.set(true);
+          const nova = perfis.novo(d.nome, d.genero, +d.idade || null);
+          perfis.salvarOpt(nova, Object.assign(perfis.opt(nova), { fonteVoz: d.fonteVoz }));
+          passo = 4; tela();
+        });
+      $("#gate .card").insertAdjacentHTML("afterbegin", topo());
+      $("#gate a.small")?.remove();
+    }
+    if (passo === 4) el.innerHTML = `<div class="wizard">${topo()}
+      <img class="wz-zuli festa" src="assets/zuli.png" alt="">
+      <h1>Tudo pronto!</h1>
+      <p class="lead">Agora é só entregar o tablet para ${esc(d.nome)}.</p>
+      <div class="wz-dica"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg>
+        <p>Para voltar a esta área, <b>segure por 1 segundo</b> o botão com este desenho, no canto de baixo da prancha, e digite o PIN.</p></div>
+      <a class="btn primary big" href="./">Abrir a prancha de ${esc(d.nome)}</a></div>`;
+  }
+  $("#gate").onclick = e => {
+    const b = e.target.closest("button, [data-ouvir]"); if (!b) return;
+    if (b.dataset.ouvir) { e.stopPropagation(); return b.dataset.ouvir === "sistema" ? new Voz(d.genero, 1, true).falar([{ chave: "x", texto: "Oi! Eu sou o Zuli!" }]) : voz(b.dataset.ouvir); }
+    if (b.dataset.voz) { d.fonteVoz = b.dataset.voz; document.querySelectorAll(".wz-voz").forEach(x => x.setAttribute("aria-pressed", x === b)); return; }
+    if (b.closest("#wz-gen") && b.dataset.v) { d.genero = b.dataset.v; b.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); return; }
+    if (b.dataset.a === "voltar") { passo--; pin1 = null; return tela(); }
+    if (b.dataset.a === "seguir") { passo++; return tela(); }
+  };
+  $("#gate").onsubmit = e => {
+    e.preventDefault(); d.nome = $("#wz-nome").value.trim(); d.idade = $("#wz-idade").value;
+    if (d.nome) { passo = 2; tela(); }
+  };
+  tela();
+}
+
 async function portao() {
   const h = store.get("pin", null);
+  if (!h && !perfis.lista().length) return boasVindas();
   if (!h) {
     let primeiro = null;
     const pedir = () => pinPad("Bem-vindo ao Zuli", "Crie um PIN de 4 números. Ele protege esta área, para a criança não mudar os ajustes sem querer.", async (p, msg) => {
@@ -216,6 +290,7 @@ function renderAjustes() {
       <div class="card"><h3>Contexto e voz</h3>
         <div class="field"><span>Onde a prancha está sendo usada</span>${seg("local", [["casa", "casa"], ["escola", "escola"], ["rua", "passeio"], ["saude", "saúde"], ["terapia", "terapia"]])}</div>
         ${chk("periodoAuto", "Período do dia automático (pelo relógio)")}
+        <div class="field"><span>Voz</span>${seg("fonteVoz", [["gravada", "voz do Zuli (funciona offline)"], ["aparelho", "voz do tablet/celular"]])}</div>
         <div class="field"><span>Velocidade da voz</span>${seg("velocidade", [[0.85, "devagar"], [1, "normal"], [1.12, "rápida"]])}</div>
         ${chk("treinoMicrofone", "Treino com microfone", "O Zuli escuta e avalia a fala no próprio aparelho (baixa ~80 MB na primeira vez). Desligado, o adulto avalia.")}
         <div class="field"><span>Preditor</span>${seg("preditor", [["slm", "SLM de símbolos"], ["ngram", "n-grama (comparação)"]])}</div>

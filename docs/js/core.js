@@ -16,7 +16,7 @@ export const store = {
 export const OPT_PADRAO = {
   grade: "5x3", falarCada: true, sugestoes: true, conceito: true, parceiro: false,
   local: "casa", periodoAuto: true, periodo: "manha", velocidade: 1, preditor: "slm",
-  treinoPalavras: [], treinoMicrofone: true,
+  treinoPalavras: [], treinoMicrofone: true, fonteVoz: "gravada",
 };
 
 export const perfis = {
@@ -84,7 +84,7 @@ export function montarPaginas(vocab) {
    Toca na hora pelo Web Audio. A frase é tocada palavra por palavra, sem esperar rede.
    Se faltar um arquivo, usa a voz do sistema (speechSynthesis). */
 export class Voz {
-  constructor(genero = "f", velocidade = 1) { this.g = genero === "m" ? "m" : "f"; this.vel = velocidade; this.buf = new Map(); this.ctx = null; this.fontes = []; }
+  constructor(genero = "f", velocidade = 1, sistema = false) { this.g = genero === "m" ? "m" : "f"; this.vel = velocidade; this.sistema = sistema; this.buf = new Map(); this.ctx = null; this.fontes = []; }
   desbloquear() {
     if (!this.ctx) { try { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch {} }
     if (this.ctx?.state === "suspended") this.ctx.resume();
@@ -113,6 +113,8 @@ export class Voz {
   // itens: [{chave, texto}]; aoPalavra(i) chamado quando cada item começa
   async falar(itens, { aoPalavra, aoFim } = {}) {
     this.parar(); this.desbloquear();
+    // voz do aparelho: fala a frase inteira de uma vez (entonação mais natural), menos as falas do Zuli
+    if (this.sistema && !itens.every(i => String(i.chave).startsWith("zuli_"))) return this.falarSistema(itens.map(i => i.texto).join(" "), aoFim, aoPalavra, itens);
     const bufs = await Promise.all(itens.map(it => this.carregar(it.chave)));
     if (!this.ctx || bufs.some(b => !b)) return this.falarSistema(itens.map(i => i.texto).join(" "), aoFim);
     let t = this.ctx.currentTime + 0.02; const timers = [];
@@ -125,12 +127,16 @@ export class Voz {
     });
     setTimeout(() => aoFim?.(), (t - this.ctx.currentTime) * 1000 + 50);
   }
-  falarSistema(texto, aoFim) {
+  falarSistema(texto, aoFim, aoPalavra, itens) {
     try {
       const u = new SpeechSynthesisUtterance(texto); u.lang = "pt-BR"; u.rate = 0.95 * this.vel;
       const vs = speechSynthesis.getVoices().filter(v => v.lang?.replace("_", "-").startsWith("pt"));
       const fem = /luciana|francisca|maria|vit[oó]ria|female|feminina|leila|raquel/i, masc = /daniel|felipe|ant[oô]nio|male|masculina|ricardo/i;
       u.voice = vs.find(v => (this.g === "f" ? fem : masc).test(v.name) && v.lang.includes("BR")) || vs.find(v => v.lang.includes("BR")) || vs[0] || null;
+      if (aoPalavra && itens) { // destaca cada pictograma quando o navegador avisa a palavra
+        const ini = []; let p = 0; for (const it of itens) { ini.push(p); p += it.texto.length + 1; }
+        u.onboundary = e => { let i = 0; while (i + 1 < ini.length && ini[i + 1] <= e.charIndex) i++; aoPalavra(i); };
+      }
       u.onend = () => aoFim?.(); u.onerror = () => aoFim?.();
       speechSynthesis.cancel(); speechSynthesis.speak(u);
     } catch { aoFim?.(); }
