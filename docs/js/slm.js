@@ -106,7 +106,8 @@ export function makeSLM(meta, data) {
   // Tokens de contexto que o modelo não conhece são ignorados.
   const comAdulto = "<a>" in index, maxA = meta.config.max_adulto || 10;
   function predict(ctx, prefix) {
-    const c = ["p:" + ctx.periodo, "l:" + ctx.local, "a:" + (ctx.adulto || "nenhuma")].filter(t => t in index).map(t => index[t]);
+    // d:… = estilo de fala (modelo treinado com marca de fonte): o site pede o de criança/CAA de verdade
+    const c = ["p:" + ctx.periodo, "l:" + ctx.local, "a:" + (ctx.adulto || "nenhuma"), "d:" + (meta.config.dominio || "real")].filter(t => t in index).map(t => index[t]);
     const a = comAdulto ? [index["<a>"], ...(ctx.adp || []).map(s => index[String(s)]).filter(i => i !== undefined).slice(0, maxA)] : [];
     const ids = [...c, ...a, index["<s>"], ...prefix.slice(-20).map(s => index[String(s)]).filter(i => i !== undefined)];
     const lp = forward(ids);

@@ -5,7 +5,7 @@ import { loadSLM, loadComite } from "./slm.js";
 export const DATA = "data/";
 export const END = "__end__";
 export const pic = id => `p/${id}.webp`;
-export const AUDIO_V = 4;  // aumente quando gerar o áudio de novo
+export const AUDIO_V = 5;  // aumente quando gerar o áudio de novo
 
 /* ---------------- armazenamento local ---------------- */
 export const store = {

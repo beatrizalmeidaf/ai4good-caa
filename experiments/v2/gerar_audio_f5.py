@@ -55,6 +55,30 @@ itens = [(str(v["id"]), v["label"], True) for v in vocab] + [(f"zuli_{i}", t, Fa
 def existente(chave):
     raw = subprocess.run([FFMPEG, "-loglevel", "quiet", "-i", str(OUT / f"{chave}.mp3"), "-f", "f32le", "-ac", "1", "-ar", "24000", "-"], capture_output=True).stdout
     return np.frombuffer(raw, dtype=np.float32)
+def TENTAR(falado, k):  # sementes novas; F5 devolve 24 kHz
+    a, sr = gerar(falado, 20 + k)
+    return a if sr == 24000 else checar_fim.para16k(a, sr)
+# --lista: refaz só os áudios com "ponto" lido ou som sobrando no fim (lista de checar_fim.py);
+# cada tentativa passa pela mesma checagem e o arquivo só é trocado se uma versão passar
+if "--lista" in sys.argv:
+    sys.path.insert(0, str(R)); import checar_fim
+    juiz = checar_fim.Juiz()
+    alvo_ids = set(json.load(open(R / "out" / f"fim_{PASTA}.json", encoding="utf-8"))["refazer"])
+    lab = {str(v["id"]): v["label"] for v in vocab}
+    feitos, falhas = 0, []
+    for chave in sorted(map(str, alvo_ids)):
+        texto = lab.get(chave)
+        if not texto: continue
+        aceito = None
+        for k in range(10):
+            a = TENTAR(texto.replace("_", " "), k)
+            ok, mot, cons = juiz.avaliar(a, 24000, texto)
+            if ok: aceito = a; break
+            if cons is not None: aceito = cons; break
+        if aceito is not None: (OUT / f"{chave}.mp3").write_bytes(checar_fim.mp3(aceito)); feitos += 1
+        else: falhas.append(texto)
+    print("refeitos:", feitos, "de", len(alvo_ids), "falhas:", falhas, flush=True)
+    sys.exit(0)
 ruins = []
 for chave, texto, palavra in itens:
     if REFAZER and palavra and (OUT / f"{chave}.mp3").exists():

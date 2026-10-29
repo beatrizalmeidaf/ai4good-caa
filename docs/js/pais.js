@@ -553,7 +553,7 @@ function renderAjustes() {
         <div class="field"><span>Voz do Zuli</span><div class="vozes-esc" id="vozes-esc">${[...VOZES.map(v => [v.id, v.nome, v.desc]), ["aparelho", "Voz do aparelho", "A do tablet/celular (precisa ter voz em português)"]].map(([id, n, d]) => {
           const vz = vozDoPerfil(P, O), on = id === "aparelho" ? vz.sistema : !vz.sistema && vz.pasta === id;
           return `<div class="voz-op" aria-pressed="${on}"><button type="button" class="voz-sel" data-voz="${id}"><b>${n}</b><small>${d}</small></button><button type="button" class="btn" data-ouvir="${id}">▶ ouvir</button></div>`; }).join("")}</div>
-          <a class="small" href="vozes.html">Comparar todas as vozes testadas</a></div>
+          <a class="small" href="vozes.html">Comparar todas as vozes testadas</a> · <a class="small" href="revisar.html">Revisar os áudios das palavras (ouvir e marcar os ruins)</a></div>
         <div class="field"><span>Velocidade da voz</span>${seg("velocidade", [[0.85, "devagar"], [1, "normal"], [1.12, "rápida"]])}</div>
         ${chk("treinoMicrofone", "Treino com microfone", "O Zuli escuta e avalia a fala no próprio aparelho (baixa ~40 MB no celular/tablet, ~80 MB no computador, na primeira vez). Desligado, o adulto avalia.")}
         <div class="field"><span>Preditor</span>${seg("preditor", [["slm", "SLM de símbolos"], ["ngram", "n-grama (comparação)"]])}</div>

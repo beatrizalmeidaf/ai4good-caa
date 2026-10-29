@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Zuli · Revisar áudios</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="assets/zuli-64.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Fredoka:wght@500;600&display=swap">
+<style>
+/* Revisão de ouvido: um cartão grande com a palavra atual (tocar, bom, ruim) e a lista abaixo. */
+:root {
+  --bg: #f3f6fb; --surface: #fff; --ink: #17305e; --ink-2: #5a6b88; --line: #d9e1ee; --zuli: #f9c440; --zuli-soft: #fff4d1;
+  --ok: #2e8540; --bad: #c0392b;
+  --f-display: "Fredoka", system-ui, sans-serif; --f-body: "Atkinson Hyperlegible", system-ui, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #0f1828; --surface: #172338; --ink: #e9eff9; --ink-2: #a7b4ca; --line: #2a3a55; --zuli-soft: #3a3320; --ok: #6fcf7f; --bad: #ff8a7a; color-scheme: dark; } }
+:root[data-theme="dark"] { --bg: #0f1828; --surface: #172338; --ink: #e9eff9; --ink-2: #a7b4ca; --line: #2a3a55; --zuli-soft: #3a3320; --ok: #6fcf7f; --bad: #ff8a7a; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.45 var(--f-body);
+  padding: env(safe-area-inset-top, 0px) max(16px, env(safe-area-inset-right, 0px)) env(safe-area-inset-bottom, 0px) max(16px, env(safe-area-inset-left, 0px)); }
+.wrap { max-width: 900px; margin: 0 auto; padding-block: 18px 48px; display: grid; gap: 16px; }
+h1 { font-family: var(--f-display); font-weight: 600; margin: 0; font-size: 1.6rem; }
+p { margin: 0; } .muted { color: var(--ink-2); } a { color: var(--ink); font-weight: 700; }
+.barra { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.seg { display: inline-flex; border: 2px solid var(--line); border-radius: 999px; overflow: hidden; }
+.seg button { border: 0; background: var(--surface); color: var(--ink); padding: 6px 14px; font: inherit; font-weight: 700; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.btn { border: 2px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 12px; padding: 8px 14px; font: inherit; font-weight: 700; cursor: pointer; }
+.atual { background: var(--surface); border: 2px solid var(--zuli); border-radius: 20px; padding: 16px; display: grid; gap: 14px; justify-items: center; text-align: center; }
+.atual img { width: 120px; height: 120px; object-fit: contain; }
+.atual .w { font-family: var(--f-display); font-size: 2rem; font-weight: 600; }
+.acoes { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; width: 100%; max-width: 560px; }
+.acoes button { min-height: 64px; border-radius: 16px; border: 3px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; font-size: 1.05rem; font-weight: 700; cursor: pointer; }
+.acoes .bom { border-color: var(--ok); color: var(--ok); } .acoes .ruim { border-color: var(--bad); color: var(--bad); }
+.prog { width: 100%; max-width: 560px; height: 8px; background: var(--line); border-radius: 99px; overflow: hidden; } .prog i { display: block; height: 100%; background: var(--ok); }
+.lista { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 8px; }
+.it { background: var(--surface); border: 2px solid var(--line); border-radius: 12px; padding: 6px; display: grid; justify-items: center; gap: 2px; cursor: pointer; font-size: .9rem; font-weight: 700; color: var(--ink); font-family: inherit; }
+.it img { width: 44px; height: 44px; object-fit: contain; }
+.it.bom { border-color: var(--ok); } .it.ruim { border-color: var(--bad); background: color-mix(in srgb, var(--bad) 10%, var(--surface)); }
+.it.cur { outline: 3px solid var(--zuli); }
+textarea { width: 100%; min-height: 70px; font: 13px/1.4 ui-monospace, monospace; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); padding: 8px; }
+@media (max-width: 520px) { .acoes { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div>
+    <h1>Revisar áudios</h1>
+    <p class="muted">Ouça cada palavra e marque <b>bom</b> ou <b>ruim</b> (voz estranha, palavra errada, som sobrando, "ponto" no final). As marcas ficam neste aparelho. No fim, copie a lista e mande para refazer. <a href="./">início</a></p>
+  </div>
+  <div class="barra">
+    <span class="seg" id="voz"><button type="button" data-v="f" aria-pressed="true">Feminina</button><button type="button" data-v="mc" aria-pressed="false">Masculina (criança)</button></span>
+    <span class="seg" id="filtro"><button type="button" data-f="falta" aria-pressed="true">Falta ouvir</button><button type="button" data-f="ruim" aria-pressed="false">Ruins</button><button type="button" data-f="todas" aria-pressed="false">Todas</button></span>
+    <label class="muted"><input type="checkbox" id="auto" checked> tocar sozinho</label>
+  </div>
+  <section class="atual" aria-live="polite">
+    <img id="a-img" alt="">
+    <div class="w" id="a-w">…</div>
+    <div class="acoes">
+      <button type="button" id="b-volta">◀ Voltar</button>
+      <button type="button" id="b-ouvir">▶ Ouvir</button>
+      <button type="button" class="ruim" id="b-ruim">✗ Ruim</button>
+      <button type="button" class="bom" id="b-bom">✓ Bom</button>
+    </div>
+    <div class="prog"><i id="prog"></i></div>
+    <p class="muted" id="cont"></p>
+  </section>
+  <section style="display:grid;gap:8px">
+    <div class="barra"><b>Lista para refazer</b><button type="button" class="btn" id="b-copiar">Copiar</button><span class="muted" id="copiado"></span></div>
+    <textarea id="saida" readonly></textarea>
+  </section>
+  <div class="lista" id="lista"></div>
+</div>
+<script type="module">
+import { AUDIO_V, pic } from "./js/core.js";
+const $ = s => document.querySelector(s);
+const ler = k => { try { return JSON.parse(localStorage.getItem(k)) || {}; } catch { return {}; } };
+const gravar = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
+const vocab = await fetch("data/vocab.json").then(r => r.json());
+let voz = "f", filtro = "falta", marcas = ler("zuli-revisao-f"), fila = [], pos = 0;
+const audio = new Audio(); audio.setAttribute("playsinline", "");
+const tocar = () => { const w = fila[pos]; if (!w) return; audio.src = `audio/${voz}/${w.id}.mp3?v=${AUDIO_V}`; audio.play().catch(() => {}); };
+function montarFila() {
+  fila = vocab.filter(w => filtro === "todas" || (filtro === "ruim" ? marcas[w.id] === "ruim" : !marcas[w.id]));
+  pos = Math.min(pos, Math.max(0, fila.length - 1));
+}
+function render() {
+  const w = fila[pos], feitas = vocab.filter(x => marcas[x.id]).length, ruins = vocab.filter(x => marcas[x.id] === "ruim");
+  $("#a-w").textContent = w ? w.label : "Tudo ouvido nesta lista"; $("#a-img").src = w ? pic(w.id) : "assets/zuli.png";
+  $("#prog").style.width = (100 * feitas / vocab.length) + "%";
+  $("#cont").textContent = `${feitas} de ${vocab.length} ouvidas · ${ruins.length} ruins`;
+  $("#saida").value = ruins.length ? JSON.stringify({ voz, ruins: ruins.map(x => [x.id, x.label]) }) : "";
+  $("#lista").innerHTML = fila.slice(0, 400).map((x, i) => `<button type="button" class="it ${marcas[x.id] || ""} ${i === pos ? "cur" : ""}" data-i="${i}"><img src="${pic(x.id)}" alt="" loading="lazy">${x.label}</button>`).join("");
+}
+function marcar(m) {
+  const w = fila[pos]; if (!w) return;
+  marcas[w.id] = m; gravar("zuli-revisao-" + voz, marcas);
+  if (filtro === "falta") montarFila(); else pos = Math.min(pos + 1, fila.length - 1);
+  render(); if ($("#auto").checked) setTimeout(tocar, 150);
+}
+$("#b-bom").onclick = () => marcar("bom"); $("#b-ruim").onclick = () => marcar("ruim");
+$("#b-ouvir").onclick = tocar;
+$("#b-volta").onclick = () => { pos = Math.max(0, pos - 1); render(); tocar(); };
+$("#lista").onclick = e => { const b = e.target.closest("[data-i]"); if (!b) return; pos = +b.dataset.i; render(); tocar(); };
+$("#voz").onclick = e => { const b = e.target.closest("button"); if (!b) return; voz = b.dataset.v; marcas = ler("zuli-revisao-" + voz);
+  document.querySelectorAll("#voz button").forEach(x => x.setAttribute("aria-pressed", x === b)); pos = 0; montarFila(); render(); };
+$("#filtro").onclick = e => { const b = e.target.closest("button"); if (!b) return; filtro = b.dataset.f;
+  document.querySelectorAll("#filtro button").forEach(x => x.setAttribute("aria-pressed", x === b)); pos = 0; montarFila(); render(); };
+$("#b-copiar").onclick = async () => { try { await navigator.clipboard.writeText($("#saida").value); $("#copiado").textContent = "copiado"; } catch { $("#saida").select(); } };
+addEventListener("keydown", e => { if (e.key === "ArrowRight" || e.key === "b") marcar("bom"); if (e.key === "ArrowLeft" || e.key === "r") marcar("ruim"); if (e.key === " ") { e.preventDefault(); tocar(); } });
+montarFila(); render();
+</script>
+</body>
+</html>
