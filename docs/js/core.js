@@ -193,7 +193,9 @@ export class Voz {
 export class Preditor {
   constructor(vocab, by, p) { this.vocab = vocab; this.by = by; this.p = p; this.slm = null; this.ngram = null; this.pessoal = store.get(`pessoal-${p.id}`, { n: 0, bi: {}, tri: {} }); }
   async iniciar() {
-    try { this.slm = await loadComite(DATA); } catch (e) { console.warn("SLM indisponível", e); await this.carregarNgram(); }
+    // começa com 1 modelo (rápido); os outros 2 do comitê chegam depois, sem disputar a rede com o áudio
+    try { this.slm = await loadSLM(DATA); } catch (e) { console.warn("SLM indisponível", e); await this.carregarNgram(); return; }
+    setTimeout(() => loadComite(DATA).then(c => { if (c.membros > 1) this.slm = c; }).catch(() => {}), 6000);
   }
   async carregarNgram() { if (!this.ngram) this.ngram = await fetch(DATA + "ngram.json").then(r => r.json()); }
   ngramProbs(ctx, prefix) {
