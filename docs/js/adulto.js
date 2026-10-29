@@ -10,6 +10,32 @@ export const podeOuvir = () => !!Nativo || (!movel && !!navigator.mediaDevices?.
 export const precisaBaixar = () => !Nativo;
 let asrP = null;
 
+// Pede acesso ao microfone (a janela do navegador "Permitir microfone?"). Lança um erro com o motivo em português.
+export async function pedirMicrofone() {
+  if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia)
+    throw new Error("Este navegador não dá acesso ao microfone. Abra o link no Chrome (Android) ou no Safari (iPhone/iPad), não dentro do WhatsApp ou Instagram.");
+  try {
+    const st = await navigator.mediaDevices.getUserMedia({ audio: true });
+    st.getTracks().forEach(t => t.stop());
+  } catch (e) {
+    if (e.name === "NotAllowedError" || e.name === "SecurityError")
+      throw new Error("O microfone está bloqueado para este site. No Chrome: toque no ícone ao lado do endereço → Permissões → Microfone → Permitir. No iPhone: Ajustes → Safari → Microfone → Permitir. Depois recarregue a página.");
+    if (e.name === "NotFoundError" || e.name === "OverconstrainedError") throw new Error("Não achei microfone neste aparelho.");
+    if (e.name === "NotReadableError") throw new Error("Outro app está usando o microfone. Feche-o e tente de novo.");
+    throw new Error("Não consegui abrir o microfone (" + e.name + ").");
+  }
+}
+export async function microfoneLiberado() {
+  try { return (await navigator.permissions.query({ name: "microphone" })).state === "granted"; } catch { return false; }
+}
+const ERRO_FALA = {
+  "not-allowed": "O microfone está bloqueado para este site. Libere nas permissões do navegador e recarregue a página.",
+  "service-not-allowed": "O reconhecimento de fala do aparelho está desligado. No iPhone: Ajustes → Geral → Teclado → Ativar Ditado. Ou use o ✎ para escrever.",
+  "audio-capture": "Não consegui usar o microfone. Feche outros apps que estejam usando e tente de novo.",
+  "network": "O reconhecimento de fala precisa de internet agora. Ou use o ✎ para escrever.",
+  "language-not-supported": "O reconhecimento de fala deste aparelho não tem português. Use o ✎ para escrever.",
+};
+
 export function carregarEscuta(progresso) {
   if (Nativo) return Promise.resolve(null);
   if (asrP) return asrP;
@@ -37,7 +63,7 @@ export async function comecarEscuta() {
     return async function parar() {
       try { r.stop(); } catch {}
       await Promise.race([acabou, new Promise(res => setTimeout(res, 2500))]);
-      if (!texto && erro && erro !== "no-speech" && erro !== "aborted") throw new Error(erro);
+      if (!texto && erro && erro !== "no-speech" && erro !== "aborted") throw new Error(ERRO_FALA[erro] || "Não entendi (" + erro + "). Use o ✎ para escrever.");
       return texto;
     };
   }

@@ -399,12 +399,17 @@ function renderFoto() {
   $("#v-foto").innerHTML = `
     <div class="card"><h3>Prancha por foto</h3>
       <p class="small muted">Tire uma foto do lugar (zoológico, festa, parque, consultório). O Zuli olha a foto <b>neste aparelho</b> e sugere os desenhos que combinam com a cena. Você revisa e salva: vira uma aba nova no fim da prancha de ${esc(P.nome)}. A foto não é enviada para lugar nenhum.</p>
-      <label class="btn primary big" for="foto-in" style="justify-self:start">Tirar ou escolher foto</label>
-      <input type="file" id="foto-in" accept="image/*" capture="environment" hidden>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <label class="btn primary big" for="foto-cam">Tirar foto</label>
+        <label class="btn big" for="foto-in">Escolher das fotos</label>
+      </div>
+      <input type="file" id="foto-cam" accept="image/*" capture="environment" hidden>
+      <input type="file" id="foto-in" accept="image/*" hidden>
       <div id="foto-area"></div></div>
     ${lista.length ? `<div class="card"><h3>Pranchas por foto salvas</h3>${lista.map((f, i) => `<div class="pf-item"><img src="${f.thumb}" alt=""><div><b>${esc(f.nome)}</b><div class="small muted">${f.ids.length} desenhos</div></div>
       <button type="button" class="btn perigo" data-rmf="${i}">Tirar</button></div>`).join("")}</div>` : ""}`;
   $("#v-foto").onclick = e => { const b = e.target.closest("[data-rmf]"); if (!b) return; O.pranchasFoto = lista.filter((_, i) => i !== +b.dataset.rmf); perfis.salvarOpt(P, O); renderFoto(); };
+  $("#foto-cam").onchange = e => $("#foto-in").onchange(e);
   $("#foto-in").onchange = async e => {
     const f = e.target.files[0]; if (!f) return;
     const area = $("#foto-area");

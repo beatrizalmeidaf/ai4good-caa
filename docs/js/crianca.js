@@ -186,6 +186,12 @@ function ligarMicAdulto() {
     e.preventDefault(); voz.desbloquear(); segurando = true;
     mod ??= await import("./adulto.js");
     if (!mod.podeOuvir()) return renderParceiro("Use ✎ para escrever");
+    // 1º toque: pede o microfone (a janela de permissão aparece aqui, sem precisar segurar)
+    if (!S.micOk && !(S.micOk = await mod.microfoneLiberado())) {
+      segurando = false;
+      try { await mod.pedirMicrofone(); S.micOk = true; return renderParceiro("Microfone liberado! Segure e fale"); }
+      catch (err) { renderParceiro("Microfone indisponível · use ✎"); return alert(err.message); }
+    }
     // computador sem ditado: baixa o Whisper antes (só uma vez), sem gravar ainda
     if (mod.precisaBaixar() && !S.escutaPronta) {
       try { await mod.carregarEscuta(p => renderParceiro(`Baixando ${Math.round(p * 100)}%`)); S.escutaPronta = true; return renderParceiro("Pronto! Segure e fale"); }
@@ -195,7 +201,7 @@ function ligarMicAdulto() {
       const p = await mod.comecarEscuta();
       if (!segurando) { p().catch(() => {}); return renderParceiro("Segure enquanto fala"); }   // soltou antes de o microfone abrir
       parar = p; renderParceiro("ouvindo");
-    } catch { parar = null; renderParceiro("Sem microfone · use ✎"); }
+    } catch (err) { parar = null; renderParceiro("Microfone indisponível · use ✎"); if (err?.message) alert(err.message); }
   });
   const soltar = async () => {
     segurando = false;
@@ -205,7 +211,7 @@ function ligarMicAdulto() {
       const texto = await p();
       if (!texto) return renderParceiro("Não ouvi · segure e fale");
       await usarFalaDoAdulto(texto);
-    } catch (err) { console.warn(err); renderParceiro(String(err.message).includes("not-allowed") ? "Microfone bloqueado · use ✎" : "Não entendi · use ✎"); }
+    } catch (err) { console.warn(err); renderParceiro("Não entendi · use ✎"); if (err.message?.length > 30) alert(err.message); }
   };
   ["pointerup", "pointercancel"].forEach(ev => el.addEventListener(ev, soltar));
   el.addEventListener("pointerleave", e => { if (e.target === el) soltar(); });
