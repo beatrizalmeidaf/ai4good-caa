@@ -10,10 +10,12 @@ from kokoro import KPipeline
 R = pathlib.Path(__file__).resolve().parent
 DOCS = R.parent.parent / "docs"
 vocab = json.load(open(DOCS / "data" / "vocab.json"))
+import os
 VOZES = {"f": "pf_dora", "m": "pm_alex"}
+if os.environ.get("SO_VOZ"): VOZES = {os.environ["SO_VOZ"]: VOZES[os.environ["SO_VOZ"]]}  # gera só uma voz
 ZULI = ["Oi! Eu sou o Zuli!", "Escute.", "Agora é a sua vez!", "Muito bem!", "Isso! Você conseguiu!",
         "Quase! Vamos tentar de novo?", "Vamos tentar de novo.", "Não ouvi. Fala mais perto?", "Vamos treinar?", "Acabou! Parabéns!"]
-json.dump(ZULI, open(DOCS / "data" / "zuli_falas.json", "w"), ensure_ascii=False)
+json.dump(ZULI, open(DOCS / "data" / "zuli_falas.json", "w", encoding="utf-8"), ensure_ascii=False)
 
 def mp3(audio, sr=24000):
     # corta silêncio nas pontas e normaliza
@@ -43,6 +45,7 @@ for g, voz in VOZES.items():
         if a is None: falhas.append(v["label"]); continue
         f.write_bytes(mp3(a))
     for i, t in enumerate(ZULI):
+        if (out / f"zuli_{i}.mp3").exists(): continue
         (out / f"zuli_{i}.mp3").write_bytes(mp3(synth(t, voz)))
     print(g, "falhas:", falhas); falhas.clear()
     print(g, "ok", sum(p.stat().st_size for p in out.glob("*.mp3")) // 1024, "KB", flush=True)

@@ -12,8 +12,6 @@ __pycache__/
 experiments/v1/cache/
 experiments/v2/out/
 
-# vozes de referência para clonagem (podem ser de crianças reais: não publicar sem autorização)
+# gravações de referência usadas para clonar vozes (as amostras geradas ficam em docs/vozes)
 clonar_vozes/
-docs/vozes/*crianca*
-vozes/
 ideia.txt

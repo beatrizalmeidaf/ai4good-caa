@@ -63,6 +63,7 @@ def parece_verbo(label):
     return len(w) >= 1 and w[0].endswith(("ar", "er", "ir", "ôr")) and w[0] not in NAO_VERBO and len(w[0]) >= 2
 
 def pagina(m, label):
+    if not label.strip(): return "coisas", "coisa"
     cats, tags = " ".join(m["cats"]).lower(), " ".join(m["tags"]).lower(); t = m["type"]
     if label in NEG: return "conversa", "negacao"
     if label in PRONOME: return "pessoas", "pessoa"
@@ -114,8 +115,9 @@ def main(src):
     abrir = gzip.open if str(src).endswith(".gz") else open
     raw = [json.loads(l) for l in abrir(src, "rt")]
     leva2 = OUT / "frases_raw2.jsonl"  # segunda leva (mais situações e variedade)
+    if not leva2.exists() and (R / "frases2.jsonl.gz").exists(): leva2 = R / "frases2.jsonl.gz"  # versão do repositório
     if leva2.exists():
-        for l in open(leva2, encoding="utf-8"):
+        for l in (gzip.open(leva2, "rt", encoding="utf-8") if str(leva2).endswith(".gz") else open(leva2, encoding="utf-8")):
             r = json.loads(l); r["conversa"] = "L2:" + str(r.get("conversa")); raw.append(r)
     pairs = Counter((pt.strip(), en.strip()) for r in raw for pt, en in r["pictos"])
     misses = [p for p in pairs if m.map(*p)[0] is None and pairs[p] >= 2 and not p[0][:1].isupper()]
@@ -143,11 +145,14 @@ def main(src):
     # um rótulo = um pictograma: junta IDs diferentes com o mesmo rótulo no mais usado
     def clean(l): return l.replace("_", " ").strip()
     freq0 = Counter(i for r in rows for i in r["seq"])
-    canon = {}
+    # prancha estável: as palavras da versão anterior mantêm o mesmo desenho (id) e o mesmo rótulo
+    anterior = OUT / "vocab_v1.json"
+    antigos = {w["id"]: w["label"] for w in json.load(open(anterior, encoding="utf-8"))} if anterior.exists() else {}
+    rotulo = lambda pid: antigos.get(pid) or clean(lab[pid].most_common(1)[0][0])
+    canon = {l: pid for pid, l in antigos.items() if pid in freq0}
     for pid in sorted(freq0, key=lambda i: -freq0[i]):
-        l = clean(lab[pid].most_common(1)[0][0])
-        canon.setdefault(l, pid)
-    remap = {pid: canon[clean(lab[pid].most_common(1)[0][0])] for pid in freq0}
+        canon.setdefault(rotulo(pid), pid)
+    remap = {pid: canon[rotulo(pid)] for pid in freq0}
     for pid, c in remap.items():
         if pid != c: lab[c].update(lab[pid])
     for r in rows:
@@ -162,10 +167,11 @@ def main(src):
     anterior = OUT / "vocab_v1.json"
     ordem_ant = [w["id"] for w in json.load(open(anterior, encoding="utf-8"))] if anterior.exists() else []
     keep |= {i for i in ordem_ant if i in freq}
+    keep = {i for i in keep if rotulo(i)}  # sem rótulo, sem pictograma na prancha
     pos = {i: k for k, i in enumerate(ordem_ant)}
     vocab = []
     for pid in sorted(keep, key=lambda i: (pos.get(i, 10**6), -freq[i])):
-        label = clean(lab[pid].most_common(1)[0][0])
+        label = rotulo(pid)
         pg, cor = pagina(m.meta[pid], label)
         vocab.append(dict(id=pid, label=label, pagina=pg, cor=cor, freq=freq[pid], en=m.meta[pid]["en"][:3]))
     for r in rows: r["seq"] = [i if i in keep else 0 for i in r["seq"]]  # 0 = fora do vocabulário

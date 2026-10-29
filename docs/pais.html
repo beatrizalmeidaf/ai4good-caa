@@ -170,6 +170,29 @@ nav.tabs button[aria-selected="true"] { background: var(--accent); color: var(--
 .wz-cores { width: 100%; text-align: left; background: var(--bg); border-radius: 16px; padding: 10px 14px; }
 .wz-cores summary { cursor: pointer; }
 .wz-cores[open] { display: grid; gap: 10px; }
+.rot-item { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--line); }
+.rot-item:last-child { border-bottom: 0; }
+.rot-item img { width: 52px; height: 52px; background: #fff; border-radius: 10px; }
+.rot-item .h { font-family: var(--f-mono); font-variant-numeric: tabular-nums; font-size: .9rem; color: var(--ink-2); }
+.dias { display: flex; gap: 4px; flex-wrap: wrap; }
+.dias label { display: inline-grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; border: 2px solid var(--line); cursor: pointer; font-weight: 700; font-size: .85rem; }
+.dias input { display: none; }
+.dias label:has(input:checked) { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+input[type="time"] { border: 2px solid var(--line); background: var(--surface); border-radius: 10px; padding: 8px 10px; font: inherit; color: inherit; }
+.foto-prev { width: 100%; max-height: 260px; object-fit: contain; border-radius: 16px; background: var(--bg); }
+.escolha { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 8px; }
+.escolha button { border: 3px solid var(--line); background: #fff; color: #17305e; border-radius: 14px; padding: 6px 4px; cursor: pointer; display: grid; gap: 2px; justify-items: center; font-size: .8rem; font-weight: 700; }
+.escolha button img { width: 56px; height: 56px; }
+.escolha button[aria-pressed="true"] { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
+.escolha button[aria-pressed="false"] { opacity: .45; }
+.pf-item { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center; }
+.pf-item img { width: 56px; height: 56px; border-radius: 12px; object-fit: cover; }
+.carga { height: 8px; border-radius: 4px; background: var(--line); overflow: hidden; } .carga i { display: block; height: 100%; width: 0; background: var(--zuli); }
+.vozes-esc { display: grid; gap: 8px; }
+.voz-op { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: center; border: 3px solid var(--line); border-radius: 14px; padding: 6px 8px 6px 4px; }
+.voz-op[aria-pressed="true"] { border-color: var(--zuli); background: var(--zuli-soft); }
+.voz-sel { border: 0; background: none; text-align: left; cursor: pointer; display: grid; padding: 4px 8px; color: inherit; font: inherit; }
+.voz-sel small { color: var(--ink-2); }
 </style>
 </head>
 <body>
@@ -183,12 +206,16 @@ nav.tabs button[aria-selected="true"] { background: var(--accent); color: var(--
     <nav class="tabs" role="tablist">
       <button type="button" role="tab" data-v="desenvolvimento" aria-selected="true">Desenvolvimento</button>
       <button type="button" role="tab" data-v="treino">Treino de fala</button>
+      <button type="button" role="tab" data-v="rotina">Rotina</button>
+      <button type="button" role="tab" data-v="foto">Prancha por foto</button>
       <button type="button" role="tab" data-v="perfil">Criança</button>
       <button type="button" role="tab" data-v="ajustes">Ajustes</button>
       <button type="button" role="tab" data-v="guia">Guia e cores</button>
     </nav>
     <section class="view" id="v-desenvolvimento"></section>
     <section class="view" id="v-treino" hidden></section>
+    <section class="view" id="v-rotina" hidden></section>
+    <section class="view" id="v-foto" hidden></section>
     <section class="view" id="v-perfil" hidden></section>
     <section class="view" id="v-ajustes" hidden></section>
     <section class="view" id="v-guia" hidden></section>

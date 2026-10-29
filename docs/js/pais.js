@@ -1,5 +1,5 @@
 // Área dos pais: PIN, perfil da criança, painel de desenvolvimento, treino de fala e ajustes.
-import { store, perfis, registro, hashPin, carregarVocab, pic, Voz, OPT_PADRAO, exportarCrianca, importarCrianca, apagarTudo } from "./core.js";
+import { store, perfis, registro, hashPin, carregarVocab, pic, Voz, OPT_PADRAO, exportarCrianca, importarCrianca, apagarTudo, grupoDe, VOZES, vozDoPerfil } from "./core.js";
 
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -53,7 +53,7 @@ function boasVindas() {
       <h1>Como o Zuli vai falar?</h1>
       <p class="muted">Toque para ouvir e escolha.</p>
       <div class="wz-vozes">
-        <button type="button" class="wz-voz" data-voz="gravada" aria-pressed="${d.fonteVoz === "gravada"}"><b>Voz do Zuli</b><small>Gravada, ${d.genero === "m" ? "masculina" : "feminina"}. Responde na hora e funciona sem internet.</small><span class="ouvir" data-ouvir="${d.genero}">▶ ouvir</span></button>
+        <button type="button" class="wz-voz" data-voz="gravada" aria-pressed="${d.fonteVoz === "gravada"}"><b>Voz do Zuli</b><small>Gravada, ${d.genero === "m" ? "voz de menino" : "voz feminina jovem"}. Responde na hora e funciona sem internet.</small><span class="ouvir" data-ouvir="${d.genero === "m" ? "mc" : "f"}">▶ ouvir</span></button>
         <button type="button" class="wz-voz" data-voz="aparelho" aria-pressed="${d.fonteVoz === "aparelho"}"><b>Voz do tablet</b><small>A voz do próprio aparelho. Pode soar mais natural em frases longas.</small><span class="ouvir" data-ouvir="sistema">▶ ouvir</span></button>
       </div>
       <button type="button" class="btn primary big" data-a="seguir">Continuar</button></div>`;
@@ -65,7 +65,7 @@ function boasVindas() {
           if (p !== pin1) { pin1 = null; msg("Os PINs não batem. Vamos de novo."); setTimeout(tela, 1200); return; }
           store.set("pin", await hashPin(p)); sess.set(true);
           const nova = perfis.novo(d.nome, d.genero, +d.idade || null);
-          perfis.salvarOpt(nova, Object.assign(perfis.opt(nova), { fonteVoz: d.fonteVoz }));
+          perfis.salvarOpt(nova, Object.assign(perfis.opt(nova), { fonteVoz: d.fonteVoz, voz: d.genero === "m" ? "mc" : "f" }));
           passo = 4; tela();
         });
       $("#gate .card").insertAdjacentHTML("afterbegin", topo());
@@ -82,7 +82,7 @@ function boasVindas() {
   }
   $("#gate").onclick = e => {
     const b = e.target.closest("button, [data-ouvir]"); if (!b) return;
-    if (b.dataset.ouvir) { e.stopPropagation(); return b.dataset.ouvir === "sistema" ? new Voz(d.genero, 1, true).falar([{ chave: "x", texto: "Oi! Eu sou o Zuli!" }]) : voz(b.dataset.ouvir); }
+    if (b.dataset.ouvir) { e.stopPropagation(); return b.dataset.ouvir === "sistema" ? new Voz(d.genero === "m" ? "mc" : "f", 1, true).falar([{ chave: "x", texto: "Oi! Eu sou o Zuli!" }]) : voz(b.dataset.ouvir); }
     if (b.dataset.voz) { d.fonteVoz = b.dataset.voz; document.querySelectorAll(".wz-voz").forEach(x => x.setAttribute("aria-pressed", x === b)); return; }
     if (b.closest("#wz-gen") && b.dataset.v) { d.genero = b.dataset.v; b.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); return; }
     if (b.dataset.a === "voltar") { passo--; pin1 = null; return tela(); }
@@ -140,14 +140,15 @@ async function entrar() {
 }
 function cabecalho() {
   $("#h-nome").textContent = P ? `${P.nome}` : "Área dos pais";
-  $("#h-sub").textContent = P ? `${P.genero === "m" ? "menino" : "menina"}${P.idade ? `, ${P.idade} anos` : ""} · voz ${P.genero === "m" ? "masculina" : "feminina"}` : "";
+  const vz = P ? vozDoPerfil(P, perfis.opt(P)) : null;
+  $("#h-sub").textContent = P ? `${P.genero === "m" ? "menino" : "menina"}${P.idade ? `, ${P.idade} anos` : ""} · ${vz.sistema ? "voz do aparelho" : "voz " + VOZES.find(v => v.id === vz.pasta).nome.toLowerCase()}` : "";
 }
 function aba(v) {
-  if (!["desenvolvimento", "treino", "perfil", "ajustes", "guia"].includes(v)) v = "desenvolvimento";
+  if (!["desenvolvimento", "treino", "rotina", "foto", "perfil", "ajustes", "guia"].includes(v)) v = "desenvolvimento";
   document.querySelectorAll("nav.tabs button").forEach(b => b.setAttribute("aria-selected", b.dataset.v === v));
   document.querySelectorAll("section.view").forEach(s => s.hidden = s.id !== "v-" + v);
   if (!P && v !== "perfil") return;
-  ({ desenvolvimento: renderDev, treino: renderTreino, perfil: () => renderPerfil(false), ajustes: renderAjustes, guia: renderGuia })[v]();
+  ({ desenvolvimento: renderDev, treino: renderTreino, perfil: () => renderPerfil(false), ajustes: renderAjustes, guia: renderGuia, rotina: renderRotina, foto: renderFoto })[v]();
 }
 
 /* ---------------- gráficos (SVG simples) ---------------- */
@@ -177,7 +178,7 @@ function linha(vals, labels, { h = 150, titulo = "" } = {}) {
 /* ---------------- desenvolvimento ---------------- */
 const diaKey = t => { const d = new Date(t); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; }; // dia no fuso local
 const curto = d => d.slice(8, 10) + "/" + d.slice(5, 7);
-function renderDev() {
+function renderDevBase() {
   const log = registro.ler(P), frases = log.filter(e => e.tipo === "frase"), agora = Date.now();
   const el = $("#v-desenvolvimento");
   if (!frases.length) {
@@ -215,6 +216,86 @@ function renderDev() {
       <div class="frase"><time>${new Date(e.t).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })}</time>
         <div class="seq">${e.ids.map(i => V.by[i] ? `<img src="${pic(i)}" alt="${esc(V.by[i].label)}" title="${esc(V.by[i].label)}">` : "").join("")}</div>
         <small>${esc(e.ids.map(i => V.by[i]?.label).join(" "))}${e.adulto && e.adulto !== "nenhuma" ? ` · respondendo a "${ADULTO[e.adulto] || e.adulto}"` : ""}</small></div>`).join("")}</div></div>`;
+}
+
+
+/* ---------------- resumo da semana (texto para pais e terapeuta) ----------------
+   Montado por regras a partir do histórico deste aparelho: cada frase só aparece se os dados sustentam. */
+const NOME_GRUPO = { pessoas: "pessoas", acoes: "ações", sentir: "sentimentos e descrições", comida: "comida", brincar: "brincadeiras",
+  corpo: "corpo e higiene", lugares: "lugares e objetos", conversa: "conversa e perguntas" };
+const PERIODO = h => h < 12 ? "manhã" : h < 18 ? "tarde" : "noite";
+function resumoSemana() {
+  const log = registro.ler(P), agora = Date.now(), ele = P.genero === "m" ? "ele" : "ela", Ele = P.genero === "m" ? "Ele" : "Ela";
+  const sem = log.filter(e => agora - e.t < 7 * DIA), ant = log.filter(e => agora - e.t >= 7 * DIA && agora - e.t < 14 * DIA);
+  const fr = sem.filter(e => e.tipo === "frase"), frAnt = ant.filter(e => e.tipo === "frase");
+  const textos = [], sugestoes = [];
+  if (!fr.length) return { textos: [`Ainda não há frases de ${P.nome} nesta semana.`], sugestoes: ["Use a prancha junto com a criança, tocando você também nos desenhos (modelagem)."] };
+  const media = l => l.reduce((a, e) => a + e.ids.length, 0) / Math.max(1, l.length);
+  const pct = (a, b) => Math.round(100 * a / Math.max(1, b));
+  // volume e tamanho
+  let t = `Nesta semana, ${P.nome} montou ${fr.length} ${fr.length === 1 ? "frase" : "frases"} com o Zuli`;
+  if (frAnt.length) t += fr.length >= frAnt.length ? ` (${fr.length - frAnt.length >= 0 ? "+" : ""}${fr.length - frAnt.length} em relação à semana anterior)` : ` (${frAnt.length - fr.length} a menos que na semana anterior)`;
+  t += `, com ${media(fr).toFixed(1).replace(".", ",")} pictogramas por frase em média`;
+  if (frAnt.length >= 3 && media(fr) - media(frAnt) >= 0.3) t += `, frases mais longas que antes`;
+  textos.push(t + ".");
+  // iniciativa
+  const comAdulto = fr.filter(e => e.adulto && e.adulto !== "nenhuma");
+  if (comAdulto.length >= 3) textos.push(`${pct(fr.length - comAdulto.length, fr.length)}% das frases foram iniciadas por ${ele}, sem pergunta do adulto antes; as outras foram respostas.`);
+  // assuntos por período do dia
+  const porPer = {};
+  for (const e of fr) for (const id of e.ids) { const w = V.by[id]; if (!w) continue; const per = PERIODO(new Date(e.t).getHours()); (porPer[per] ??= {})[grupoDe(w)] = (porPer[per]?.[grupoDe(w)] || 0) + 1; }
+  const destaques = Object.entries(porPer).map(([per, g]) => { const tot = Object.values(g).reduce((a, b) => a + b, 0);
+    const [top, n] = Object.entries(g).filter(([k]) => !["pessoas", "acoes", "conversa"].includes(k)).sort((a, b) => b[1] - a[1])[0] || [];
+    return top && n / tot >= 0.2 && tot >= 6 ? `pela ${per}, o assunto mais frequente foi ${NOME_GRUPO[top]}` : null; }).filter(Boolean);
+  if (destaques.length) textos.push(destaques.join("; ").replace(/^p/, "P") + ".");
+  // emoções
+  const tot = fr.reduce((a, e) => a + e.ids.length, 0);
+  const sentir = fr.flatMap(e => e.ids).filter(id => V.by[id] && grupoDe(V.by[id]) === "sentir");
+  const emocoes = [...new Set(sentir.map(id => V.by[id].label))];
+  if (emocoes.length) textos.push(`${Ele} usou palavras de sentimentos e descrições ${sentir.length} ${sentir.length === 1 ? "vez" : "vezes"} (${emocoes.slice(0, 6).join(", ")}).`);
+  if (tot >= 20 && sentir.length / tot < 0.05) {
+    textos.push(`Sentimentos apareceram pouco: ${pct(sentir.length, tot)}% dos pictogramas.`);
+    sugestoes.push("Reforçar a página Sentir: nomear emoções em situações reais (\"você está bravo\") tocando o pictograma junto.");
+  }
+  // palavras novas
+  const antesIds = new Set(log.filter(e => e.tipo === "frase" && agora - e.t >= 7 * DIA).flatMap(e => e.ids));
+  const novas = [...new Set(fr.flatMap(e => e.ids))].filter(id => !antesIds.has(id) && V.by[id]);
+  if (novas.length && antesIds.size) textos.push(`Palavras usadas pela primeira vez: ${novas.slice(0, 10).map(id => V.by[id].label).join(", ")}${novas.length > 10 ? ` e mais ${novas.length - 10}` : ""}.`);
+  // sugestões da faixa
+  const pics = fr.reduce((a, e) => a + e.ids.length, 0), sug = fr.reduce((a, e) => a + (e.sug || 0), 0);
+  if (pics >= 10) textos.push(`${pct(sug, pics)}% dos pictogramas vieram das sugestões do Zuli${pct(sug, pics) < 15 ? ", o que indica que a faixa ainda é pouco usada" : ""}.`);
+  if (pics >= 10 && pct(sug, pics) < 15) sugestoes.push("Mostrar a faixa amarela de sugestões: tocar nela junto com a criança algumas vezes.");
+  // calma
+  const calma = sem.filter(e => e.tipo === "calma");
+  if (calma.length) {
+    const h = calma.map(e => new Date(e.t).getHours()), moda = h.sort((a, b) => h.filter(x => x === b).length - h.filter(x => x === a).length)[0];
+    textos.push(`O Zuli percebeu toques muito rápidos ou repetidos ${calma.length} ${calma.length === 1 ? "vez" : "vezes"} e ofereceu os atalhos de calma${calma.length >= 2 ? `, principalmente por volta das ${moda}h` : ""}.`);
+    if (calma.length >= 2) sugestoes.push(`Observar o que acontece por volta das ${moda}h (fome, cansaço, barulho, transição de atividade) e antecipar com a rotina visual.`);
+  }
+  // treino de fala
+  const tr = sem.filter(e => e.tipo === "treino");
+  if (tr.length) {
+    const ok = [...new Set(tr.filter(e => e.nota === 3).map(e => e.id))].filter(id => V.by[id]);
+    const dif = [...new Set(tr.filter(e => e.nota === 1).map(e => e.id))].filter(id => V.by[id] && !ok.includes(id));
+    textos.push(`No treino de fala foram ${tr.length} tentativas${ok.length ? `; ${ele} conseguiu bem: ${ok.slice(0, 6).map(id => V.by[id].label).join(", ")}` : ""}.`);
+    if (dif.length) sugestoes.push(`Praticar de novo: ${dif.slice(0, 5).map(id => V.by[id].label).join(", ")}.`);
+  }
+  if (!sugestoes.length) sugestoes.push("Continuar usando a prancha nas rotinas do dia e comemorar cada frase.");
+  return { textos, sugestoes };
+}
+function renderDev() {
+  renderDevBase();
+  const { textos, sugestoes } = resumoSemana();
+  const txt = `Resumo da semana — ${P.nome}\n\n${textos.join("\n")}\n\nSugestões:\n${sugestoes.map(x => "• " + x).join("\n")}\n\n(Gerado pelo Zuli a partir do uso neste aparelho.)`;
+  $("#v-desenvolvimento").insertAdjacentHTML("afterbegin", `<div class="card resumo"><div class="row" style="justify-content:space-between"><h3>Resumo da semana</h3>
+      <button type="button" class="btn" id="b-copiar">Copiar para enviar à terapeuta</button></div>
+    ${textos.map(x => `<p>${esc(x)}</p>`).join("")}
+    <p><b>Sugestões para a próxima semana</b></p><ul style="margin:0;padding-left:1.2em">${sugestoes.map(x => `<li>${esc(x)}</li>`).join("")}</ul>
+    <p class="muted small">Montado automaticamente a partir do uso neste aparelho. Não substitui a avaliação de um profissional.</p></div>`);
+  $("#b-copiar").onclick = async e => {
+    try { await navigator.clipboard.writeText(txt); e.target.textContent = "Copiado!"; }
+    catch { const ta = document.createElement("textarea"); ta.value = txt; document.body.append(ta); ta.select(); document.execCommand("copy"); ta.remove(); e.target.textContent = "Copiado!"; }
+  };
 }
 
 /* ---------------- treino ---------------- */
@@ -259,6 +340,103 @@ function renderTreino() {
   };
 }
 
+
+/* ---------------- rotina visual ---------------- */
+const DIAS = ["D", "S", "T", "Q", "Q", "S", "S"];
+function renderRotina() {
+  const r = (O.rotina || []).slice().sort((a, b) => a.inicio.localeCompare(b.inicio));
+  // sugestões aprendidas: assuntos que se repetem no mesmo horário
+  const log = registro.ler(P).filter(e => e.tipo === "frase"), nucleo = new Set(V.vocab.slice(0, 30).map(w => w.id));
+  const porHora = {};
+  for (const e of log) for (const id of e.ids) {
+    const w = V.by[id]; if (!w || nucleo.has(id) || ["pessoas", "acoes", "conversa", "sentir"].includes(grupoDe(w))) continue;
+    const h = new Date(e.t).getHours(); (porHora[h] ??= {})[id] = (porHora[h][id] || 0) + 1;
+  }
+  const aprendidas = Object.entries(porHora).flatMap(([h, c]) => { const tot = Object.values(c).reduce((a, b) => a + b, 0);
+    return Object.entries(c).filter(([id, n]) => n >= 3 && n / tot >= 0.3).map(([id, n]) => ({ h: +h, id: +id, n })); })
+    .filter(x => !r.some(i => String(i.id) === String(x.id))).sort((a, b) => b.n - a.n).slice(0, 4);
+  const hh = h => String(h).padStart(2, "0") + ":00";
+  $("#v-rotina").innerHTML = `
+    <div class="card"><h3>Rotina visual de ${esc(P.nome)}</h3>
+      <p class="small muted">Na hora de cada atividade, a prancha mostra um quadro <b>Agora</b> com o pictograma dela, sempre no mesmo lugar (à esquerda das sugestões). Saber o que vem agora diminui a ansiedade. A atividade também fica mais provável nas sugestões.</p>
+      ${r.length ? r.map((x, i) => V.by[x.id] ? `<div class="rot-item"><img src="${pic(x.id)}" alt=""><div><b>${esc(V.by[x.id].label)}</b><div class="h">${x.inicio}–${x.fim} · ${x.dias?.length && x.dias.length < 7 ? x.dias.map(d => DIAS[d]).join(" ") : "todos os dias"}</div></div>
+        <button type="button" class="btn perigo" data-rm="${i}">Tirar</button></div>` : "").join("") : `<div class="empty">Nenhuma atividade ainda. Exemplos: 12:00 almoço, 14:00 fono, 20:30 dormir.</div>`}
+    </div>
+    ${aprendidas.length ? `<div class="card"><h3>O Zuli percebeu</h3>${aprendidas.map(x => `<div class="rot-item"><img src="${pic(x.id)}" alt=""><div>Por volta das <b>${x.h}h</b>, ${esc(P.nome)} costuma falar de <b>${esc(V.by[x.id].label)}</b> <span class="muted small">(${x.n} vezes)</span></div>
+      <button type="button" class="btn" data-sug="${x.h}|${x.id}">Adicionar à rotina</button></div>`).join("")}</div>` : ""}
+    <form class="card" id="f-rot"><h3>Adicionar atividade</h3>
+      <div class="row"><input type="search" id="rot-busca" placeholder="Buscar pictograma (ex.: almoço, fono, escola)" style="flex:1" autocomplete="off"></div>
+      <div class="chips" id="rot-res"></div>
+      <div class="row"><span>Escolhido:</span><b id="rot-esc" class="muted">nenhum</b></div>
+      <div class="row"><label>Das <input type="time" id="rot-ini" value="12:00" required></label><label>às <input type="time" id="rot-fim" value="13:00" required></label></div>
+      <div class="dias">${DIAS.map((d, i) => `<label title="${["domingo", "segunda", "terça", "quarta", "quinta", "sexta", "sábado"][i]}"><input type="checkbox" value="${i}" checked>${d}</label>`).join("")}</div>
+      <div class="row"><button type="submit" class="btn primary">Adicionar</button><span class="small" id="rot-msg"></span></div>
+    </form>`;
+  let escolhido = null;
+  const salvar = () => { perfis.salvarOpt(P, O); renderRotina(); };
+  $("#rot-busca").oninput = e => { const q = e.target.value.trim().toLowerCase();
+    $("#rot-res").innerHTML = q ? V.vocab.filter(w => w.label.toLowerCase().startsWith(q)).slice(0, 8).map(w => `<button type="button" class="chip" data-esc="${w.id}"><img src="${pic(w.id)}" alt="">${esc(w.label)}</button>`).join("") : ""; };
+  $("#v-rotina").onclick = e => {
+    const b = e.target.closest("button"); if (!b) return;
+    if (b.dataset.esc) { escolhido = +b.dataset.esc; $("#rot-esc").textContent = V.by[escolhido].label; $("#rot-esc").classList.remove("muted"); }
+    if (b.dataset.rm) { O.rotina = r.filter((_, i) => i !== +b.dataset.rm); salvar(); }
+    if (b.dataset.sug) { const [h, id] = b.dataset.sug.split("|").map(Number); O.rotina = [...r, { inicio: hh(h), fim: hh(Math.min(23, h + 1)), id, dias: [] }]; salvar(); }
+  };
+  $("#f-rot").onsubmit = e => {
+    e.preventDefault();
+    if (!escolhido) { $("#rot-msg").textContent = "Escolha um pictograma."; return; }
+    const ini = $("#rot-ini").value, fim = $("#rot-fim").value;
+    if (fim <= ini) { $("#rot-msg").textContent = "O fim precisa ser depois do início."; return; }
+    const dias = [...document.querySelectorAll("#f-rot .dias input:checked")].map(i => +i.value);
+    O.rotina = [...r, { inicio: ini, fim, id: escolhido, dias: dias.length === 7 ? [] : dias }]; salvar();
+  };
+}
+
+
+/* ---------------- prancha por foto ---------------- */
+function renderFoto() {
+  const lista = O.pranchasFoto || [];
+  $("#v-foto").innerHTML = `
+    <div class="card"><h3>Prancha por foto</h3>
+      <p class="small muted">Tire uma foto do lugar (zoológico, festa, parque, consultório). O Zuli olha a foto <b>neste aparelho</b> e sugere os desenhos que combinam com a cena. Você revisa e salva: vira uma aba nova no fim da prancha de ${esc(P.nome)}. A foto não é enviada para lugar nenhum.</p>
+      <label class="btn primary big" for="foto-in" style="justify-self:start">Tirar ou escolher foto</label>
+      <input type="file" id="foto-in" accept="image/*" capture="environment" hidden>
+      <div id="foto-area"></div></div>
+    ${lista.length ? `<div class="card"><h3>Pranchas por foto salvas</h3>${lista.map((f, i) => `<div class="pf-item"><img src="${f.thumb}" alt=""><div><b>${esc(f.nome)}</b><div class="small muted">${f.ids.length} desenhos</div></div>
+      <button type="button" class="btn perigo" data-rmf="${i}">Tirar</button></div>`).join("")}</div>` : ""}`;
+  $("#v-foto").onclick = e => { const b = e.target.closest("[data-rmf]"); if (!b) return; O.pranchasFoto = lista.filter((_, i) => i !== +b.dataset.rmf); perfis.salvarOpt(P, O); renderFoto(); };
+  $("#foto-in").onchange = async e => {
+    const f = e.target.files[0]; if (!f) return;
+    const area = $("#foto-area");
+    area.innerHTML = `<img class="foto-prev" src="${URL.createObjectURL(f)}" alt="Foto escolhida"><p class="small" id="foto-st">Olhando a foto… (na primeira vez o Zuli baixa ~90 MB)</p><div class="carga"><i id="foto-bar"></i></div>`;
+    try {
+      const { analisarFoto, miniatura } = await import("./foto.js");
+      const notas = await analisarFoto(f, x => { const b = $("#foto-bar"); if (b) b.style.width = Math.round(x * 100) + "%"; });
+      const cands = notas.slice(0, 30).filter(x => V.by[x.id]).map(x => x.id), sel = new Set(cands.slice(0, 12));
+      const thumb = await miniatura(f);
+      area.innerHTML = `<img class="foto-prev" src="${thumb}" alt="" style="max-height:120px">
+        <label class="field"><span>Nome da prancha</span><input type="text" id="foto-nome" maxlength="18" value="Passeio" style="max-width:280px"></label>
+        <p class="small muted">Toque para tirar ou pôr de volta. Os mais prováveis vêm primeiro.</p>
+        <div class="escolha" id="foto-esc">${cands.map(id => `<button type="button" data-id="${id}" aria-pressed="${sel.has(id)}"><img src="${pic(id)}" alt="">${esc(V.by[id].label)}</button>`).join("")}</div>
+        <div class="row"><input type="search" id="foto-busca" placeholder="Adicionar outro desenho (ex.: girafa)" autocomplete="off"></div><div class="chips" id="foto-res"></div>
+        <div class="row"><button type="button" class="btn primary" id="foto-salvar">Salvar na prancha de ${esc(P.nome)}</button><span class="small" id="foto-msg"></span></div>`;
+      $("#foto-esc").onclick = ev => { const b = ev.target.closest("button[data-id]"); if (!b) return; const id = +b.dataset.id; sel.has(id) ? sel.delete(id) : sel.add(id); b.setAttribute("aria-pressed", sel.has(id)); };
+      $("#foto-busca").oninput = ev => { const q = ev.target.value.trim().toLowerCase();
+        $("#foto-res").innerHTML = q ? V.vocab.filter(w => w.label.toLowerCase().startsWith(q)).slice(0, 8).map(w => `<button type="button" class="chip" data-add="${w.id}"><img src="${pic(w.id)}" alt="">${esc(w.label)} +</button>`).join("") : ""; };
+      $("#foto-res").onclick = ev => { const b = ev.target.closest("[data-add]"); if (!b) return; const id = +b.dataset.add;
+        if (!cands.includes(id)) { cands.unshift(id); $("#foto-esc").insertAdjacentHTML("afterbegin", `<button type="button" data-id="${id}" aria-pressed="true"><img src="${pic(id)}" alt="">${esc(V.by[id].label)}</button>`); }
+        sel.add(id); $("#foto-esc").querySelector(`[data-id="${id}"]`)?.setAttribute("aria-pressed", "true"); };
+      $("#foto-salvar").onclick = () => {
+        const ids = cands.filter(id => sel.has(id));
+        if (!ids.length) { $("#foto-msg").textContent = "Escolha pelo menos um desenho."; return; }
+        const nova = { id: "foto-" + Date.now().toString(36), nome: $("#foto-nome").value.trim() || "Foto", ids, thumb };
+        O.pranchasFoto = [nova, ...lista].slice(0, 3); perfis.salvarOpt(P, O); renderFoto();
+        $("#foto-area").innerHTML = `<p>Pronto! A aba <b>${esc(nova.nome)}</b> está no fim da prancha de ${esc(P.nome)}. <a href="prancha.html">Abrir a prancha</a></p>`;
+      };
+    } catch (err) { console.warn(err); area.insertAdjacentHTML("beforeend", `<p class="small" style="color:var(--coral)">Não deu para analisar a foto agora (${esc(err.message || err)}). Precisa de internet na primeira vez.</p>`); }
+  };
+}
+
 /* ---------------- perfil ---------------- */
 function renderPerfil(novo) {
   const lista = perfis.lista(), el = $("#v-perfil");
@@ -284,7 +462,7 @@ function renderPerfil(novo) {
       <div class="row"><button type="button" class="btn perigo" id="p-apagar-tudo">Apagar tudo deste aparelho</button></div></div>`;
   let gen = (novo || !P) ? "f" : P.genero;
   $("#p-gen").onclick = e => { const b = e.target.closest("button"); if (!b) return; gen = b.dataset.v; $("#p-gen").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); };
-  $("#p-ouvir").onclick = () => { const v = new Voz(gen); v.desbloquear(); v.falar([{ chave: "zuli_0", texto: "Oi! Eu sou o Zuli!" }]); };
+  $("#p-ouvir").onclick = () => { const v = new Voz(gen === "m" ? "mc" : "f"); v.desbloquear(); v.falar([{ chave: "zuli_0", texto: "Oi! Eu sou o Zuli!" }]); };
   $("#f-perfil").onsubmit = e => {
     e.preventDefault();
     const nome = $("#p-nome").value.trim(), idade = +$("#p-idade").value || null; if (!nome) return;
@@ -360,13 +538,16 @@ function renderAjustes() {
         ${chk("sugestoes", "Mostrar as sugestões do Zuli")}
         ${chk("conceito", "Marcar a página provável do próximo pictograma", "Um ponto amarelo aparece na página onde deve estar a próxima palavra.")}
         ${chk("falarCada", "Falar cada pictograma ao tocar")}
+        ${chk("calma", "Atalhos de calma", "Se a criança tocar muito rápido ou repetir o mesmo desenho várias vezes, as sugestões viram pausa, parar, silêncio, abraço, música e ajuda por 20 segundos.")}
         ${chk("parceiro", "Mostrar a linha \"Adulto\"", "Você toca no que perguntou (\"o que você quer?\", \"onde dói?\") e as sugestões se adaptam.")}
       </div>
       <div class="card"><h3>Contexto e voz</h3>
         <div class="field"><span>Onde a prancha está sendo usada</span>${seg("local", [["casa", "casa"], ["escola", "escola"], ["rua", "passeio"], ["saude", "saúde"], ["terapia", "terapia"]])}</div>
         ${chk("periodoAuto", "Período do dia automático (pelo relógio)")}
-        <div class="field"><span>Voz</span>${seg("fonteVoz", [["gravada", "voz do Zuli (funciona offline)"], ["aparelho", "voz do tablet/celular"]])}</div>
-        <p class="small"><a href="vozes.html">Ouvir e comparar as vozes que estamos testando</a></p>
+        <div class="field"><span>Voz do Zuli</span><div class="vozes-esc" id="vozes-esc">${[...VOZES.map(v => [v.id, v.nome, v.desc]), ["aparelho", "Voz do aparelho", "A do tablet/celular (precisa ter voz em português)"]].map(([id, n, d]) => {
+          const vz = vozDoPerfil(P, O), on = id === "aparelho" ? vz.sistema : !vz.sistema && vz.pasta === id;
+          return `<div class="voz-op" aria-pressed="${on}"><button type="button" class="voz-sel" data-voz="${id}"><b>${n}</b><small>${d}</small></button><button type="button" class="btn" data-ouvir="${id}">▶ ouvir</button></div>`; }).join("")}</div>
+          <a class="small" href="vozes.html">Comparar todas as vozes testadas</a></div>
         <div class="field"><span>Velocidade da voz</span>${seg("velocidade", [[0.85, "devagar"], [1, "normal"], [1.12, "rápida"]])}</div>
         ${chk("treinoMicrofone", "Treino com microfone", "O Zuli escuta e avalia a fala no próprio aparelho (baixa ~80 MB na primeira vez). Desligado, o adulto avalia.")}
         <div class="field"><span>Preditor</span>${seg("preditor", [["slm", "SLM de símbolos"], ["ngram", "n-grama (comparação)"]])}</div>
@@ -385,6 +566,12 @@ function renderAjustes() {
     s.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
   });
   el.querySelectorAll("input[type=checkbox]").forEach(c => c.onchange = () => { O[c.dataset.k] = c.checked; perfis.salvarOpt(P, O); });
+  $("#vozes-esc").onclick = e => {
+    const o = e.target.closest("[data-ouvir]"), sel = e.target.closest("[data-voz]");
+    if (o) { const id = o.dataset.ouvir, v = new Voz(id === "aparelho" ? vozDoPerfil(P, O).pasta : id, O.velocidade, id === "aparelho"); v.desbloquear(); return v.falar([{ chave: "zuli_0", texto: "Oi! Eu sou o Zuli!" }]); }
+    if (sel) { const id = sel.dataset.voz; if (id === "aparelho") O.fonteVoz = "aparelho"; else { O.fonteVoz = "gravada"; O.voz = id; }
+      perfis.salvarOpt(P, O); cabecalho(); renderAjustes(); }
+  };
   const confirmar = (b, f) => { if (b.dataset.conf !== "1") { b.dataset.conf = "1"; b.dataset.txt = b.textContent; b.textContent = "Toque de novo para confirmar"; return; } f(); b.textContent = b.dataset.txt; b.dataset.conf = ""; };
   $("#a-aprend").onclick = e => confirmar(e.target, () => { store.del(`pessoal-${P.id}`); $("#a-msg").textContent = "Aprendizado apagado."; });
   $("#a-hist").onclick = e => confirmar(e.target, () => { store.del(`log-${P.id}`); $("#a-msg").textContent = "Histórico apagado."; });

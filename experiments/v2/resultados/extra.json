@@ -1,19 +1,18 @@
 {
- "lead": "O Zuli sugere o próximo pictograma com um modelo de 152 mil parâmetros (300 KB) que roda no próprio tablet em cerca de 1 ms. Em conversas que nunca viu, o pictograma certo está entre as 6 sugestões em 63% das vezes, e em 68% nas situações novas.",
+ "lead": "O Zuli sugere o próximo pictograma com um modelo de 180 mil parâmetros (350 KB) que roda no próprio tablet em cerca de 5 ms por toque. Em conversas que nunca viu, o pictograma certo está entre as 6 sugestões em 65,7% das vezes.",
  "conclusoes": [
-  "O modelo pequeno ganhou dos maiores. Com 0,15 milhão de parâmetros, o SLM empatou ou superou versões de 0,6 e 1,8 milhão em todos os testes. O limite agora são os dados, não o tamanho do modelo. Para o tablet isso é bom: o arquivo tem 300 KB e a previsão leva 1 ms.",
-  "O contexto da conversa muda as sugestões de forma útil. Quando o adulto pergunta \"onde?\" na saúde, as primeiras sugestões são joelho, braço, dor e perna. Com \"como você está?\" e \"eu\", aparecem cansado, feliz e sentir.",
-  "O SLM prevê o fim da frase em 96% das vezes e oferece o botão falar na barra no momento certo.",
-  "O conceito certo (a página da prancha onde está o próximo pictograma) é o mais provável em 59 a 61% dos casos e está entre os 3 mais prováveis em 83 a 85%. É isso que acende o ponto amarelo no trilho de páginas.",
-  "As mensagens reais de usuários de CAA, adaptadas para criança, são o teste mais difícil: 29,5% de acerto, contra 17% dos mais usados. Colocar metade delas no treino subiu o acerto de 21% para 29,5%. Dados de uso real devem ser o maior ganho a seguir.",
-  "A economia de toques é modesta (8 a 10%) porque as palavras mais frequentes já estão na página Núcleo, onde custam 1 toque com ou sem sugestão. O ganho maior é nas palavras fora do Núcleo, que custariam 2 ou mais toques.",
-  "Na primeira rodada, modelos de linguagem genéricos (0,36 a 1,7 bilhão de parâmetros, sem treino) acertaram no máximo 22% e exigiam baixar 500 MB. Treinar um modelo de símbolos dedicado foi o caminho.",
-  "Voz: cada pictograma tem áudio pré-gravado com voz neural (Kokoro, feminina e masculina), tocado na hora e sem internet. O Whisper reconhece 65,0% (feminina) e 64,5% (masculina) das palavras soltas. Parte dos erros é do próprio Whisper com palavras isoladas e sotaque brasileiro. Falta uma escuta humana por amostragem."
+  "A segunda leva de conversas (situações novas, idade e interesse da criança, menos frases repetidas) melhorou as previsões nas situações variadas: de 39,8% para 47,9% nas conversas novas e de 39,4% para 44,2% nas situações que o modelo nunca viu.",
+  "Nos testes da primeira rodada também subiu: 63,0% → 65,7% (conversas) e 67,6% → 69,4% (situações).",
+  "O modelo pequeno continua o melhor: as versões maiores não ganharam com o dobro de dados. O limite segue nos dados, não no tamanho.",
+  "A prancha ficou estável entre as versões: as 768 palavras anteriores continuam no mesmo lugar, com o mesmo desenho e o mesmo rótulo; as 431 novas entraram no fim de cada categoria.",
+  "O botão falar aparece nas sugestões quando a frase acabou em 97,3% das vezes, e a página certa (conceito) é a mais provável em cerca de 60%.",
+  "Mensagens reais de usuários de CAA adaptadas continuam o teste mais difícil (27,4%). Dados de uso real devem ser o maior ganho a seguir.",
+  "Voz: a voz feminina (XTTS, tom jovem) é reconhecida pelo Whisper em ~90% das palavras, contra ~60% da voz anterior. A voz masculina de criança (F5-TTS) chegou a 83% no teste."
  ],
  "metodo": [
-  "Vocabulário: catálogo completo do ARASAAC (13.891 pictogramas), mapeado pelo termo em inglês e conferido pelo termo em português. Resolve as diferenças pt-PT/pt-BR (banheiro, suco, sorvete). Ficaram 769 pictogramas em 14 páginas, com cores da chave Fitzgerald.",
-  "Conversas: o Qwen3-30B-A3B gerou conversas curtas entre adulto e criança em 62 situações do dia a dia (casa, escola, passeio, saúde, terapia) e 11 tipos de fala do adulto. Também adaptou 2,6 mil mensagens reais de usuários de CAA (turk9k e UNL-AAC-Phrases) e descartou as que eram assunto de adulto.",
-  "Total: 27.992 frases. Treino com 19.420. Testes com conversas novas (2.250), 6 situações que ficaram de fora do treino (2.531) e metade das mensagens reais adaptadas.",
-  "Modelo: transformer de 2 camadas sobre pictogramas, com período do dia, lugar e fala do adulto como contexto. Prevê o próximo pictograma e o fim da frase. Roda em JavaScript puro, sem bibliotecas."
+  "Vocabulário: catálogo completo do ARASAAC, mapeado pelo termo em inglês e conferido pelo termo em português. 1.199 pictogramas em 9 categorias, com cores da chave Fitzgerald.",
+  "Conversas: o Qwen3-30B-A3B gerou conversas curtas entre adulto e criança em 122 situações do dia a dia e 11 tipos de fala do adulto, em duas levas, e adaptou mensagens reais de usuários de CAA (turk9k e UNL-AAC-Phrases).",
+  "Total: 52.372 frases. Testes com conversas e situações que ficaram fora do treino em cada leva. e metade das mensagens reais adaptadas.",
+  "Modelo: transformer de 2 camadas sobre pictogramas, com período do dia, lugar e fala do adulto como contexto. Prevê o próximo pictograma e o fim da frase. Roda em JavaScript puro."
  ]
 }

@@ -1,0 +1,103 @@
+{
+ "kokoro-f": {
+  "acerto": 60.1,
+  "n": 148,
+  "ms_por_palavra": 9.0
+ },
+ "kokoro-m": {
+  "acerto": 64.9,
+  "n": 148,
+  "ms_por_palavra": 9.0
+ },
+ "piper-faber": {
+  "acerto": 30.4,
+  "n": 148,
+  "ms_por_palavra": 49.0
+ },
+ "piper-cadu": {
+  "acerto": 55.4,
+  "n": 148,
+  "ms_por_palavra": 81.0
+ },
+ "piper-jeff": {
+  "acerto": 23.0,
+  "n": 148,
+  "ms_por_palavra": 116.0
+ },
+ "xtts-11247": {
+  "acerto": 87.8,
+  "n": 148,
+  "ms_por_palavra": 170.0
+ },
+ "xtts-12114": {
+  "acerto": 81.1,
+  "n": 148,
+  "ms_por_palavra": 136.0
+ },
+ "xtts-12287": {
+  "acerto": 82.4,
+  "n": 148,
+  "ms_por_palavra": 142.0
+ },
+ "xtts-5739": {
+  "acerto": 77.7,
+  "n": 148,
+  "ms_por_palavra": 165.0
+ },
+ "xtts-7925": {
+  "acerto": 89.9,
+  "n": 148,
+  "ms_por_palavra": 168.0
+ },
+ "f5-crianca-f": {
+  "acerto": 77.7,
+  "n": 148,
+  "ms_por_palavra": 772,
+  "ref_text": "eu quero ir ao parque brincar com os cachorros e depois tomar sorvete."
+ },
+ "f5-crianca-m": {
+  "acerto": 74.3,
+  "n": 148,
+  "ms_por_palavra": 454,
+  "ref_text": "eu quero ir ao parque brincar com os cachorros e depois tomar sorvete!"
+ },
+ "xtts-crianca-f": {
+  "acerto": 45.9,
+  "n": 148,
+  "ms_por_palavra": 171.0
+ },
+ "xtts-crianca-m": {
+  "acerto": 19.6,
+  "n": 148,
+  "ms_por_palavra": 222.0
+ },
+ "f5-11247": {
+  "acerto": 75.7,
+  "n": 148,
+  "ms_por_palavra": 502,
+  "ref_text": "foi-se, cortou o pescoço do animal. a cabeça ficou segura na carne da vítima, e das artérias rotas jorrava o sangue. não havia mais"
+ },
+ "f5-5739": {
+  "acerto": 47.3,
+  "n": 148,
+  "ms_por_palavra": 549,
+  "ref_text": "ah, é até bom que aprendas em nossa escola a ciência do casamento. para quê? perguntou o tito, mineando o chicotinho. pate, casares! hum, fez tito."
+ },
+ "f5-7925": {
+  "acerto": 81.1,
+  "n": 148,
+  "ms_por_palavra": 495,
+  "ref_text": "filho legítimo de fermilho, júlio de moraes carneiro, funcionário em angra dos reis, aí nasceu, em vinte de agosto. na terra do seu verso,"
+ },
+ "f5-crianca-m2": {
+  "acerto": 83.1,
+  "n": 148,
+  "ms_por_palavra": 446,
+  "ref_text": "eu quero brincar de bola no parque e depois tomar sorvete de chocolate."
+ },
+ "xtts-crianca-m2": {
+  "acerto": 68.9,
+  "n": 148,
+  "ms_por_palavra": 182.0
+ }
+}

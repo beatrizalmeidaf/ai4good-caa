@@ -1,46 +1,74 @@
 # Zuli
 
-Prancha de comunicação alternativa (CAA) para crianças não verbais, com pictogramas do ARASAAC
+Prancha de comunicação alternativa (CAA) para crianças que ainda não falam, com pictogramas do ARASAAC
 e sugestão do próximo pictograma por um modelo de linguagem pequeno que roda no próprio aparelho.
 Prova de conceito para o AI4Good.
 
-**Site:** https://beatrizalmeidaf.github.io/ai4good-caa/
+**Site:** https://beatrizalmeidaf.github.io/ai4good-caa/ · **Prancha (para salvar no tablet):** https://beatrizalmeidaf.github.io/ai4good-caa/prancha.html
 
 ## O que tem
 
-- **Prancha da criança** (`docs/index.html`): pictogramas em posição fixa, faixa de 6 sugestões,
-  o Zuli fala a frase quando a criança toca nele, voz feminina ou masculina conforme o perfil.
-- **Treino de fala** (botão Treinar): o Zuli fala a palavra, a criança repete e o reconhecimento de fala
-  (Whisper, no navegador) dá o retorno. Nada é gravado nem enviado.
-- **Área dos pais** (`docs/pais.html`, protegida por PIN): perfil da criança, painel de desenvolvimento
-  (frases por dia, vocabulário, palavras mais usadas), progresso do treino e ajustes.
-- **Resultados** (`docs/resultados.html`): como o modelo foi treinado e avaliado.
+- **Página inicial** (`docs/index.html`): abre a prancha de cada criança ou a área dos adultos. Sem cadastro nem login.
+- **Prancha da criança** (`docs/prancha.html`)
+  - grade fixa: as palavras nunca mudam de lugar (planejamento motor);
+  - faixa de 6 sugestões que muda a cada toque, e o que continua sugerido fica no mesmo espaço;
+  - o Zuli fala a frase quando a criança toca nele;
+  - quadro **Agora** com a atividade da rotina;
+  - **atalhos de calma** (pausa, parar, silêncio, abraço, música, ajuda) quando os toques ficam muito rápidos ou repetidos;
+  - abas de **pranchas por foto**.
+- **Treino de fala**: o Zuli fala a palavra, a criança repete e o Whisper (no navegador) verifica se combina com a palavra pedida.
+- **Área dos adultos** (`docs/pais.html`, protegida por PIN)
+  - **resumo da semana** em texto para pais e terapeuta;
+  - painel de desenvolvimento e progresso do treino;
+  - rotina visual, com sugestões aprendidas do uso;
+  - **prancha por foto**: o CLIP olha a foto no aparelho e sugere os pictogramas da cena;
+  - escolha da voz, ajustes, guia das cores;
+  - levar os dados para outro aparelho (arquivo `.zuli.json`) e trocar de família.
+- **Resultados** (`docs/resultados.html`) e **comparação de vozes** (`docs/vozes.html`).
 
-Tudo fica no aparelho (localStorage). Depois do primeiro acesso, funciona offline.
+Tudo fica no aparelho (localStorage). Depois do primeiro acesso, funciona sem internet.
+
+## Modelo
+
+Transformer de 2 camadas sobre pictogramas (180 mil parâmetros, 350 KB). Usa como contexto o período do dia,
+o lugar e a fala do adulto, e prevê o próximo pictograma e o fim da frase. Roda em JavaScript puro, em ~5 ms por toque.
+
+| Acerto nas 6 sugestões (frases nunca vistas) | Mais usados | N-grama | SLM |
+|---|---|---|---|
+| Conversas novas | 33% | 60% | **66%** |
+| Situações novas | 34% | 65% | **69%** |
+| Conversas variadas (2ª leva) | 25% | 44% | **48%** |
+| Situações novas (2ª leva) | 26% | 40% | **44%** |
+
+## Vozes
+
+| Voz | Como foi feita | Palavras reconhecidas pelo Whisper |
+|---|---|---|
+| Feminina | XTTS-v2 clonando uma leitura do LibriVox (falante 12114), tom 3 semitons mais alto | ~90% |
+| Masculina (criança) | F5-TTS pt-BR clonando uma voz de menino gerada por IA | ~83% |
+| Masculina (adulto) | Kokoro-82M | ~65% |
+| Voz do aparelho | speechSynthesis do navegador | depende do aparelho |
 
 ## Organização
 
 ```
-docs/                 site publicado no GitHub Pages
-  index.html          prancha da criança
-  pais.html           área dos pais
-  resultados.html     resultados dos experimentos
-  js/                 core.js (perfis, áudio, previsão), slm.js (modelo em JS puro), crianca.js, treino.js, pais.js
-  data/               vocabulário, modelo (slm.json + slm.bin, float16), n-grama de reserva
-  p/                  pictogramas (WebP 160 px)
-  audio/f, audio/m    áudio de cada pictograma, voz feminina e masculina
+docs/                    site publicado no GitHub Pages
+  index.html             página inicial
+  prancha.html           prancha da criança
+  pais.html              área dos adultos
+  resultados.html        resultados · vozes.html: comparação de vozes
+  js/                    core (perfis, áudio, previsão), slm (modelo em JS), crianca, treino, pais, foto
+  data/                  vocabulário, modelo (slm.json + slm.bin), n-grama de reserva, vetores do CLIP
+  p/                     pictogramas (WebP 160 px)
+  audio/f, mc, m         áudio de cada pictograma em cada voz
+  vozes/                 amostras das vozes testadas
 experiments/
-  v1/                 primeira rodada: cobertura do ARASAAC, 124 pictogramas, LLMs sem treino vs. n-grama vs. SLM
-  v2/                 rodada atual
-    cenarios.py       situações do dia a dia e falas do adulto
-    gerar_frases.py   gera conversas adulto-criança em pictogramas (LLM no servidor) e adapta mensagens reais de CAA
-    mapear_arasaac.py liga cada palavra a um pictograma do ARASAAC
-    preparar.py       vocabulário, páginas da prancha e divisão treino/teste
-    treinar.py        treina e avalia o SLM de símbolos, exporta para o site
-    gerar_audio.py    áudio das palavras (Kokoro, pt-BR)
-    baixar_pictos.py  baixa os pictogramas
-    exportar_resultados.py
-    out/frases_raw.jsonl   conjunto de frases gerado
+  v1/                    primeira rodada (cobertura do ARASAAC, LLMs sem treino vs. n-grama vs. SLM)
+  v2/                    rodada atual
+    frases.jsonl.gz, frases2.jsonl.gz   conversas geradas (1ª e 2ª leva)
+    cenarios.py · gerar_frases.py · mapear_arasaac.py · preparar.py · treinar.py
+    gerar_audio*.py · comparar_vozes*.py · testar_reconhecimento.py · clip_textos.py
+    resultados/          métricas finais
 ```
 
 ## Rodar localmente
@@ -56,8 +84,8 @@ e abrir http://localhost:8000.
   Propriedade: Governo de Aragão (Espanha). Uso não comercial.
 - Mensagens de CAA usadas como base para adaptação: turk9k (crowdsourcing de mensagens de CAA)
   e UNL-AAC-Phrases (MIT). Verificar a licença do turk9k antes de redistribuir o conjunto.
-- Voz feminina: XTTS-v2 (Coqui Public Model License, uso não comercial) clonando uma leitura do LibriVox
-  do Multilingual LibriSpeech (CC BY 4.0, falante 12114), com o tom 3 semitons mais alto.
-- As cores dos pictogramas seguem a chave Fitzgerald (amarelo pessoas, verde ações, azul sentir e descrever,
-  laranja coisas, roxo lugares, rosa conversa, vermelho não, cinza perguntas e tempo). Explicação na aba "Guia e cores" da área dos pais.
-- As frases de treino ainda não foram revisadas por fonoaudiólogo(a).
+- Vozes: XTTS-v2 (Coqui Public Model License, não comercial), F5-TTS pt-BR (firstpixel, CC BY-NC 4.0),
+  Kokoro-82M (Apache 2.0). Referência feminina: Multilingual LibriSpeech (CC BY 4.0).
+- Foto → prancha: CLIP ViT-B/32 (OpenAI, MIT), versão ONNX do Xenova.
+- As cores seguem a chave Fitzgerald (explicação na aba "Guia e cores" da área dos adultos).
+- As frases de treino são sintéticas e ainda não foram revisadas por fonoaudiólogo(a).

@@ -8,9 +8,8 @@ R = pathlib.Path(__file__).resolve().parent
 DOCS = R.parent.parent / "docs"
 com = "--com-criancas" in sys.argv
 res = {}
-for f in ["vozes.json", "vozes_f5.json", "vozes_criancas_xtts.json", "vozes_criancas_f5.json"]:
-    p = R / "out" / f
-    if p.exists(): res.update(json.load(open(p, encoding="utf-8")))
+for p in sorted((R / "out").glob("vozes*.json")):
+    res.update(json.load(open(p, encoding="utf-8")))
 if not com: res = {k: v for k, v in res.items() if "crianca" not in k}
 # só vozes que têm amostras para ouvir
 res = {k: {kk: vv for kk, vv in v.items() if kk != "erros"} for k, v in res.items() if (DOCS / "vozes" / k / "0.mp3").exists() or k.startswith("kokoro")}

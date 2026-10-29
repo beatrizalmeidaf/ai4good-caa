@@ -3,180 +3,334 @@
   "conversa_nova": {
    "Mais usados (frequência)": {
     "top1": 0.0,
-    "top6": 33.3,
-    "mrr": 0.141,
+    "top6": 32.6,
+    "mrr": 0.137,
     "fim_top6": 100.0,
-    "conceito_top1": 33.4,
-    "conceito_top3": 60.5,
+    "conceito_top1": 32.2,
+    "conceito_top3": 59.1,
     "economia_toques": 0.0,
-    "n": 6323
+    "n": 6208
    },
    "N-grama + contexto": {
-    "top1": 30.3,
-    "top6": 60.0,
-    "mrr": 0.432,
+    "top1": 30.6,
+    "top6": 60.5,
+    "mrr": 0.434,
     "fim_top6": 100.0,
-    "conceito_top1": 58.3,
+    "conceito_top1": 56.2,
     "conceito_top3": 81.3,
-    "economia_toques": 8.3,
-    "n": 6323
+    "economia_toques": 8.2,
+    "n": 6208
    },
    "SLM P (d64, 2 camadas)": {
-    "top1": 32.9,
+    "top1": 34.0,
+    "top6": 65.7,
+    "mrr": 0.473,
+    "fim_top6": 97.3,
+    "conceito_top1": 59.4,
+    "conceito_top3": 83.4,
+    "economia_toques": 11.1,
+    "n": 6208
+   },
+   "SLM M (d128, 3 camadas)": {
+    "top1": 33.4,
+    "top6": 64.9,
+    "mrr": 0.464,
+    "fim_top6": 93.5,
+    "conceito_top1": 58.7,
+    "conceito_top3": 82.9,
+    "economia_toques": 10.5,
+    "n": 6208
+   },
+   "SLM G (d192, 4 camadas)": {
+    "top1": 32.7,
+    "top6": 63.2,
+    "mrr": 0.456,
+    "fim_top6": 89.7,
+    "conceito_top1": 57.2,
+    "conceito_top3": 81.5,
+    "economia_toques": 10.0,
+    "n": 6208
+   },
+   "SLM P (d64, 2 camadas) só 1ª leva": {
+    "top1": 33.0,
     "top6": 63.0,
     "mrr": 0.458,
     "fim_top6": 95.8,
-    "conceito_top1": 58.7,
-    "conceito_top3": 82.8,
-    "economia_toques": 9.7,
-    "n": 6323
-   },
-   "SLM M (d128, 3 camadas)": {
-    "top1": 31.4,
-    "top6": 63.1,
-    "mrr": 0.446,
-    "fim_top6": 93.6,
-    "conceito_top1": 57.7,
-    "conceito_top3": 81.7,
-    "economia_toques": 9.8,
-    "n": 6323
-   },
-   "SLM G (d192, 4 camadas)": {
-    "top1": 30.9,
-    "top6": 62.4,
-    "mrr": 0.441,
-    "fim_top6": 94.4,
-    "conceito_top1": 56.8,
-    "conceito_top3": 82.5,
-    "economia_toques": 9.9,
-    "n": 6323
+    "conceito_top1": 58.8,
+    "conceito_top3": 81.8,
+    "economia_toques": 10.0,
+    "n": 6208
    }
   },
   "cenario_novo": {
    "Mais usados (frequência)": {
     "top1": 0.0,
-    "top6": 35.8,
-    "mrr": 0.154,
+    "top6": 34.4,
+    "mrr": 0.151,
     "fim_top6": 100.0,
-    "conceito_top1": 36.7,
-    "conceito_top3": 64.3,
+    "conceito_top1": 35.4,
+    "conceito_top3": 62.7,
     "economia_toques": 0.0,
-    "n": 6994
+    "n": 7038
    },
    "N-grama + contexto": {
-    "top1": 33.3,
-    "top6": 65.1,
-    "mrr": 0.467,
+    "top1": 32.0,
+    "top6": 65.0,
+    "mrr": 0.461,
     "fim_top6": 100.0,
-    "conceito_top1": 59.7,
-    "conceito_top3": 83.7,
-    "economia_toques": 6.2,
-    "n": 6994
+    "conceito_top1": 58.5,
+    "conceito_top3": 83.5,
+    "economia_toques": 6.0,
+    "n": 7038
    },
    "SLM P (d64, 2 camadas)": {
-    "top1": 36.3,
-    "top6": 68.2,
-    "mrr": 0.495,
-    "fim_top6": 96.9,
-    "conceito_top1": 61.0,
-    "conceito_top3": 85.2,
-    "economia_toques": 8.3,
-    "n": 6994
+    "top1": 36.6,
+    "top6": 69.4,
+    "mrr": 0.502,
+    "fim_top6": 96.8,
+    "conceito_top1": 61.4,
+    "conceito_top3": 84.7,
+    "economia_toques": 8.5,
+    "n": 7038
    },
    "SLM M (d128, 3 camadas)": {
-    "top1": 34.6,
-    "top6": 66.3,
-    "mrr": 0.477,
-    "fim_top6": 95.9,
-    "conceito_top1": 59.3,
-    "conceito_top3": 83.5,
-    "economia_toques": 7.6,
-    "n": 6994
+    "top1": 35.3,
+    "top6": 67.6,
+    "mrr": 0.49,
+    "fim_top6": 94.0,
+    "conceito_top1": 59.5,
+    "conceito_top3": 84.1,
+    "economia_toques": 7.7,
+    "n": 7038
    },
    "SLM G (d192, 4 camadas)": {
-    "top1": 33.6,
-    "top6": 64.9,
-    "mrr": 0.47,
-    "fim_top6": 94.8,
-    "conceito_top1": 58.6,
-    "conceito_top3": 84.4,
-    "economia_toques": 7.0,
-    "n": 6994
+    "top1": 34.2,
+    "top6": 66.1,
+    "mrr": 0.476,
+    "fim_top6": 90.6,
+    "conceito_top1": 58.7,
+    "conceito_top3": 83.1,
+    "economia_toques": 7.4,
+    "n": 7038
+   },
+   "SLM P (d64, 2 camadas) só 1ª leva": {
+    "top1": 36.2,
+    "top6": 67.6,
+    "mrr": 0.494,
+    "fim_top6": 97.1,
+    "conceito_top1": 60.8,
+    "conceito_top3": 84.0,
+    "economia_toques": 7.9,
+    "n": 7038
    }
   },
   "mensagem_real": {
    "Mais usados (frequência)": {
     "top1": 0.0,
-    "top6": 17.4,
-    "mrr": 0.079,
+    "top6": 16.3,
+    "mrr": 0.077,
     "fim_top6": 100.0,
-    "conceito_top1": 32.6,
-    "conceito_top3": 56.6,
+    "conceito_top1": 32.8,
+    "conceito_top3": 55.0,
     "economia_toques": 0.0,
-    "n": 4133
+    "n": 4201
    },
    "N-grama + contexto": {
-    "top1": 8.3,
-    "top6": 26.9,
-    "mrr": 0.169,
+    "top1": 7.1,
+    "top6": 25.3,
+    "mrr": 0.155,
     "fim_top6": 100.0,
-    "conceito_top1": 37.8,
-    "conceito_top3": 68.6,
-    "economia_toques": 3.8,
-    "n": 4133
+    "conceito_top1": 38.0,
+    "conceito_top3": 66.8,
+    "economia_toques": 3.5,
+    "n": 4201
    },
    "SLM P (d64, 2 camadas)": {
-    "top1": 9.3,
-    "top6": 29.5,
-    "mrr": 0.181,
-    "fim_top6": 90.3,
-    "conceito_top1": 37.5,
-    "conceito_top3": 69.3,
-    "economia_toques": 4.7,
-    "n": 4133
+    "top1": 9.2,
+    "top6": 27.4,
+    "mrr": 0.175,
+    "fim_top6": 94.0,
+    "conceito_top1": 37.7,
+    "conceito_top3": 66.3,
+    "economia_toques": 4.0,
+    "n": 4201
    },
    "SLM M (d128, 3 camadas)": {
-    "top1": 9.7,
-    "top6": 28.1,
-    "mrr": 0.181,
-    "fim_top6": 86.3,
-    "conceito_top1": 36.8,
-    "conceito_top3": 68.0,
-    "economia_toques": 4.7,
-    "n": 4133
+    "top1": 9.8,
+    "top6": 26.9,
+    "mrr": 0.178,
+    "fim_top6": 87.9,
+    "conceito_top1": 37.2,
+    "conceito_top3": 65.7,
+    "economia_toques": 4.3,
+    "n": 4201
    },
    "SLM G (d192, 4 camadas)": {
-    "top1": 9.4,
-    "top6": 28.8,
-    "mrr": 0.181,
-    "fim_top6": 85.6,
+    "top1": 9.7,
+    "top6": 26.7,
+    "mrr": 0.174,
+    "fim_top6": 85.0,
     "conceito_top1": 36.7,
-    "conceito_top3": 67.1,
-    "economia_toques": 5.0,
-    "n": 4133
+    "conceito_top3": 65.3,
+    "economia_toques": 4.1,
+    "n": 4201
+   },
+   "SLM P (d64, 2 camadas) só 1ª leva": {
+    "top1": 9.5,
+    "top6": 28.4,
+    "mrr": 0.18,
+    "fim_top6": 91.9,
+    "conceito_top1": 36.8,
+    "conceito_top3": 67.2,
+    "economia_toques": 4.4,
+    "n": 4201
    },
    "SLM P (d64, 2 camadas) sem mensagens reais no treino": {
-    "top1": 6.8,
-    "top6": 21.4,
-    "mrr": 0.135,
-    "fim_top6": 89.3,
-    "conceito_top1": 34.1,
-    "conceito_top3": 62.1,
-    "economia_toques": 2.1,
-    "n": 4133
+    "top1": 7.2,
+    "top6": 22.3,
+    "mrr": 0.138,
+    "fim_top6": 89.0,
+    "conceito_top1": 34.4,
+    "conceito_top3": 63.5,
+    "economia_toques": 2.6,
+    "n": 4201
+   }
+  },
+  "conversa_nova2": {
+   "Mais usados (frequência)": {
+    "top1": 0.0,
+    "top6": 25.3,
+    "mrr": 0.109,
+    "fim_top6": 100.0,
+    "conceito_top1": 28.5,
+    "conceito_top3": 48.2,
+    "economia_toques": 0.0,
+    "n": 8017
+   },
+   "N-grama + contexto": {
+    "top1": 17.8,
+    "top6": 44.0,
+    "mrr": 0.292,
+    "fim_top6": 100.0,
+    "conceito_top1": 43.7,
+    "conceito_top3": 69.9,
+    "economia_toques": 6.9,
+    "n": 8017
+   },
+   "SLM P (d64, 2 camadas)": {
+    "top1": 20.4,
+    "top6": 47.9,
+    "mrr": 0.323,
+    "fim_top6": 98.2,
+    "conceito_top1": 45.9,
+    "conceito_top3": 72.3,
+    "economia_toques": 8.8,
+    "n": 8017
+   },
+   "SLM M (d128, 3 camadas)": {
+    "top1": 20.4,
+    "top6": 46.4,
+    "mrr": 0.317,
+    "fim_top6": 95.1,
+    "conceito_top1": 44.3,
+    "conceito_top3": 71.1,
+    "economia_toques": 8.5,
+    "n": 8017
+   },
+   "SLM G (d192, 4 camadas)": {
+    "top1": 20.1,
+    "top6": 45.4,
+    "mrr": 0.311,
+    "fim_top6": 93.3,
+    "conceito_top1": 42.8,
+    "conceito_top3": 70.8,
+    "economia_toques": 8.1,
+    "n": 8017
+   },
+   "SLM P (d64, 2 camadas) só 1ª leva": {
+    "top1": 17.1,
+    "top6": 39.8,
+    "mrr": 0.271,
+    "fim_top6": 96.9,
+    "conceito_top1": 40.5,
+    "conceito_top3": 66.2,
+    "economia_toques": 5.2,
+    "n": 8017
+   }
+  },
+  "cenario_novo2": {
+   "Mais usados (frequência)": {
+    "top1": 0.0,
+    "top6": 25.5,
+    "mrr": 0.111,
+    "fim_top6": 100.0,
+    "conceito_top1": 28.1,
+    "conceito_top3": 49.2,
+    "economia_toques": 0.0,
+    "n": 5777
+   },
+   "N-grama + contexto": {
+    "top1": 17.7,
+    "top6": 40.3,
+    "mrr": 0.279,
+    "fim_top6": 100.0,
+    "conceito_top1": 42.7,
+    "conceito_top3": 67.6,
+    "economia_toques": 4.8,
+    "n": 5777
+   },
+   "SLM P (d64, 2 camadas)": {
+    "top1": 18.8,
+    "top6": 44.2,
+    "mrr": 0.301,
+    "fim_top6": 98.9,
+    "conceito_top1": 45.0,
+    "conceito_top3": 69.9,
+    "economia_toques": 6.9,
+    "n": 5777
+   },
+   "SLM M (d128, 3 camadas)": {
+    "top1": 19.3,
+    "top6": 43.1,
+    "mrr": 0.298,
+    "fim_top6": 95.4,
+    "conceito_top1": 43.6,
+    "conceito_top3": 69.1,
+    "economia_toques": 6.7,
+    "n": 5777
+   },
+   "SLM G (d192, 4 camadas)": {
+    "top1": 18.5,
+    "top6": 41.1,
+    "mrr": 0.286,
+    "fim_top6": 92.8,
+    "conceito_top1": 42.2,
+    "conceito_top3": 68.6,
+    "economia_toques": 5.8,
+    "n": 5777
+   },
+   "SLM P (d64, 2 camadas) só 1ª leva": {
+    "top1": 17.3,
+    "top6": 39.4,
+    "mrr": 0.271,
+    "fim_top6": 95.8,
+    "conceito_top1": 41.1,
+    "conceito_top3": 66.9,
+    "economia_toques": 4.8,
+    "n": 5777
    }
   },
   "_tempo_treino_s": {
-   "SLM P (d64, 2 camadas)": 14.7,
-   "SLM M (d128, 3 camadas)": 16.0,
-   "SLM G (d192, 4 camadas)": 19.3
+   "SLM P (d64, 2 camadas)": 26.4,
+   "SLM M (d128, 3 camadas)": 30.1,
+   "SLM G (d192, 4 camadas)": 35.6
   },
   "_melhor": "SLM P (d64, 2 camadas)"
  },
  "dataset": {
-  "frases_brutas": 28468,
-  "frases": 27992,
-  "vocab": 769,
+  "frases_brutas": 53040,
+  "frases": 52372,
+  "vocab": 1199,
   "held_scen": [
    "almoço em família",
    "ir ao banheiro na escola",
@@ -186,28 +340,32 @@
    "terapia ocupacional com balanço, bola e massinha"
   ],
   "splits": {
-   "treino": 19420,
-   "conversa_nova": 2250,
-   "val": 1130,
+   "treino": 19440,
+   "conversa_nova": 2248,
+   "val": 2231,
    "cenario_novo": 2531,
-   "adaptado": 2661
+   "adaptado": 2663,
+   "treino2": 18705,
+   "conversa_nova2": 2186,
+   "cenario_novo2": 1606,
+   "fora": 762
   },
-  "cobertura_tokens": 0.951,
+  "cobertura_tokens": 0.95,
   "paginas": {
-   "acoes": 162,
-   "conversa": 24,
-   "pessoas": 44,
-   "perguntas": 56,
-   "sentir": 28,
-   "comida": 69,
-   "lugares": 70,
-   "descrever": 83,
-   "animais": 31,
-   "escola": 22,
-   "coisas": 83,
-   "brincar": 35,
-   "roupa": 27,
-   "corpo": 35
+   "acoes": 219,
+   "conversa": 22,
+   "pessoas": 51,
+   "perguntas": 45,
+   "sentir": 37,
+   "comida": 105,
+   "lugares": 137,
+   "descrever": 115,
+   "coisas": 183,
+   "animais": 67,
+   "escola": 28,
+   "brincar": 80,
+   "roupa": 50,
+   "corpo": 60
   },
   "api_fallback": 0
  },
@@ -297,9 +455,27 @@
    ]
   },
   {
-   "adulto": "Olha, tem um boneco de coração aqui. Gostou?",
-   "frase": "Gosto.",
+   "adulto": "Tchau, até amanhã, João! Que bom que você veio!",
+   "frase": "Tchau, mamãe!",
    "seq": [
+    [
+     6028,
+     "tchau"
+    ],
+    [
+     31148,
+     "mãe"
+    ]
+   ]
+  },
+  {
+   "adulto": "E a vacina? Gostou?",
+   "frase": "Não gostei.",
+   "seq": [
+    [
+     5526,
+     "não"
+    ],
     [
      7124,
      "gostar"
@@ -307,7 +483,7 @@
    ]
   },
   {
-   "adulto": "Você quer um abraço antes?",
+   "adulto": "Quer que eu te abrace depois?",
    "frase": "Sim.",
    "seq": [
     [
@@ -401,37 +577,38 @@
    ]
   }
  ],
- "lead": "O Zuli sugere o próximo pictograma com um modelo de 0,15 milhão de parâmetros que roda no próprio tablet em cerca de 1 ms. Em conversas que ele nunca viu, o pictograma certo está entre as 6 sugestões em 63,0% das vezes.",
+ "lead": "O Zuli sugere o próximo pictograma com um modelo de 180 mil parâmetros (350 KB) que roda no próprio tablet em cerca de 5 ms por toque. Em conversas que nunca viu, o pictograma certo está entre as 6 sugestões em 65,7% das vezes.",
  "conclusoes": [
-  "Funciona para conversas novas: 63,0% de acerto nas 6 sugestões em conversas inéditas e 68,2% em situações inteiras que ficaram fora do treino (contra 33,3% mostrando só os pictogramas mais usados).",
-  "Saber o que o adulto perguntou ajuda: com \"Onde?\" no contexto de saúde, as sugestões viram partes do corpo; com \"Como você está?\", viram sentimentos. A página certa da prancha é a mais provável em 58,7% das vezes.",
-  "O fim da frase é previsto em 95,8% dos casos: o botão falar aparece nas sugestões quando a frase está completa.",
-  "Modelos maiores não ajudaram: o menor (0,15 mi parâmetros) empatou ou ganhou do maior (1,8 mi). O limite agora são os dados, não o tamanho do modelo.",
-  "Mensagens reais de usuários de CAA, adaptadas para criança, são mais difíceis (29,5%). Incluir parte delas no treino subiu o acerto de 21,4% para 29,5%. Dados reais de uso, com consentimento, são o próximo passo.",
-  "A economia de toques é modesta (9,7%), porque as palavras mais usadas já ficam na página Núcleo, a um toque. O ganho maior está em achar palavras fora do Núcleo sem navegar."
+  "A segunda leva de conversas (situações novas, idade e interesse da criança, menos frases repetidas) melhorou as previsões nas situações variadas: de 39,8% para 47,9% nas conversas novas e de 39,4% para 44,2% nas situações que o modelo nunca viu.",
+  "Nos testes da primeira rodada também subiu: 63,0% → 65,7% (conversas) e 67,6% → 69,4% (situações).",
+  "O modelo pequeno continua o melhor: as versões maiores não ganharam com o dobro de dados. O limite segue nos dados, não no tamanho.",
+  "A prancha ficou estável entre as versões: as 768 palavras anteriores continuam no mesmo lugar, com o mesmo desenho e o mesmo rótulo; as 431 novas entraram no fim de cada categoria.",
+  "O botão falar aparece nas sugestões quando a frase acabou em 97,3% das vezes, e a página certa (conceito) é a mais provável em cerca de 60%.",
+  "Mensagens reais de usuários de CAA adaptadas continuam o teste mais difícil (27,4%). Dados de uso real devem ser o maior ganho a seguir.",
+  "Voz: a voz feminina (XTTS, tom jovem) é reconhecida pelo Whisper em ~90% das palavras, contra ~60% da voz anterior. A voz masculina de criança (F5-TTS) chegou a 83% no teste."
  ],
  "metodo": [
-  "Um modelo de linguagem grande (Qwen3-30B, rodando no servidor) escreveu conversas curtas entre adulto e criança em 62 situações do dia a dia (casa, escola, passeio, saúde, terapia), com 11 tipos de fala do adulto.",
-  "Cerca de 9 mil mensagens reais de usuários de CAA (turk9k e UNL-AAC-Phrases) foram adaptadas para o que uma criança brasileira diria; as que eram assunto de adulto foram descartadas.",
-  "Cada palavra virou um pictograma do ARASAAC pelo catálogo completo em inglês, conferido com as palavras-chave em português e com a classe gramatical.",
-  "O modelo de símbolos foi treinado do zero nessas sequências, com período do dia, lugar e fala do adulto como contexto. Seis situações inteiras e 10% das conversas ficaram fora do treino para o teste."
+  "Vocabulário: catálogo completo do ARASAAC, mapeado pelo termo em inglês e conferido pelo termo em português. 1.199 pictogramas em 9 categorias, com cores da chave Fitzgerald.",
+  "Conversas: o Qwen3-30B-A3B gerou conversas curtas entre adulto e criança em 122 situações do dia a dia e 11 tipos de fala do adulto, em duas levas, e adaptou mensagens reais de usuários de CAA (turk9k e UNL-AAC-Phrases).",
+  "Total: 52.372 frases. Testes com conversas e situações que ficaram fora do treino em cada leva. e metade das mensagens reais adaptadas.",
+  "Modelo: transformer de 2 camadas sobre pictogramas, com período do dia, lugar e fala do adulto como contexto. Prevê o próximo pictograma e o fim da frase. Roda em JavaScript puro."
  ],
  "numeros": [
   [
-   "769",
+   "1199",
    "pictogramas na prancha"
   ],
   [
-   "27.992",
+   "52.372",
    "frases de treino e teste, em conversas"
   ],
   [
-   "68,2%",
+   "69,4%",
    "acerto das 6 sugestões em situações que o modelo nunca viu"
   ],
   [
    "0,3 MB",
-   "modelo inteiro (0,15 mi parâmetros), roda no tablet"
+   "modelo inteiro (0,18 mi parâmetros), roda no tablet"
   ]
  ]
 }

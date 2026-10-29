@@ -4,7 +4,8 @@ from concurrent.futures import ThreadPoolExecutor
 import requests
 from PIL import Image, ImageDraw, ImageFont
 R = pathlib.Path(__file__).resolve().parent
-PIC = R.parent.parent / "docs" / "pictos"
+PIC = R / "out" / "pictos_png"  # originais em PNG (fora do site); o site usa docs/p/*.webp
+PIC.mkdir(parents=True, exist_ok=True)
 vocab = json.load(open(R.parent.parent / "docs" / "data" / "vocab.json"))
 
 def get(pid):

@@ -14,9 +14,10 @@
 <link rel="preload" href="data/vocab.json" as="fetch" crossorigin>
 <link rel="modulepreload" href="js/core.js">
 <link rel="modulepreload" href="js/slm.js">
+<link rel="modulepreload" href="js/crianca.js">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Fredoka:wght@500;600&display=swap">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Fredoka:wght@500;600&display=swap" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Fredoka:wght@500;600&display=swap"></noscript>
 <style>
 /* Layout: tela única de tablet, tema claro fixo (previsibilidade visual em CAA).
    Topo: frase + apagar + Zuli. Sugestões: 6 peças. Centro: grade grande com setas de página.
@@ -104,6 +105,17 @@ button { font: inherit; color: inherit; touch-action: manipulation; }
 .sugg .tile.end { --cat: var(--zuli-dark); background: var(--zuli); }
 .sugg .tile.end span { font-family: var(--f-display); }
 @keyframes fade { from { opacity: .4 } to { opacity: 1 } }
+
+
+/* ---------- rotina ("Agora") e calma ---------- */
+.sugg.com-agora { grid-template-columns: minmax(0, 1.15fr) repeat(6, minmax(0, 1fr)); }
+.tile.agora { border-style: dashed; border-width: 3px; background: #fff; padding-top: 18px; }
+.tile.agora em { position: absolute; top: 3px; left: 0; right: 0; font-style: normal; font-size: .7rem; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--ink-2); }
+.tile.agora.vazio { border-color: var(--line); background: transparent; }
+.sugg.calma { background: #e3f0fb; transition: background .4s; }
+.sugg.calma .tile { animation: respira 3.2s ease-in-out infinite; }
+@keyframes respira { 50% { transform: scale(1.03); } }
 
 /* ---------- linha do adulto (opcional, ligada pelos pais) ---------- */
 .partner { display: flex; gap: 6px; align-items: center; overflow-x: auto; scrollbar-width: none; }

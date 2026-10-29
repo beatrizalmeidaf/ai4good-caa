@@ -1,5 +1,5 @@
 // Área da criança: prancha fixa, sugestões, Zuli fala a frase, botão Treinar.
-import { END, pic, perfis, registro, carregarVocab, PAGINAS, montarPaginas, grupoDe, Voz, Preditor, periodoAgora } from "./core.js";
+import { END, pic, perfis, registro, carregarVocab, PAGINAS, montarPaginas, grupoDe, Voz, Preditor, periodoAgora, vozDoPerfil } from "./core.js";
 
 const $ = s => document.querySelector(s);
 const PARCEIRO = [
@@ -13,7 +13,7 @@ if (!perfil) location.replace("./");  // sem criança cadastrada: volta para a p
 const opt = perfil ? perfis.opt(perfil) : {};
 const S = { vocab: [], by: {}, pg: {}, page: "nucleo", sub: 0, phrase: [], spoken: false, adulto: "nenhuma", top: [],
   toques: 0, daSugestao: 0, toquesFrase: 0 };
-const voz = new Voz(perfil?.genero, opt.velocidade, opt.fonteVoz === "aparelho");
+const vz = vozDoPerfil(perfil, opt), voz = new Voz(vz.pasta, opt.velocidade, vz.sistema);
 let pred;
 
 function tile(w) {
@@ -23,20 +23,69 @@ function tile(w) {
 const ctx = () => ({ periodo: periodoAgora(opt), local: opt.local, adulto: S.adulto });
 
 /* ---------- sugestões ---------- */
+// Planejamento motor também na faixa: o que continua sugerido fica no mesmo espaço; só os espaços que mudam recebem novidades.
+function estabilizar(novos, antigos, n = 6) {
+  const fim = novos.includes(END), lista = novos.filter(k => k !== END).slice(0, fim ? n - 1 : n);
+  const out = Array(n).fill(null);
+  antigos.forEach((k, i) => { if (k !== END && i < (fim ? n - 1 : n) && lista.includes(k)) out[i] = k; });
+  const resto = lista.filter(k => !out.includes(k));
+  for (let i = 0; i < n; i++) if (out[i] === null && !(fim && i === n - 1)) out[i] = resto.shift() ?? null;
+  if (fim) out[n - 1] = END;
+  return out.filter(k => k !== null);
+}
 function prever() {
   const prefix = S.spoken ? [] : S.phrase;
-  const ranked = pred.prever(ctx(), prefix, opt.preditor === "ngram");
-  let top = ranked.slice(0, 6);
-  const e = top.find(([k]) => k === END);
-  if (e) top = [...top.filter(([k]) => k !== END), e]; // "falar" sempre no último espaço
-  S.top = top.map(([k]) => k);
-  $("#sugg").innerHTML = opt.sugestoes ? S.top.map(k => tile(k === END ? END : S.by[k])).join("") : "";
+  let ranked = pred.prever(ctx(), prefix, opt.preditor === "ngram");
+  // rotina: a atividade de agora fica mais provável
+  const ag = rotinaAgora();
+  if (ag && !prefix.includes(ag.id)) ranked = ranked.map(([k, v]) => [k, String(k) === String(ag.id) ? v + 0.15 : v]).sort((a, b) => b[1] - a[1]);
+  if (S.calmaAte > Date.now()) return mostrarCalma();
+  const top = estabilizar(ranked.slice(0, 6).map(([k]) => k), S.top);
+  S.top = top;
+  $("#sugg").classList.remove("calma");
+  $("#sugg").innerHTML = (S.agoraHtml || "") + (opt.sugestoes ? S.top.map(k => tile(k === END ? END : S.by[k])).join("") : "");
   voz.preparar(S.top.filter(k => k !== END));
   // página provável do próximo pictograma (sem contar o que já está nas sugestões)
   const pp = {};
   for (const [k, v] of ranked) { if (k === END || S.top.includes(k)) continue; const g = grupoDe(S.by[k]); pp[g] = (pp[g] || 0) + v; }
   const best = Object.entries(pp).sort((a, b) => b[1] - a[1])[0];
   document.querySelectorAll("#abas button[data-page]").forEach(b => b.classList.toggle("hint", opt.conceito && !!best && b.dataset.page === best[0] && b.dataset.page !== S.page && best[1] > .2));
+}
+
+/* ---------- rotina: bloco "Agora" ---------- */
+// opt.rotina = [{ inicio: "14:00", fim: "15:00", id: <pictograma>, dias: [1,2,3,4,5] }]
+function rotinaAgora() {
+  const r = opt.rotina || []; if (!r.length) return null;
+  const d = new Date(), min = d.getHours() * 60 + d.getMinutes(), hm = t => { const [h, m] = t.split(":").map(Number); return h * 60 + m; };
+  return r.find(x => (!x.dias?.length || x.dias.includes(d.getDay())) && min >= hm(x.inicio) && min < hm(x.fim) && S.by[x.id]) || null;
+}
+function renderAgora() {
+  if (!(opt.rotina || []).length) { S.agoraHtml = ""; $("#sugg").classList.remove("com-agora"); return; }
+  $("#sugg").classList.add("com-agora");      // o espaço "Agora" só existe se a rotina estiver configurada
+  const ag = rotinaAgora();
+  S.agoraHtml = ag ? `<button type="button" class="tile agora cat-${S.by[ag.id].cor}" data-id="${ag.id}" aria-label="Agora: ${S.by[ag.id].label}"><em>agora</em><img src="${pic(ag.id)}" alt=""><span>${S.by[ag.id].label}</span></button>`
+                   : `<div class="tile agora vazio" aria-hidden="true"><em>agora</em></div>`;
+}
+
+/* ---------- autorregulação: toques muito rápidos ou repetidos ---------- */
+const CALMA = ["pausa", "parar", "silêncio", "abraço", "música", "ajuda"];
+const toquesRecentes = [];
+function observarToque(id) {
+  if (opt.calma === false) return;
+  const agora = Date.now(); toquesRecentes.push({ t: agora, id });
+  while (toquesRecentes.length && agora - toquesRecentes[0].t > 6000) toquesRecentes.shift();
+  const em5s = toquesRecentes.filter(x => agora - x.t <= 5000).length;
+  const repetido = id != null && toquesRecentes.filter(x => x.id === id).length >= 4;
+  if ((em5s >= 12 || repetido) && agora > (S.calmaPausa || 0)) {
+    S.calmaAte = agora + 20000; S.calmaPausa = agora + 60000; toquesRecentes.length = 0;
+    registro.add(perfil, { tipo: "calma", motivo: repetido ? "repetido" : "rapido" });
+    mostrarCalma(); setTimeout(prever, 20200);
+  }
+}
+function mostrarCalma() {
+  const ids = CALMA.map(l => S.vocab.find(w => w.label === l)).filter(Boolean).slice(0, 6);
+  $("#sugg").classList.add("calma");
+  $("#sugg").innerHTML = (S.agoraHtml || "") + ids.map(w => tile(w)).join("");
 }
 
 /* ---------- frase ---------- */
@@ -51,6 +100,8 @@ function renderFrase() {
 function escolher(id, daSug) {
   voz.desbloquear(); S.toques++; S.toquesFrase++;
   if (id === END) { if (daSug) S.daSugestao++; return falarFrase(); }
+  observarToque(String(id));
+  if ($("#sugg").classList.contains("calma") && daSug) { S.calmaAte = 0; }  // escolheu um atalho de calma: volta ao normal
   if (S.spoken) { S.phrase = []; S.spoken = false; }
   S.phrase.push(+id); if (daSug) S.daSugestao++;
   if (opt.falarCada) voz.falar([{ chave: id, texto: S.by[id].label }]);
@@ -86,6 +137,7 @@ function renderAbas() {
   const icone = (id, cands) => cands.map(l => S.vocab.find(w => w.label === l && (id === "nucleo" || grupoDe(w) === id))).find(Boolean) || S.by[S.pg[id][0]];
   $("#abas").innerHTML = PAGINAS.filter(([id]) => S.pg[id]?.length).map(([id, nome, cor, c]) =>
     `<button type="button" data-page="${id}" aria-pressed="${id === S.page}" style="--cat:var(--c-${cor})"><span class="likely" aria-hidden="true"></span><img src="${pic(icone(id, c).id)}" alt="">${nome}</button>`).join("")
+    + (opt.pranchasFoto || []).map(f => `<button type="button" data-page="${f.id}" aria-pressed="${f.id === S.page}" style="--cat:var(--coral)"><img src="${f.thumb}" alt="" style="border-radius:10px;object-fit:cover">${f.nome.replace(/[<>&"]/g, "")}</button>`).join("")
     + `<button type="button" id="b-treino" aria-label="Treinar palavras">${MIC}Treinar</button>`
     + `<button type="button" id="b-pais" aria-label="Área dos pais (segure)"><span class="ring" id="gear-ring"></span>${PAIS}</button>`;
 }
@@ -97,6 +149,8 @@ function renderGrade() {
   g.innerHTML = parte.map(id => tile(S.by[id])).join("") + '<div class="tile empty"></div>'.repeat(n - parte.length);
   $("#pg-prev").disabled = S.sub === 0; $("#pg-next").disabled = S.sub >= total - 1;
   document.querySelectorAll("#abas button[data-page]").forEach(b => b.setAttribute("aria-pressed", b.dataset.page === S.page));
+  // áudio das peças visíveis já fica pronto: o toque toca na hora, sem esperar a rede
+  clearTimeout(S.tAudio); S.tAudio = setTimeout(() => voz.preparar(parte), 250);
   // pré-carrega a próxima parte da página
   ids.slice((S.sub + 1) * n, (S.sub + 2) * n).forEach(id => { const i = new Image(); i.src = pic(id); });
 }
@@ -130,8 +184,15 @@ async function iniciar() {
   document.documentElement.dataset.genero = perfil.genero;
   const { vocab, by } = await carregarVocab();
   S.vocab = vocab; S.by = by; S.pg = montarPaginas(vocab);
+  // pranchas por foto (criadas pelos adultos): palavras básicas + o vocabulário da cena
+  const base = ["eu", "querer", "ver", "gostar", "não", "mais"].map(l => vocab.find(w => w.label === l)?.id).filter(Boolean);
+  for (const f of opt.pranchasFoto || []) S.pg[f.id] = [...base, ...f.ids.filter(id => by[id] && !base.includes(id))];
   pred = new Preditor(vocab, by, perfil);
-  renderAbas(); renderGrade(); renderParceiro(); renderFrase();
+  renderAbas(); renderGrade(); renderParceiro(); renderFrase(); renderAgora();
+  // enquanto o modelo chega, a faixa já mostra as palavras mais usadas (nunca fica vazia)
+  S.top = vocab.slice(0, 6).map(w => w.id);
+  $("#sugg").innerHTML = (S.agoraHtml || "") + (opt.sugestoes ? S.top.map(id => tile(by[id])).join("") : "");
+  setInterval(() => { renderAgora(); if (!S.calmaAte || S.calmaAte < Date.now()) prever(); }, 60000);  // rotina muda com o relógio
   $("#loading").hidden = true;            // a prancha aparece antes do modelo terminar de carregar
   await pred.iniciar(); if (opt.preditor === "ngram") await pred.carregarNgram();
   prever();
@@ -140,7 +201,7 @@ async function iniciar() {
   ["#grid", "#sugg"].forEach(sel => $(sel).addEventListener("pointerdown", e => { const t = e.target.closest(".tile[data-id]"); if (t && t.dataset.id !== END) { voz.desbloquear(); voz.carregar(t.dataset.id); } }));
   addEventListener("resize", () => renderGrade());
   $("#grid").addEventListener("click", e => { const t = e.target.closest(".tile:not(.empty)"); if (t) escolher(t.dataset.id, false); });
-  $("#sugg").addEventListener("click", e => { const t = e.target.closest(".tile"); if (t) escolher(t.dataset.id, true); });
+  $("#sugg").addEventListener("click", e => { const t = e.target.closest(".tile[data-id]"); if (t) escolher(t.dataset.id, true); });
   $("#abas").addEventListener("click", e => {
     const b = e.target.closest("button"); if (!b || b.id === "b-pais") return;
     if (b.id === "b-treino") return abrirTreino();
@@ -149,7 +210,7 @@ async function iniciar() {
   $("#partner").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; S.adulto = b.dataset.k; renderParceiro(); prever(); });
   $("#pg-prev").addEventListener("click", () => { S.sub--; S.toquesFrase++; renderGrade(); });
   $("#pg-next").addEventListener("click", () => { S.sub++; S.toquesFrase++; renderGrade(); });
-  $("#b-back").addEventListener("click", () => { voz.desbloquear(); if (S.spoken) S.spoken = false; else S.phrase.pop(); renderFrase(); prever(); });
+  $("#b-back").addEventListener("click", () => { voz.desbloquear(); observarToque("apagar"); if (S.spoken) S.spoken = false; else S.phrase.pop(); renderFrase(); prever(); });
   $("#b-speak").addEventListener("click", falarFrase);
   segurarParaAbrir($("#b-pais"), $("#gear-ring"), () => location.href = "pais.html");
   aquecerCache();

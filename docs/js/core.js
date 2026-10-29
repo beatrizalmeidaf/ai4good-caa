@@ -17,7 +17,7 @@ export const store = {
 export const OPT_PADRAO = {
   grade: "5x3", falarCada: true, sugestoes: true, conceito: true, parceiro: false,
   local: "casa", periodoAuto: true, periodo: "manha", velocidade: 1, preditor: "slm",
-  treinoPalavras: [], treinoMicrofone: true, fonteVoz: "gravada",
+  treinoPalavras: [], treinoMicrofone: true, fonteVoz: "gravada", rotina: [], calma: true,
 };
 
 export const perfis = {
@@ -113,8 +113,23 @@ export function montarPaginas(vocab) {
    Cada pictograma tem um MP3 curto gravado com voz neural (feminina ou masculina).
    Toca na hora pelo Web Audio. A frase é tocada palavra por palavra, sem esperar rede.
    Se faltar um arquivo, usa a voz do sistema (speechSynthesis). */
+// Vozes gravadas disponíveis (pasta em docs/audio/<id>)
+export const VOZES = [
+  { id: "f", nome: "Feminina", desc: "Voz jovem, clara (XTTS)" },
+  { id: "mc", nome: "Masculina (criança)", desc: "Voz de menino (F5-TTS)" },
+  { id: "m", nome: "Masculina (adulto)", desc: "Voz de homem (Kokoro)" },
+];
+// voz escolhida para a criança: o que os adultos escolheram, ou pelo gênero do perfil
+export function vozDoPerfil(p, o) {
+  return { pasta: o?.voz || (p?.genero === "m" ? "mc" : "f"), sistema: o?.fonteVoz === "aparelho" };
+}
+
 export class Voz {
-  constructor(genero = "f", velocidade = 1, sistema = false) { this.g = genero === "m" ? "m" : "f"; this.vel = velocidade; this.sistema = sistema; this.buf = new Map(); this.ctx = null; this.fontes = []; }
+  // pasta: "f" (feminina), "mc" (masculina, criança), "m" (masculina, adulto); sistema = voz do aparelho
+  constructor(pasta = "f", velocidade = 1, sistema = false) {
+    this.g = VOZES.some(v => v.id === pasta) ? pasta : "f"; this.feminina = this.g === "f";
+    this.vel = velocidade; this.sistema = sistema; this.buf = new Map(); this.ctx = null; this.fontes = [];
+  }
   desbloquear() {
     if (!this.ctx) { try { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch {} }
     if (this.ctx?.state === "suspended") this.ctx.resume();
@@ -163,7 +178,7 @@ export class Voz {
       const u = new SpeechSynthesisUtterance(texto); u.lang = "pt-BR"; u.rate = 0.95 * this.vel;
       const vs = speechSynthesis.getVoices().filter(v => v.lang?.replace("_", "-").startsWith("pt"));
       const fem = /luciana|francisca|maria|vit[oó]ria|female|feminina|leila|raquel/i, masc = /daniel|felipe|ant[oô]nio|male|masculina|ricardo/i;
-      u.voice = vs.find(v => (this.g === "f" ? fem : masc).test(v.name) && v.lang.includes("BR")) || vs.find(v => v.lang.includes("BR")) || vs[0] || null;
+      u.voice = vs.find(v => (this.feminina ? fem : masc).test(v.name) && v.lang.includes("BR")) || vs.find(v => v.lang.includes("BR")) || vs[0] || null;
       if (aoPalavra && itens) { // destaca cada pictograma quando o navegador avisa a palavra
         const ini = []; let p = 0; for (const it of itens) { ini.push(p); p += it.texto.length + 1; }
         u.onboundary = e => { let i = 0; while (i + 1 < ini.length && ini[i + 1] <= e.charIndex) i++; aoPalavra(i); };

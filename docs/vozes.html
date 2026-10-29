@@ -64,7 +64,7 @@ const NOMES = {
 const desc = n => {
   if (NOMES[n]) return NOMES[n];
   const motor = n.startsWith("f5-") ? "F5-TTS pt-BR" : "XTTS-v2", ref = n.replace(/^(xtts|f5)-/, "");
-  if (ref.startsWith("crianca")) return [`${motor} · voz de criança (${ref.endsWith("-f") ? "menina" : "menino"})`, "Clonada da gravação enviada pela equipe."];
+  if (ref.startsWith("crianca")) return [`${motor} · voz de criança (${ref.endsWith("-f") ? "menina" : "menino"})`, "Clonada de uma voz de criança gerada por IA."];
   return [`${motor} · referência ${ref}`, "Clona a voz de uma leitura em português (LibriVox)."];
 };
 let tocando = null;
