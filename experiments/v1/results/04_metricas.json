@@ -1,0 +1,346 @@
+{
+ "A": {
+  "unigrama": {
+   "top1": 20.7,
+   "top5": 43.9,
+   "mrr": 0.332,
+   "economia_toques": 22.0
+  },
+  "ngrama_sem_ctx": {
+   "top1": 51.6,
+   "top5": 77.5,
+   "mrr": 0.622,
+   "economia_toques": 38.8
+  },
+  "ngrama_ctx": {
+   "top1": 51.1,
+   "top5": 76.0,
+   "mrr": 0.621,
+   "economia_toques": 38.0
+  },
+  "llm_full:Qwen2.5-0.5B-Instruct": {
+   "top1": 0.0,
+   "top5": 18.8,
+   "mrr": 0.088,
+   "economia_toques": 9.4
+  },
+  "llm_first:Qwen2.5-0.5B-Instruct": {
+   "top1": 0.5,
+   "top5": 3.2,
+   "mrr": 0.045,
+   "economia_toques": 1.6
+  },
+  "llm_full:Qwen3-0.6B": {
+   "top1": 0.9,
+   "top5": 23.3,
+   "mrr": 0.104,
+   "economia_toques": 11.7
+  },
+  "llm_first:Qwen3-0.6B": {
+   "top1": 0.5,
+   "top5": 16.3,
+   "mrr": 0.107,
+   "economia_toques": 8.2
+  },
+  "llm_full:SmolLM2-360M-Instruct": {
+   "top1": 1.2,
+   "top5": 3.5,
+   "mrr": 0.068,
+   "economia_toques": 1.7
+  },
+  "llm_first:SmolLM2-360M-Instruct": {
+   "top1": 0.4,
+   "top5": 4.3,
+   "mrr": 0.038,
+   "economia_toques": 2.2
+  },
+  "llm_full:Qwen2.5-1.5B-Instruct": {
+   "top1": 0.4,
+   "top5": 3.8,
+   "mrr": 0.06,
+   "economia_toques": 1.9
+  },
+  "llm_first:Qwen2.5-1.5B-Instruct": {
+   "top1": 0.7,
+   "top5": 2.8,
+   "mrr": 0.044,
+   "economia_toques": 1.4
+  },
+  "llm_full:Qwen3-1.7B": {
+   "top1": 0.3,
+   "top5": 3.4,
+   "mrr": 0.037,
+   "economia_toques": 1.7
+  },
+  "llm_first:Qwen3-1.7B": {
+   "top1": 0.7,
+   "top5": 17.0,
+   "mrr": 0.101,
+   "economia_toques": 8.5
+  },
+  "slm_simbolos": {
+   "top1": 51.1,
+   "top5": 78.4,
+   "mrr": 0.628,
+   "economia_toques": 39.2
+  },
+  "slm_simbolos_sem_e5": {
+   "top1": 51.2,
+   "top5": 78.2,
+   "mrr": 0.629,
+   "economia_toques": 39.1
+  },
+  "hibrido:Qwen2.5-0.5B-Instruct": {
+   "top1": 49.0,
+   "top5": 75.7,
+   "mrr": 0.608,
+   "economia_toques": 37.9,
+   "beta": 0.1,
+   "nota": "2ª metade"
+  },
+  "hibrido:Qwen2.5-0.5B-Instruct (1º token)": {
+   "top1": 49.5,
+   "top5": 76.3,
+   "mrr": 0.614,
+   "economia_toques": 38.2,
+   "beta": 0.1,
+   "nota": "2ª metade"
+  },
+  "hibrido:Qwen3-0.6B": {
+   "top1": 49.8,
+   "top5": 76.3,
+   "mrr": 0.608,
+   "economia_toques": 38.2,
+   "beta": 0.1,
+   "nota": "2ª metade"
+  },
+  "hibrido:Qwen3-0.6B (1º token)": {
+   "top1": 49.9,
+   "top5": 76.0,
+   "mrr": 0.611,
+   "economia_toques": 38.0,
+   "beta": 0.1,
+   "nota": "2ª metade"
+  },
+  "hibrido:SmolLM2-360M-Instruct": {
+   "top1": 49.3,
+   "top5": 75.3,
+   "mrr": 0.602,
+   "economia_toques": 37.6,
+   "beta": 0.1,
+   "nota": "2ª metade"
+  },
+  "hibrido:SmolLM2-360M-Instruct (1º token)": {
+   "top1": 49.9,
+   "top5": 75.9,
+   "mrr": 0.614,
+   "economia_toques": 37.9,
+   "beta": 0.1,
+   "nota": "2ª metade"
+  },
+  "hibrido:Qwen2.5-1.5B-Instruct": {
+   "top1": 49.9,
+   "top5": 75.9,
+   "mrr": 0.615,
+   "economia_toques": 37.9,
+   "beta": 0.1,
+   "nota": "2ª metade"
+  },
+  "hibrido:Qwen2.5-1.5B-Instruct (1º token)": {
+   "top1": 49.9,
+   "top5": 76.6,
+   "mrr": 0.617,
+   "economia_toques": 38.3,
+   "beta": 0.1,
+   "nota": "2ª metade"
+  },
+  "hibrido:Qwen3-1.7B": {
+   "top1": 49.9,
+   "top5": 75.9,
+   "mrr": 0.611,
+   "economia_toques": 37.9,
+   "beta": 0.1,
+   "nota": "2ª metade"
+  },
+  "hibrido:Qwen3-1.7B (1º token)": {
+   "top1": 49.8,
+   "top5": 75.6,
+   "mrr": 0.611,
+   "economia_toques": 37.8,
+   "beta": 0.1,
+   "nota": "2ª metade"
+  }
+ },
+ "B": {
+  "unigrama": {
+   "top1": 20.4,
+   "top5": 38.2,
+   "mrr": 0.305,
+   "economia_toques": 19.1
+  },
+  "ngrama_sem_ctx": {
+   "top1": 35.3,
+   "top5": 47.4,
+   "mrr": 0.408,
+   "economia_toques": 23.7
+  },
+  "ngrama_ctx": {
+   "top1": 36.2,
+   "top5": 48.9,
+   "mrr": 0.416,
+   "economia_toques": 24.4
+  },
+  "llm_full:Qwen2.5-0.5B-Instruct": {
+   "top1": 0.0,
+   "top5": 18.6,
+   "mrr": 0.097,
+   "economia_toques": 9.3
+  },
+  "llm_first:Qwen2.5-0.5B-Instruct": {
+   "top1": 0.0,
+   "top5": 1.9,
+   "mrr": 0.035,
+   "economia_toques": 1.0
+  },
+  "llm_full:Qwen3-0.6B": {
+   "top1": 2.6,
+   "top5": 22.0,
+   "mrr": 0.118,
+   "economia_toques": 11.0
+  },
+  "llm_first:Qwen3-0.6B": {
+   "top1": 0.0,
+   "top5": 14.9,
+   "mrr": 0.095,
+   "economia_toques": 7.5
+  },
+  "llm_full:SmolLM2-360M-Instruct": {
+   "top1": 3.5,
+   "top5": 4.9,
+   "mrr": 0.092,
+   "economia_toques": 2.4
+  },
+  "llm_first:SmolLM2-360M-Instruct": {
+   "top1": 0.0,
+   "top5": 4.9,
+   "mrr": 0.032,
+   "economia_toques": 2.4
+  },
+  "llm_full:Qwen2.5-1.5B-Instruct": {
+   "top1": 0.0,
+   "top5": 3.6,
+   "mrr": 0.059,
+   "economia_toques": 1.8
+  },
+  "llm_first:Qwen2.5-1.5B-Instruct": {
+   "top1": 0.9,
+   "top5": 1.9,
+   "mrr": 0.039,
+   "economia_toques": 1.0
+  },
+  "slm_simbolos": {
+   "top1": 37.4,
+   "top5": 52.6,
+   "mrr": 0.444,
+   "economia_toques": 26.3
+  },
+  "slm_simbolos_sem_e5": {
+   "top1": 37.7,
+   "top5": 53.3,
+   "mrr": 0.449,
+   "economia_toques": 26.6
+  },
+  "llm_full:Qwen3-1.7B": {
+   "top1": 0.0,
+   "top5": 2.4,
+   "mrr": 0.032,
+   "economia_toques": 1.2
+  },
+  "llm_first:Qwen3-1.7B": {
+   "top1": 0.9,
+   "top5": 16.6,
+   "mrr": 0.097,
+   "economia_toques": 8.3
+  },
+  "hibrido:Qwen2.5-0.5B-Instruct": {
+   "top1": 21.4,
+   "top5": 54.8,
+   "mrr": 0.353,
+   "economia_toques": 27.4,
+   "beta": 1,
+   "nota": "2ª metade"
+  },
+  "hibrido:Qwen2.5-0.5B-Instruct (1º token)": {
+   "top1": 35.6,
+   "top5": 49.3,
+   "mrr": 0.414,
+   "economia_toques": 24.7,
+   "beta": 0.1,
+   "nota": "2ª metade"
+  },
+  "hibrido:Qwen3-0.6B": {
+   "top1": 35.1,
+   "top5": 52.0,
+   "mrr": 0.409,
+   "economia_toques": 26.0,
+   "beta": 0.5,
+   "nota": "2ª metade"
+  },
+  "hibrido:Qwen3-0.6B (1º token)": {
+   "top1": 35.9,
+   "top5": 48.8,
+   "mrr": 0.415,
+   "economia_toques": 24.4,
+   "beta": 0.1,
+   "nota": "2ª metade"
+  },
+  "hibrido:SmolLM2-360M-Instruct": {
+   "top1": 28.5,
+   "top5": 52.8,
+   "mrr": 0.386,
+   "economia_toques": 26.4,
+   "beta": 0.5,
+   "nota": "2ª metade"
+  },
+  "hibrido:SmolLM2-360M-Instruct (1º token)": {
+   "top1": 35.1,
+   "top5": 46.5,
+   "mrr": 0.405,
+   "economia_toques": 23.3,
+   "beta": 0.1,
+   "nota": "2ª metade"
+  },
+  "hibrido:Qwen2.5-1.5B-Instruct": {
+   "top1": 36.3,
+   "top5": 50.5,
+   "mrr": 0.416,
+   "economia_toques": 25.2,
+   "beta": 0.5,
+   "nota": "2ª metade"
+  },
+  "hibrido:Qwen2.5-1.5B-Instruct (1º token)": {
+   "top1": 35.6,
+   "top5": 50.2,
+   "mrr": 0.415,
+   "economia_toques": 25.1,
+   "beta": 0.1,
+   "nota": "2ª metade"
+  },
+  "hibrido:Qwen3-1.7B": {
+   "top1": 36.8,
+   "top5": 51.3,
+   "mrr": 0.427,
+   "economia_toques": 25.7,
+   "beta": 0.1,
+   "nota": "2ª metade"
+  },
+  "hibrido:Qwen3-1.7B (1º token)": {
+   "top1": 36.4,
+   "top5": 47.7,
+   "mrr": 0.416,
+   "economia_toques": 23.8,
+   "beta": 0.1,
+   "nota": "2ª metade"
+  }
+ }
+}

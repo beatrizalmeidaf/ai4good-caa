@@ -1,4 +1,14 @@
 refs/
+data_raw/
 __pycache__/
 *.pyc
-experiments/cache/
+*.npz
+experiments/v1/cache/
+experiments/v2/out/pictos_png/
+experiments/v2/out/folhas/
+experiments/v2/out/dataset.json
+experiments/v2/out/frases_teste.jsonl
+experiments/v2/out/*log.txt
+.venv*/
+audio/
+p/

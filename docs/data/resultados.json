@@ -1,0 +1,437 @@
+{
+ "metricas": {
+  "conversa_nova": {
+   "Mais usados (frequência)": {
+    "top1": 0.0,
+    "top6": 33.3,
+    "mrr": 0.141,
+    "fim_top6": 100.0,
+    "conceito_top1": 33.4,
+    "conceito_top3": 60.5,
+    "economia_toques": 0.0,
+    "n": 6323
+   },
+   "N-grama + contexto": {
+    "top1": 30.3,
+    "top6": 60.0,
+    "mrr": 0.432,
+    "fim_top6": 100.0,
+    "conceito_top1": 58.3,
+    "conceito_top3": 81.3,
+    "economia_toques": 8.3,
+    "n": 6323
+   },
+   "SLM P (d64, 2 camadas)": {
+    "top1": 32.9,
+    "top6": 63.0,
+    "mrr": 0.458,
+    "fim_top6": 95.8,
+    "conceito_top1": 58.7,
+    "conceito_top3": 82.8,
+    "economia_toques": 9.7,
+    "n": 6323
+   },
+   "SLM M (d128, 3 camadas)": {
+    "top1": 31.4,
+    "top6": 63.1,
+    "mrr": 0.446,
+    "fim_top6": 93.6,
+    "conceito_top1": 57.7,
+    "conceito_top3": 81.7,
+    "economia_toques": 9.8,
+    "n": 6323
+   },
+   "SLM G (d192, 4 camadas)": {
+    "top1": 30.9,
+    "top6": 62.4,
+    "mrr": 0.441,
+    "fim_top6": 94.4,
+    "conceito_top1": 56.8,
+    "conceito_top3": 82.5,
+    "economia_toques": 9.9,
+    "n": 6323
+   }
+  },
+  "cenario_novo": {
+   "Mais usados (frequência)": {
+    "top1": 0.0,
+    "top6": 35.8,
+    "mrr": 0.154,
+    "fim_top6": 100.0,
+    "conceito_top1": 36.7,
+    "conceito_top3": 64.3,
+    "economia_toques": 0.0,
+    "n": 6994
+   },
+   "N-grama + contexto": {
+    "top1": 33.3,
+    "top6": 65.1,
+    "mrr": 0.467,
+    "fim_top6": 100.0,
+    "conceito_top1": 59.7,
+    "conceito_top3": 83.7,
+    "economia_toques": 6.2,
+    "n": 6994
+   },
+   "SLM P (d64, 2 camadas)": {
+    "top1": 36.3,
+    "top6": 68.2,
+    "mrr": 0.495,
+    "fim_top6": 96.9,
+    "conceito_top1": 61.0,
+    "conceito_top3": 85.2,
+    "economia_toques": 8.3,
+    "n": 6994
+   },
+   "SLM M (d128, 3 camadas)": {
+    "top1": 34.6,
+    "top6": 66.3,
+    "mrr": 0.477,
+    "fim_top6": 95.9,
+    "conceito_top1": 59.3,
+    "conceito_top3": 83.5,
+    "economia_toques": 7.6,
+    "n": 6994
+   },
+   "SLM G (d192, 4 camadas)": {
+    "top1": 33.6,
+    "top6": 64.9,
+    "mrr": 0.47,
+    "fim_top6": 94.8,
+    "conceito_top1": 58.6,
+    "conceito_top3": 84.4,
+    "economia_toques": 7.0,
+    "n": 6994
+   }
+  },
+  "mensagem_real": {
+   "Mais usados (frequência)": {
+    "top1": 0.0,
+    "top6": 17.4,
+    "mrr": 0.079,
+    "fim_top6": 100.0,
+    "conceito_top1": 32.6,
+    "conceito_top3": 56.6,
+    "economia_toques": 0.0,
+    "n": 4133
+   },
+   "N-grama + contexto": {
+    "top1": 8.3,
+    "top6": 26.9,
+    "mrr": 0.169,
+    "fim_top6": 100.0,
+    "conceito_top1": 37.8,
+    "conceito_top3": 68.6,
+    "economia_toques": 3.8,
+    "n": 4133
+   },
+   "SLM P (d64, 2 camadas)": {
+    "top1": 9.3,
+    "top6": 29.5,
+    "mrr": 0.181,
+    "fim_top6": 90.3,
+    "conceito_top1": 37.5,
+    "conceito_top3": 69.3,
+    "economia_toques": 4.7,
+    "n": 4133
+   },
+   "SLM M (d128, 3 camadas)": {
+    "top1": 9.7,
+    "top6": 28.1,
+    "mrr": 0.181,
+    "fim_top6": 86.3,
+    "conceito_top1": 36.8,
+    "conceito_top3": 68.0,
+    "economia_toques": 4.7,
+    "n": 4133
+   },
+   "SLM G (d192, 4 camadas)": {
+    "top1": 9.4,
+    "top6": 28.8,
+    "mrr": 0.181,
+    "fim_top6": 85.6,
+    "conceito_top1": 36.7,
+    "conceito_top3": 67.1,
+    "economia_toques": 5.0,
+    "n": 4133
+   },
+   "SLM P (d64, 2 camadas) sem mensagens reais no treino": {
+    "top1": 6.8,
+    "top6": 21.4,
+    "mrr": 0.135,
+    "fim_top6": 89.3,
+    "conceito_top1": 34.1,
+    "conceito_top3": 62.1,
+    "economia_toques": 2.1,
+    "n": 4133
+   }
+  },
+  "_tempo_treino_s": {
+   "SLM P (d64, 2 camadas)": 14.7,
+   "SLM M (d128, 3 camadas)": 16.0,
+   "SLM G (d192, 4 camadas)": 19.3
+  },
+  "_melhor": "SLM P (d64, 2 camadas)"
+ },
+ "dataset": {
+  "frases_brutas": 28468,
+  "frases": 27992,
+  "vocab": 769,
+  "held_scen": [
+   "almoço em família",
+   "ir ao banheiro na escola",
+   "ir à praia ou à piscina",
+   "passear no shopping e comer lanche",
+   "roda de conversa na sala de aula",
+   "terapia ocupacional com balanço, bola e massinha"
+  ],
+  "splits": {
+   "treino": 19420,
+   "conversa_nova": 2250,
+   "val": 1130,
+   "cenario_novo": 2531,
+   "adaptado": 2661
+  },
+  "cobertura_tokens": 0.951,
+  "paginas": {
+   "acoes": 162,
+   "conversa": 24,
+   "pessoas": 44,
+   "perguntas": 56,
+   "sentir": 28,
+   "comida": 69,
+   "lugares": 70,
+   "descrever": 83,
+   "animais": 31,
+   "escola": 22,
+   "coisas": 83,
+   "brincar": 35,
+   "roupa": 27,
+   "corpo": 35
+  },
+  "api_fallback": 0
+ },
+ "exemplos": [
+  {
+   "adulto": "Nenhuma",
+   "frase": "Óculos no chão",
+   "seq": [
+    [
+     3329,
+     "óculos"
+    ],
+    [
+     2575,
+     "chão"
+    ]
+   ]
+  },
+  {
+   "adulto": "Onde dói?",
+   "frase": "Meu pé dói.",
+   "seq": [
+    [
+     12264,
+     "meu"
+    ],
+    [
+     25327,
+     "pé"
+    ],
+    [
+     2367,
+     "dor"
+    ]
+   ]
+  },
+  {
+   "adulto": "Comentário: Olha o ônibus!",
+   "frase": "Quero ir de ônibus.",
+   "seq": [
+    [
+     5441,
+     "querer"
+    ],
+    [
+     8142,
+     "ir"
+    ],
+    [
+     2262,
+     "ônibus"
+    ]
+   ]
+  },
+  {
+   "adulto": "Nenhuma",
+   "frase": "Fazer xixi",
+   "seq": [
+    [
+     16713,
+     "xixi"
+    ]
+   ]
+  },
+  {
+   "adulto": "Onde dói?",
+   "frase": "Dói no estômago.",
+   "seq": [
+    [
+     2367,
+     "dor"
+    ],
+    [
+     3309,
+     "estômago"
+    ]
+   ]
+  },
+  {
+   "adulto": "Comentário",
+   "frase": "Pode ser que a comida esteja muito quente.",
+   "seq": [
+    [
+     4583,
+     "quente"
+    ]
+   ]
+  },
+  {
+   "adulto": "Olha, tem um boneco de coração aqui. Gostou?",
+   "frase": "Gosto.",
+   "seq": [
+    [
+     7124,
+     "gostar"
+    ]
+   ]
+  },
+  {
+   "adulto": "Você quer um abraço antes?",
+   "frase": "Sim.",
+   "seq": [
+    [
+     5584,
+     "sim"
+    ]
+   ]
+  },
+  {
+   "adulto": "Você quer mais suco? Tem no pote.",
+   "frase": "Não, eu já bebi.",
+   "seq": [
+    [
+     5526,
+     "não"
+    ],
+    [
+     6061,
+     "beber"
+    ]
+   ]
+  },
+  {
+   "adulto": "O que aconteceu? Você parou de cantar.",
+   "frase": "A música era muito alta.",
+   "seq": [
+    [
+     24791,
+     "música"
+    ],
+    [
+     25782,
+     "alto"
+    ]
+   ]
+  },
+  {
+   "adulto": "Você quer mais suco? Tem no pote.",
+   "frase": "Não, eu já bebi.",
+   "seq": [
+    [
+     5526,
+     "não"
+    ],
+    [
+     6061,
+     "beber"
+    ]
+   ]
+  },
+  {
+   "adulto": "O que aconteceu? Você parou de cantar.",
+   "frase": "A música era muito alta.",
+   "seq": [
+    [
+     24791,
+     "música"
+    ],
+    [
+     25782,
+     "alto"
+    ]
+   ]
+  },
+  {
+   "adulto": "Você quer mais suco? Tem no pote.",
+   "frase": "Não, eu já bebi.",
+   "seq": [
+    [
+     5526,
+     "não"
+    ],
+    [
+     6061,
+     "beber"
+    ]
+   ]
+  },
+  {
+   "adulto": "O que aconteceu? Você parou de cantar.",
+   "frase": "A música era muito alta.",
+   "seq": [
+    [
+     24791,
+     "música"
+    ],
+    [
+     25782,
+     "alto"
+    ]
+   ]
+  }
+ ],
+ "lead": "O Zuli sugere o próximo pictograma com um modelo de 0,15 milhão de parâmetros que roda no próprio tablet em cerca de 1 ms. Em conversas que ele nunca viu, o pictograma certo está entre as 6 sugestões em 63,0% das vezes.",
+ "conclusoes": [
+  "Funciona para conversas novas: 63,0% de acerto nas 6 sugestões em conversas inéditas e 68,2% em situações inteiras que ficaram fora do treino (contra 33,3% mostrando só os pictogramas mais usados).",
+  "Saber o que o adulto perguntou ajuda: com \"Onde?\" no contexto de saúde, as sugestões viram partes do corpo; com \"Como você está?\", viram sentimentos. A página certa da prancha é a mais provável em 58,7% das vezes.",
+  "O fim da frase é previsto em 95,8% dos casos: o botão falar aparece nas sugestões quando a frase está completa.",
+  "Modelos maiores não ajudaram: o menor (0,15 mi parâmetros) empatou ou ganhou do maior (1,8 mi). O limite agora são os dados, não o tamanho do modelo.",
+  "Mensagens reais de usuários de CAA, adaptadas para criança, são mais difíceis (29,5%). Incluir parte delas no treino subiu o acerto de 21,4% para 29,5%. Dados reais de uso, com consentimento, são o próximo passo.",
+  "A economia de toques é modesta (9,7%), porque as palavras mais usadas já ficam na página Núcleo, a um toque. O ganho maior está em achar palavras fora do Núcleo sem navegar."
+ ],
+ "metodo": [
+  "Um modelo de linguagem grande (Qwen3-30B, rodando no servidor) escreveu conversas curtas entre adulto e criança em 62 situações do dia a dia (casa, escola, passeio, saúde, terapia), com 11 tipos de fala do adulto.",
+  "Cerca de 9 mil mensagens reais de usuários de CAA (turk9k e UNL-AAC-Phrases) foram adaptadas para o que uma criança brasileira diria; as que eram assunto de adulto foram descartadas.",
+  "Cada palavra virou um pictograma do ARASAAC pelo catálogo completo em inglês, conferido com as palavras-chave em português e com a classe gramatical.",
+  "O modelo de símbolos foi treinado do zero nessas sequências, com período do dia, lugar e fala do adulto como contexto. Seis situações inteiras e 10% das conversas ficaram fora do treino para o teste."
+ ],
+ "numeros": [
+  [
+   "769",
+   "pictogramas na prancha"
+  ],
+  [
+   "27.992",
+   "frases de treino e teste, em conversas"
+  ],
+  [
+   "68,2%",
+   "acerto das 6 sugestões em situações que o modelo nunca viu"
+  ],
+  [
+   "0,3 MB",
+   "modelo inteiro (0,15 mi parâmetros), roda no tablet"
+  ]
+ ]
+}

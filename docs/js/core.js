@@ -1,0 +1,215 @@
+// Zuli: código comum à área da criança e à área dos pais.
+// Perfis, registros de uso, dados, áudio e previsão. Tudo fica neste aparelho.
+import { loadSLM } from "./slm.js";
+
+export const DATA = "data/";
+export const END = "__end__";
+export const pic = id => `p/${id}.webp`;
+
+/* ---------------- armazenamento local ---------------- */
+export const store = {
+  get(k, d) { try { const v = localStorage.getItem("zuli-" + k); return v ? JSON.parse(v) : d; } catch { return d; } },
+  set(k, v) { try { localStorage.setItem("zuli-" + k, JSON.stringify(v)); return true; } catch { return false; } },
+  del(k) { try { localStorage.removeItem("zuli-" + k); } catch {} },
+};
+
+export const OPT_PADRAO = {
+  grade: "5x3", falarCada: true, sugestoes: true, conceito: true, parceiro: false,
+  local: "casa", periodoAuto: true, periodo: "manha", velocidade: 1, preditor: "slm",
+  treinoPalavras: [], treinoMicrofone: true,
+};
+
+export const perfis = {
+  lista() { return store.get("perfis", []); },
+  ativo() { const id = store.get("ativo", null); return this.lista().find(p => p.id === id) || this.lista()[0] || null; },
+  salvar(p) { const l = this.lista().filter(x => x.id !== p.id); l.push(p); store.set("perfis", l); },
+  usar(id) { store.set("ativo", id); },
+  remover(id) {
+    store.set("perfis", this.lista().filter(p => p.id !== id));
+    for (const k of ["opt", "pessoal", "log"]) store.del(`${k}-${id}`);
+  },
+  novo(nome, genero, idade) {
+    const p = { id: Math.random().toString(36).slice(2, 9), nome, genero, idade, criado: Date.now() };
+    this.salvar(p); this.usar(p.id); return p;
+  },
+  opt(p) { return Object.assign({}, OPT_PADRAO, store.get(`opt-${p.id}`, {})); },
+  salvarOpt(p, o) { store.set(`opt-${p.id}`, o); },
+};
+
+/* registro de uso, para o painel dos pais (máx. 4000 eventos por criança) */
+export const registro = {
+  ler(p) { return store.get(`log-${p.id}`, []); },
+  add(p, ev) {
+    const l = this.ler(p); l.push(Object.assign({ t: Date.now() }, ev));
+    while (l.length > 4000) l.shift();
+    if (!store.set(`log-${p.id}`, l)) { l.splice(0, 1000); store.set(`log-${p.id}`, l); }
+  },
+};
+
+/* PIN dos pais: guardado como hash, nunca em texto */
+export async function hashPin(pin) {
+  const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode("zuli:" + pin));
+  return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, "0")).join("");
+}
+
+/* ---------------- dados ---------------- */
+export async function carregarVocab() {
+  const vocab = await fetch(DATA + "vocab.json").then(r => r.json());
+  const by = {}; vocab.forEach(w => by[w.id] = w);
+  return { vocab, by };
+}
+
+// Páginas da prancha (poucas, para não poluir): id, nome, cor Fitzgerald, rótulos candidatos a ícone.
+export const PAGINAS = [
+  ["nucleo", "Principais", "acao", ["querer", "eu"]], ["pessoas", "Pessoas", "pessoa", ["mãe", "eu"]],
+  ["acoes", "Fazer", "acao", ["brincar", "fazer"]], ["sentir", "Sentir", "descricao", ["feliz"]],
+  ["comida", "Comer", "coisa", ["comer", "pão", "suco"]], ["brincar", "Brincar", "coisa", ["bola", "brinquedo"]],
+  ["corpo", "Corpo", "coisa", ["barriga", "corpo"]], ["lugares", "Lugares e coisas", "lugar", ["casa", "escola"]],
+  ["conversa", "Conversa", "social", ["oi", "tchau"]],
+];
+// páginas do vocabulário -> grupo exibido
+const GRUPO = { pessoas: "pessoas", acoes: "acoes", sentir: "sentir", descrever: "sentir", comida: "comida",
+  brincar: "brincar", animais: "brincar", corpo: "corpo", roupa: "corpo", lugares: "lugares", escola: "lugares",
+  coisas: "lugares", conversa: "conversa", perguntas: "conversa" };
+export const grupoDe = w => GRUPO[w.pagina] || "lugares";
+export function montarPaginas(vocab) {
+  const ordem = ["pessoa", "acao", "descricao", "social", "negacao", "tempo", "coisa", "lugar"];
+  const pg = { nucleo: vocab.slice(0, 30).sort((a, b) => ordem.indexOf(a.cor) - ordem.indexOf(b.cor) || b.freq - a.freq).map(w => w.id) };
+  for (const w of vocab) (pg[grupoDe(w)] ??= []).push(w.id);
+  return pg;
+}
+
+/* ---------------- áudio ----------------
+   Cada pictograma tem um MP3 curto gravado com voz neural (feminina ou masculina).
+   Toca na hora pelo Web Audio. A frase é tocada palavra por palavra, sem esperar rede.
+   Se faltar um arquivo, usa a voz do sistema (speechSynthesis). */
+export class Voz {
+  constructor(genero = "f", velocidade = 1) { this.g = genero === "m" ? "m" : "f"; this.vel = velocidade; this.buf = new Map(); this.ctx = null; this.fontes = []; }
+  desbloquear() {
+    if (!this.ctx) { try { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch {} }
+    if (this.ctx?.state === "suspended") this.ctx.resume();
+  }
+  url(chave) { return `audio/${this.g}/${chave}.mp3`; }
+  async carregar(chave) {
+    if (this.buf.has(chave)) return this.buf.get(chave);
+    const pr = (async () => {
+      this.desbloquear(); if (!this.ctx) return null;
+      try {
+        const ab = await fetch(this.url(chave)).then(r => { if (!r.ok) throw 0; return r.arrayBuffer(); });
+        const b = await this.ctx.decodeAudioData(ab), d = b.getChannelData(0);
+        // acha onde a fala começa e termina: toca só esse trecho (resposta imediata ao toque)
+        let mx = 0; for (let i = 0; i < d.length; i++) mx = Math.max(mx, Math.abs(d[i]));
+        const thr = mx * 0.02; let a = 0, z = d.length - 1;
+        while (a < d.length && Math.abs(d[a]) < thr) a++;
+        while (z > a && Math.abs(d[z]) < thr) z--;
+        const ini = Math.max(0, a / b.sampleRate - 0.02), fim = Math.min(b.duration, z / b.sampleRate + 0.06);
+        return { b, ini, dur: Math.max(0.05, fim - ini) };
+      } catch { return null; }
+    })();
+    this.buf.set(chave, pr); return pr;
+  }
+  preparar(chaves) { chaves.forEach(c => this.carregar(c)); }
+  parar() { this.fontes.forEach(s => { try { s.stop(); } catch {} }); this.fontes = []; try { speechSynthesis.cancel(); } catch {} }
+  // itens: [{chave, texto}]; aoPalavra(i) chamado quando cada item começa
+  async falar(itens, { aoPalavra, aoFim } = {}) {
+    this.parar(); this.desbloquear();
+    const bufs = await Promise.all(itens.map(it => this.carregar(it.chave)));
+    if (!this.ctx || bufs.some(b => !b)) return this.falarSistema(itens.map(i => i.texto).join(" "), aoFim);
+    let t = this.ctx.currentTime + 0.02; const timers = [];
+    bufs.forEach((x, i) => {
+      const s = this.ctx.createBufferSource(); s.buffer = x.b; s.playbackRate.value = this.vel; s.connect(this.ctx.destination);
+      s.start(t, x.ini, x.dur);
+      this.fontes.push(s);
+      timers.push(setTimeout(() => aoPalavra?.(i), (t - this.ctx.currentTime) * 1000));
+      t += x.dur / this.vel + 0.06;
+    });
+    setTimeout(() => aoFim?.(), (t - this.ctx.currentTime) * 1000 + 50);
+  }
+  falarSistema(texto, aoFim) {
+    try {
+      const u = new SpeechSynthesisUtterance(texto); u.lang = "pt-BR"; u.rate = 0.95 * this.vel;
+      const vs = speechSynthesis.getVoices().filter(v => v.lang?.replace("_", "-").startsWith("pt"));
+      const fem = /luciana|francisca|maria|vit[oó]ria|female|feminina|leila|raquel/i, masc = /daniel|felipe|ant[oô]nio|male|masculina|ricardo/i;
+      u.voice = vs.find(v => (this.g === "f" ? fem : masc).test(v.name) && v.lang.includes("BR")) || vs.find(v => v.lang.includes("BR")) || vs[0] || null;
+      u.onend = () => aoFim?.(); u.onerror = () => aoFim?.();
+      speechSynthesis.cancel(); speechSynthesis.speak(u);
+    } catch { aoFim?.(); }
+  }
+}
+
+/* ---------------- previsão ---------------- */
+export class Preditor {
+  constructor(vocab, by, p) { this.vocab = vocab; this.by = by; this.p = p; this.slm = null; this.ngram = null; this.pessoal = store.get(`pessoal-${p.id}`, { n: 0, bi: {}, tri: {} }); }
+  async iniciar() {
+    try { this.slm = await loadSLM(DATA); } catch (e) { console.warn("SLM indisponível", e); await this.carregarNgram(); }
+  }
+  async carregarNgram() { if (!this.ngram) this.ngram = await fetch(DATA + "ngram.json").then(r => r.json()); }
+  ngramProbs(ctx, prefix) {
+    const cx = `${ctx.periodo}|${ctx.local}|${ctx.adulto}`, seq = ["<s>", "<s>", ...prefix.map(String)];
+    const a = seq.at(-2), b = seq.at(-1), C = this.ngram.counts, L = this.ngram.lambdas;
+    const out = {}; let end = 1e-7; for (const w of this.vocab) out[w.id] = 1e-7;
+    for (const [k, key] of Object.entries({ ctxb: `${cx}|${b}`, tri: `${a}|${b}`, bi: b, ctx: cx, uni: "" })) {
+      const d = C[k]?.[key]; if (!d) continue; let tot = 0; for (const v of Object.values(d)) tot += v;
+      for (const [w, c] of Object.entries(d)) { if (w === "</s>") end += L[k] * c / tot; else if (w in out) out[w] += L[k] * c / tot; }
+    }
+    return { symbols: out, end };
+  }
+  // devolve [[id|END, prob], ...] ordenado
+  prever(ctx, prefix, usarNgram = false) {
+    let probs = {}, end = 0;
+    if (!usarNgram && this.slm) {
+      const o = this.slm.predict(ctx, prefix);
+      for (const [k, v] of Object.entries(o.symbols)) probs[k] = Math.exp(v);
+      end = Math.exp(o.end);
+    } else if (this.ngram) { const o = this.ngramProbs(ctx, prefix); probs = o.symbols; end = o.end; }
+    probs[END] = prefix.length ? end : 0;
+    const P = this.pessoal, seq = ["<s>", "<s>", ...prefix.map(String)];
+    const m = P.tri[`${seq.at(-2)}|${seq.at(-1)}`] || P.bi[seq.at(-1)];
+    if (m) {
+      let tot = 0; for (const v of Object.values(m)) tot += v;
+      const w = Math.min(.5, tot / (tot + 4));
+      for (const k of new Set([...Object.keys(probs), ...Object.keys(m)])) probs[k] = (1 - w) * (probs[k] || 0) + w * ((m[k] || 0) / tot);
+    }
+    if (prefix.length) delete probs[prefix.at(-1)];
+    return Object.entries(probs).filter(([k]) => k === END || this.by[k]).sort((a, b) => b[1] - a[1]);
+  }
+  aprender(seq) {
+    const s = ["<s>", "<s>", ...seq.map(String), END], P = this.pessoal;
+    for (let i = 2; i < s.length; i++) {
+      const t = `${s[i - 2]}|${s[i - 1]}`;
+      (P.tri[t] ??= {})[s[i]] = (P.tri[t][s[i]] || 0) + 1;
+      (P.bi[s[i - 1]] ??= {})[s[i]] = (P.bi[s[i - 1]][s[i]] || 0) + 1;
+    }
+    P.n++; store.set(`pessoal-${this.p.id}`, P);
+  }
+}
+
+export function periodoAgora(opt) {
+  if (!opt.periodoAuto) return opt.periodo;
+  const h = new Date().getHours(); return h < 12 ? "manha" : h < 18 ? "tarde" : "noite";
+}
+
+/* ---------------- comparação de fala (treino) ---------------- */
+export function normalizar(s) {
+  return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z ]/g, " ").replace(/\s+/g, " ").trim();
+}
+function lev(a, b) {
+  const d = Array.from({ length: a.length + 1 }, (_, i) => [i]);
+  for (let j = 1; j <= b.length; j++) d[0][j] = j;
+  for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++)
+    d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+  return d[a.length][b.length];
+}
+// semelhança 0..1 entre o que foi ouvido e a palavra-alvo (melhor trecho do que foi ouvido)
+export function semelhanca(ouvido, alvo) {
+  const o = normalizar(ouvido), a = normalizar(alvo);
+  if (!o || !a) return 0;
+  if (o.split(" ").includes(a) || o === a) return 1;
+  const pal = o.split(" "), n = a.split(" ").length; let best = 0;
+  for (let i = 0; i < pal.length; i++) for (let k = 1; k <= n + 1 && i + k <= pal.length; k++) {
+    const t = pal.slice(i, i + k).join(" ");
+    best = Math.max(best, 1 - lev(t, a) / Math.max(t.length, a.length));
+  }
+  return best;
+}
+export const estrelas = s => s >= 0.75 ? 3 : s >= 0.45 ? 2 : 1;

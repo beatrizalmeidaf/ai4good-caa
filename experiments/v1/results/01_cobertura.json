@@ -1,0 +1,2182 @@
+[
+ {
+  "id": "eu",
+  "label": "eu",
+  "cat": "pessoa",
+  "term": "eu",
+  "mode": "bestsearch",
+  "n": 5,
+  "arasaac_id": 2617,
+  "keywords": [
+   "eu",
+   "me",
+   "mim"
+  ],
+  "alternativas": [
+   6632,
+   7309,
+   7310,
+   31807
+  ],
+  "motivo": null
+ },
+ {
+  "id": "voce",
+  "label": "você",
+  "cat": "pessoa",
+  "term": "você",
+  "mode": "bestsearch",
+  "n": 5,
+  "arasaac_id": 2608,
+  "keywords": [
+   "tu",
+   "você"
+  ],
+  "alternativas": [
+   6625,
+   7289,
+   7290,
+   31801
+  ],
+  "motivo": null
+ },
+ {
+  "id": "mamae",
+  "label": "mamãe",
+  "cat": "pessoa",
+  "term": "mãe",
+  "mode": "bestsearch",
+  "n": 2,
+  "arasaac_id": 2458,
+  "keywords": [
+   "mamã",
+   "mãe"
+  ],
+  "alternativas": [
+   31148
+  ],
+  "motivo": null
+ },
+ {
+  "id": "papai",
+  "label": "papai",
+  "cat": "pessoa",
+  "term": "pai",
+  "mode": "bestsearch",
+  "n": 1,
+  "arasaac_id": 2497,
+  "keywords": [
+   "pai"
+  ],
+  "alternativas": [],
+  "motivo": null
+ },
+ {
+  "id": "professora",
+  "label": "professora",
+  "cat": "pessoa",
+  "term": "professora",
+  "mode": "bestsearch",
+  "n": 6,
+  "arasaac_id": 2456,
+  "keywords": [
+   "professora"
+  ],
+  "alternativas": [
+   4955,
+   4956,
+   6555,
+   7798,
+   28003
+  ],
+  "motivo": null
+ },
+ {
+  "id": "amigo",
+  "label": "amigo",
+  "cat": "pessoa",
+  "term": "amigo",
+  "mode": "bestsearch",
+  "n": 2,
+  "arasaac_id": 8487,
+  "keywords": [
+   "amigo"
+  ],
+  "alternativas": [
+   25790
+  ],
+  "motivo": null
+ },
+ {
+  "id": "vovo",
+  "label": "vovó",
+  "cat": "pessoa",
+  "term": "avó",
+  "mode": "curado",
+  "n": 8,
+  "arasaac_id": 2243,
+  "keywords": [
+   "avó",
+   "vovó"
+  ],
+  "alternativas": [
+   2244,
+   4560,
+   10194,
+   23710,
+   23717
+  ],
+  "motivo": "busca devolveu 'avô' (masculino)"
+ },
+ {
+  "id": "irmao",
+  "label": "irmão",
+  "cat": "pessoa",
+  "term": "irmão",
+  "mode": "bestsearch",
+  "n": 2,
+  "arasaac_id": 2423,
+  "keywords": [
+   "irmão"
+  ],
+  "alternativas": [
+   37967
+  ],
+  "motivo": null
+ },
+ {
+  "id": "medico",
+  "label": "médico",
+  "cat": "pessoa",
+  "term": "médico",
+  "mode": "bestsearch",
+  "n": 4,
+  "arasaac_id": 2467,
+  "keywords": [
+   "médico",
+   "doutor"
+  ],
+  "alternativas": [
+   6561,
+   38446,
+   38857
+  ],
+  "motivo": null
+ },
+ {
+  "id": "quero",
+  "label": "quero",
+  "cat": "acao",
+  "term": "querer",
+  "mode": "bestsearch",
+  "n": 2,
+  "arasaac_id": 5441,
+  "keywords": [
+   "querer",
+   "desejar",
+   "eu quero",
+   "quero esse"
+  ],
+  "alternativas": [
+   31141
+  ],
+  "motivo": null
+ },
+ {
+  "id": "comer",
+  "label": "comer",
+  "cat": "acao",
+  "term": "comer",
+  "mode": "bestsearch",
+  "n": 7,
+  "arasaac_id": 2349,
+  "keywords": [
+   "comer",
+   "tomar"
+  ],
+  "alternativas": [
+   4609,
+   6456,
+   6990,
+   28641,
+   28669
+  ],
+  "motivo": null
+ },
+ {
+  "id": "beber",
+  "label": "beber",
+  "cat": "acao",
+  "term": "beber",
+  "mode": "bestsearch",
+  "n": 4,
+  "arasaac_id": 2276,
+  "keywords": [
+   "beber",
+   "tomar"
+  ],
+  "alternativas": [
+   6061,
+   29716,
+   37528
+  ],
+  "motivo": null
+ },
+ {
+  "id": "ir",
+  "label": "ir",
+  "cat": "acao",
+  "term": "ir",
+  "mode": "bestsearch",
+  "n": 6,
+  "arasaac_id": 2432,
+  "keywords": [
+   "ir"
+  ],
+  "alternativas": [
+   8142,
+   11708,
+   13356,
+   31758,
+   35093
+  ],
+  "motivo": null
+ },
+ {
+  "id": "brincar",
+  "label": "brincar",
+  "cat": "acao",
+  "term": "brincar",
+  "mode": "bestsearch",
+  "n": 8,
+  "arasaac_id": 2439,
+  "keywords": [
+   "jogar",
+   "brincar"
+  ],
+  "alternativas": [
+   6537,
+   23392,
+   35717,
+   35723,
+   36884
+  ],
+  "motivo": null
+ },
+ {
+  "id": "dormir",
+  "label": "dormir",
+  "cat": "acao",
+  "term": "dormir",
+  "mode": "bestsearch",
+  "n": 3,
+  "arasaac_id": 2369,
+  "keywords": [
+   "dormir"
+  ],
+  "alternativas": [
+   6479,
+   28623
+  ],
+  "motivo": null
+ },
+ {
+  "id": "ajudar",
+  "label": "ajudar",
+  "cat": "acao",
+  "term": "ajudar",
+  "mode": "bestsearch",
+  "n": 7,
+  "arasaac_id": 4570,
+  "keywords": [
+   "ajudar",
+   "apoiar",
+   "cooperar"
+  ],
+  "alternativas": [
+   9046,
+   10141,
+   10178,
+   32648,
+   37538
+  ],
+  "motivo": null
+ },
+ {
+  "id": "parar",
+  "label": "parar",
+  "cat": "acao",
+  "term": "parar",
+  "mode": "bestsearch",
+  "n": 7,
+  "arasaac_id": 7195,
+  "keywords": [
+   "parar",
+   "deter"
+  ],
+  "alternativas": [
+   7196,
+   9015,
+   11748,
+   27393,
+   36021
+  ],
+  "motivo": null
+ },
+ {
+  "id": "ver",
+  "label": "ver",
+  "cat": "acao",
+  "term": "ver",
+  "mode": "bestsearch",
+  "n": 3,
+  "arasaac_id": 2474,
+  "keywords": [
+   "ver",
+   "olhar",
+   "observar"
+  ],
+  "alternativas": [
+   6564,
+   28673
+  ],
+  "motivo": null
+ },
+ {
+  "id": "ouvir",
+  "label": "ouvir",
+  "cat": "acao",
+  "term": "ouvir",
+  "mode": "bestsearch",
+  "n": 4,
+  "arasaac_id": 2381,
+  "keywords": [
+   "ouvir",
+   "escutar"
+  ],
+  "alternativas": [
+   6572,
+   24711,
+   28659
+  ],
+  "motivo": null
+ },
+ {
+  "id": "abrir",
+  "label": "abrir",
+  "cat": "acao",
+  "term": "abrir",
+  "mode": "bestsearch",
+  "n": 8,
+  "arasaac_id": 2637,
+  "keywords": [
+   "abrir"
+  ],
+  "alternativas": [
+   6875,
+   6874,
+   10137,
+   11162,
+   24598
+  ],
+  "motivo": null
+ },
+ {
+  "id": "lavar",
+  "label": "lavar",
+  "cat": "acao",
+  "term": "lavar",
+  "mode": "bestsearch",
+  "n": 7,
+  "arasaac_id": 3323,
+  "keywords": [
+   "lavar",
+   "esfregar"
+  ],
+  "alternativas": [
+   5496,
+   6507,
+   8617,
+   8977,
+   30967
+  ],
+  "motivo": null
+ },
+ {
+  "id": "escovar",
+  "label": "escovar os dentes",
+  "cat": "acao",
+  "term": "escovar os dentes",
+  "mode": "bestsearch",
+  "n": 4,
+  "arasaac_id": 2326,
+  "keywords": [
+   "escovar os dentes"
+  ],
+  "alternativas": [
+   6971,
+   27489,
+   31880
+  ],
+  "motivo": null
+ },
+ {
+  "id": "tomar_banho",
+  "label": "tomar banho",
+  "cat": "acao",
+  "term": "tomar banho",
+  "mode": "bestsearch",
+  "n": 7,
+  "arasaac_id": 2271,
+  "keywords": [
+   "tomar banho"
+  ],
+  "alternativas": [
+   2371,
+   6058,
+   25843,
+   25845,
+   25844
+  ],
+  "motivo": null
+ },
+ {
+  "id": "vestir",
+  "label": "vestir",
+  "cat": "acao",
+  "term": "vestir",
+  "mode": "bestsearch",
+  "n": 6,
+  "arasaac_id": 2781,
+  "keywords": [
+   "vestir"
+  ],
+  "alternativas": [
+   6627,
+   27052,
+   32135,
+   34494,
+   34569
+  ],
+  "motivo": null
+ },
+ {
+  "id": "desenhar",
+  "label": "desenhar",
+  "cat": "acao",
+  "term": "desenhar",
+  "mode": "curado",
+  "n": 4,
+  "arasaac_id": 8088,
+  "keywords": [
+   "desenhar"
+  ],
+  "alternativas": [
+   5506,
+   6285,
+   21800
+  ],
+  "motivo": "busca devolveu 'marcar padrão' (tesoura)"
+ },
+ {
+  "id": "ler",
+  "label": "ler",
+  "cat": "acao",
+  "term": "ler",
+  "mode": "bestsearch",
+  "n": 4,
+  "arasaac_id": 2447,
+  "keywords": [
+   "ler",
+   "leitura"
+  ],
+  "alternativas": [
+   7141,
+   28643,
+   31680
+  ],
+  "motivo": null
+ },
+ {
+  "id": "abracar",
+  "label": "abraçar",
+  "cat": "acao",
+  "term": "abraçar",
+  "mode": "bestsearch",
+  "n": 2,
+  "arasaac_id": 6023,
+  "keywords": [
+   "abraçar"
+  ],
+  "alternativas": [
+   34369
+  ],
+  "motivo": null
+ },
+ {
+  "id": "gostar",
+  "label": "gosto",
+  "cat": "acao",
+  "term": "gostar",
+  "mode": "bestsearch",
+  "n": 9,
+  "arasaac_id": 2418,
+  "keywords": [
+   "gostar"
+  ],
+  "alternativas": [
+   7124,
+   21917,
+   31861,
+   37721,
+   37758
+  ],
+  "motivo": null
+ },
+ {
+  "id": "doer",
+  "label": "dói",
+  "cat": "acao",
+  "term": "doer",
+  "mode": "bestsearch",
+  "n": 1,
+  "arasaac_id": 30620,
+  "keywords": [
+   "doer"
+  ],
+  "alternativas": [],
+  "motivo": null
+ },
+ {
+  "id": "sentir",
+  "label": "sinto",
+  "cat": "acao",
+  "term": "sentir",
+  "mode": "bestsearch",
+  "n": 5,
+  "arasaac_id": 30194,
+  "keywords": [
+   "sentir",
+   "sentidos",
+   "perceber"
+  ],
+  "alternativas": [
+   30195,
+   30197,
+   30198,
+   30196
+  ],
+  "motivo": null
+ },
+ {
+  "id": "estar",
+  "label": "estou",
+  "cat": "acao",
+  "term": "estar",
+  "mode": "bestsearch",
+  "n": 4,
+  "arasaac_id": 5465,
+  "keywords": [
+   "estar"
+  ],
+  "alternativas": [
+   5466,
+   36392,
+   36480
+  ],
+  "motivo": null
+ },
+ {
+  "id": "ter",
+  "label": "tenho",
+  "cat": "acao",
+  "term": "ter",
+  "mode": "bestsearch",
+  "n": 2,
+  "arasaac_id": 7271,
+  "keywords": [
+   "ter",
+   "possuir"
+  ],
+  "alternativas": [
+   32761
+  ],
+  "motivo": null
+ },
+ {
+  "id": "fazer",
+  "label": "fazer",
+  "cat": "acao",
+  "term": "fazer",
+  "mode": "bestsearch",
+  "n": 2,
+  "arasaac_id": 11749,
+  "keywords": [
+   "fazer"
+  ],
+  "alternativas": [
+   32751
+  ],
+  "motivo": null
+ },
+ {
+  "id": "pegar",
+  "label": "pegar",
+  "cat": "acao",
+  "term": "pegar",
+  "mode": "bestsearch",
+  "n": 4,
+  "arasaac_id": 4606,
+  "keywords": [
+   "apanhar",
+   "agarrar",
+   "segurar",
+   "pegar"
+  ],
+  "alternativas": [
+   6888,
+   10148,
+   32773
+  ],
+  "motivo": null
+ },
+ {
+  "id": "sair",
+  "label": "sair",
+  "cat": "acao",
+  "term": "sair",
+  "mode": "bestsearch",
+  "n": 4,
+  "arasaac_id": 2806,
+  "keywords": [
+   "sair"
+  ],
+  "alternativas": [
+   6606,
+   27067,
+   28689
+  ],
+  "motivo": null
+ },
+ {
+  "id": "voltar",
+  "label": "voltar",
+  "cat": "acao",
+  "term": "voltar",
+  "mode": "bestsearch",
+  "n": 3,
+  "arasaac_id": 6248,
+  "keywords": [
+   "voltar",
+   "volta"
+  ],
+  "alternativas": [
+   6630,
+   31748
+  ],
+  "motivo": null
+ },
+ {
+  "id": "assistir",
+  "label": "assistir",
+  "cat": "acao",
+  "term": "assistir",
+  "mode": "curado",
+  "n": 4,
+  "arasaac_id": 2782,
+  "keywords": [
+   "ver televisão",
+   "ver tv"
+  ],
+  "alternativas": [
+   21385,
+   37538,
+   37539
+  ],
+  "motivo": "busca devolveu plateia; queremos 'ver TV'"
+ },
+ {
+  "id": "descansar",
+  "label": "descansar",
+  "cat": "acao",
+  "term": "descansar",
+  "mode": "bestsearch",
+  "n": 4,
+  "arasaac_id": 3299,
+  "keywords": [
+   "descansar",
+   "repousar"
+  ],
+  "alternativas": [
+   16643,
+   28649,
+   31937
+  ],
+  "motivo": null
+ },
+ {
+  "id": "trocar",
+  "label": "trocar fralda/roupa",
+  "cat": "acao",
+  "term": "trocar",
+  "mode": "bestsearch",
+  "n": 7,
+  "arasaac_id": 8053,
+  "keywords": [
+   "mudar",
+   "trocar"
+  ],
+  "alternativas": [
+   26704,
+   26705,
+   31953,
+   34781,
+   37360
+  ],
+  "motivo": null
+ },
+ {
+  "id": "xixi",
+  "label": "fazer xixi",
+  "cat": "acao",
+  "term": "fazer xixi",
+  "mode": "bestsearch",
+  "n": 9,
+  "arasaac_id": 3429,
+  "keywords": [
+   "fazer xixi",
+   "urinar",
+   "fazer chichi"
+  ],
+  "alternativas": [
+   4880,
+   16713,
+   31927,
+   32264,
+   34141
+  ],
+  "motivo": null
+ },
+ {
+  "id": "agua",
+  "label": "água",
+  "cat": "coisa",
+  "term": "água",
+  "mode": "bestsearch",
+  "n": 3,
+  "arasaac_id": 2248,
+  "keywords": [
+   "água"
+  ],
+  "alternativas": [
+   6889,
+   32464
+  ],
+  "motivo": null
+ },
+ {
+  "id": "suco",
+  "label": "suco",
+  "cat": "coisa",
+  "term": "suco",
+  "mode": "curado",
+  "n": 1,
+  "arasaac_id": 11461,
+  "keywords": [
+   "sumo"
+  ],
+  "alternativas": [],
+  "motivo": "pt-PT: sumo"
+ },
+ {
+  "id": "leite",
+  "label": "leite",
+  "cat": "coisa",
+  "term": "leite",
+  "mode": "bestsearch",
+  "n": 1,
+  "arasaac_id": 2445,
+  "keywords": [
+   "leite"
+  ],
+  "alternativas": [],
+  "motivo": null
+ },
+ {
+  "id": "cafe_manha",
+  "label": "café da manhã",
+  "cat": "coisa",
+  "term": "café da manhã",
+  "mode": "curado",
+  "n": 22,
+  "arasaac_id": 4626,
+  "keywords": [
+   "pequeno-almoço"
+  ],
+  "alternativas": [
+   25704,
+   36355,
+   2581,
+   28557,
+   37179
+  ],
+  "motivo": "pt-PT: pequeno-almoço"
+ },
+ {
+  "id": "almoco",
+  "label": "almoço",
+  "cat": "coisa",
+  "term": "almoço",
+  "mode": "bestsearch",
+  "n": 7,
+  "arasaac_id": 4609,
+  "keywords": [
+   "comer",
+   "almoço"
+  ],
+  "alternativas": [
+   6990,
+   28206,
+   28207,
+   28205,
+   28669
+  ],
+  "motivo": null
+ },
+ {
+  "id": "jantar",
+  "label": "jantar",
+  "cat": "coisa",
+  "term": "jantar",
+  "mode": "bestsearch",
+  "n": 4,
+  "arasaac_id": 4592,
+  "keywords": [
+   "jantar"
+  ],
+  "alternativas": [
+   4593,
+   6970,
+   28675
+  ],
+  "motivo": null
+ },
+ {
+  "id": "lanche",
+  "label": "lanche",
+  "cat": "coisa",
+  "term": "lanche",
+  "mode": "bestsearch",
+  "n": 2,
+  "arasaac_id": 4695,
+  "keywords": [
+   "lanche",
+   "merenda"
+  ],
+  "alternativas": [
+   37841
+  ],
+  "motivo": null
+ },
+ {
+  "id": "pao",
+  "label": "pão",
+  "cat": "coisa",
+  "term": "pão",
+  "mode": "bestsearch",
+  "n": 4,
+  "arasaac_id": 2494,
+  "keywords": [
+   "pão"
+  ],
+  "alternativas": [
+   10230,
+   38732,
+   38965
+  ],
+  "motivo": null
+ },
+ {
+  "id": "fruta",
+  "label": "fruta",
+  "cat": "coisa",
+  "term": "fruta",
+  "mode": "bestsearch",
+  "n": 2,
+  "arasaac_id": 4653,
+  "keywords": [
+   "fruta"
+  ],
+  "alternativas": [
+   28339
+  ],
+  "motivo": null
+ },
+ {
+  "id": "banana",
+  "label": "banana",
+  "cat": "coisa",
+  "term": "banana",
+  "mode": "bestsearch",
+  "n": 3,
+  "arasaac_id": 2530,
+  "keywords": [
+   "banana"
+  ],
+  "alternativas": [
+   9054,
+   10218
+  ],
+  "motivo": null
+ },
+ {
+  "id": "maca",
+  "label": "maçã",
+  "cat": "coisa",
+  "term": "maçã",
+  "mode": "bestsearch",
+  "n": 5,
+  "arasaac_id": 2462,
+  "keywords": [
+   "maçã"
+  ],
+  "alternativas": [
+   13644,
+   13645,
+   28545,
+   28549
+  ],
+  "motivo": null
+ },
+ {
+  "id": "arroz",
+  "label": "arroz",
+  "cat": "coisa",
+  "term": "arroz",
+  "mode": "bestsearch",
+  "n": 3,
+  "arasaac_id": 6911,
+  "keywords": [
+   "arroz"
+  ],
+  "alternativas": [
+   25556,
+   39387
+  ],
+  "motivo": null
+ },
+ {
+  "id": "feijao",
+  "label": "feijão",
+  "cat": "coisa",
+  "term": "feijão",
+  "mode": "bestsearch",
+  "n": 2,
+  "arasaac_id": 3294,
+  "keywords": [
+   "feijão"
+  ],
+  "alternativas": [
+   8337
+  ],
+  "motivo": null
+ },
+ {
+  "id": "biscoito",
+  "label": "biscoito",
+  "cat": "coisa",
+  "term": "biscoito",
+  "mode": "curado",
+  "n": 2,
+  "arasaac_id": 8312,
+  "keywords": [
+   "bolacha"
+  ],
+  "alternativas": [
+   8295
+  ],
+  "motivo": "pt-PT: bolacha (biscoito devolveu imagem pouco clara)"
+ },
+ {
+  "id": "sorvete",
+  "label": "sorvete",
+  "cat": "coisa",
+  "term": "sorvete",
+  "mode": "curado",
+  "n": 2,
+  "arasaac_id": 2420,
+  "keywords": [
+   "cone de gelado"
+  ],
+  "alternativas": [
+   39484
+  ],
+  "motivo": "pt-PT: gelado (sorvete em PT = sorbet, devolveu taça)"
+ },
+ {
+  "id": "brinquedo",
+  "label": "brinquedo",
+  "cat": "coisa",
+  "term": "brinquedo",
+  "mode": "bestsearch",
+  "n": 2,
+  "arasaac_id": 9813,
+  "keywords": [
+   "brinquedo"
+  ],
+  "alternativas": [
+   32568
+  ],
+  "motivo": null
+ },
+ {
+  "id": "bola",
+  "label": "bola",
+  "cat": "coisa",
+  "term": "bola",
+  "mode": "bestsearch",
+  "n": 2,
+  "arasaac_id": 2269,
+  "keywords": [
+   "bola"
+  ],
+  "alternativas": [
+   3241
+  ],
+  "motivo": null
+ },
+ {
+  "id": "tablet",
+  "label": "tablet",
+  "cat": "coisa",
+  "term": "tablet",
+  "mode": "bestsearch",
+  "n": 2,
+  "arasaac_id": 9165,
+  "keywords": [
+   "tablet pc",
+   "tablet",
+   "computador híbrido"
+  ],
+  "alternativas": [
+   28099
+  ],
+  "motivo": null
+ },
+ {
+  "id": "tv",
+  "label": "televisão",
+  "cat": "coisa",
+  "term": "televisão",
+  "mode": "bestsearch",
+  "n": 1,
+  "arasaac_id": 25498,
+  "keywords": [
+   "tv",
+   "televisão",
+   "monitor",
+   "ecrã LCD"
+  ],
+  "alternativas": [],
+  "motivo": null
+ },
+ {
+  "id": "musica",
+  "label": "música",
+  "cat": "coisa",
+  "term": "música",
+  "mode": "bestsearch",
+  "n": 3,
+  "arasaac_id": 11311,
+  "keywords": [
+   "música"
+  ],
+  "alternativas": [
+   24795,
+   24791
+  ],
+  "motivo": null
+ },
+ {
+  "id": "livro",
+  "label": "livro",
+  "cat": "coisa",
+  "term": "livro",
+  "mode": "bestsearch",
+  "n": 2,
+  "arasaac_id": 2450,
+  "keywords": [
+   "livro"
+  ],
+  "alternativas": [
+   25191
+  ],
+  "motivo": null
+ },
+ {
+  "id": "roupa",
+  "label": "roupa",
+  "cat": "coisa",
+  "term": "roupa",
+  "mode": "bestsearch",
+  "n": 2,
+  "arasaac_id": 7233,
+  "keywords": [
+   "roupa"
+  ],
+  "alternativas": [
+   34739
+  ],
+  "motivo": null
+ },
+ {
+  "id": "sapato",
+  "label": "sapato",
+  "cat": "coisa",
+  "term": "sapato",
+  "mode": "curado",
+  "n": 4,
+  "arasaac_id": 2621,
+  "keywords": [
+   "sapatilhas",
+   "ténis"
+  ],
+  "alternativas": [
+   32922,
+   32923,
+   38693
+  ],
+  "motivo": "busca devolveu salto alto; ténis é mais infantil"
+ },
+ {
+  "id": "mochila",
+  "label": "mochila",
+  "cat": "coisa",
+  "term": "mochila",
+  "mode": "bestsearch",
+  "n": 3,
+  "arasaac_id": 2475,
+  "keywords": [
+   "mochila"
+  ],
+  "alternativas": [
+   4696,
+   34743
+  ],
+  "motivo": null
+ },
+ {
+  "id": "remedio",
+  "label": "remédio",
+  "cat": "coisa",
+  "term": "remédio",
+  "mode": "curado",
+  "n": 1,
+  "arasaac_id": 8163,
+  "keywords": [
+   "medicamento",
+   "tratamento"
+  ],
+  "alternativas": [],
+  "motivo": "pt-PT: medicamento"
+ },
+ {
+  "id": "escova",
+  "label": "escova de dentes",
+  "cat": "coisa",
+  "term": "escova de dentes",
+  "mode": "bestsearch",
+  "n": 2,
+  "arasaac_id": 2694,
+  "keywords": [
+   "escova",
+   "escova de dentes"
+  ],
+  "alternativas": [
+   38813
+  ],
+  "motivo": null
+ },
+ {
+  "id": "lapis",
+  "label": "lápis",
+  "cat": "coisa",
+  "term": "lápis",
+  "mode": "bestsearch",
+  "n": 2,
+  "arasaac_id": 2440,
+  "keywords": [
+   "lápis"
+  ],
+  "alternativas": [
+   16855
+  ],
+  "motivo": null
+ },
+ {
+  "id": "massinha",
+  "label": "massinha",
+  "cat": "coisa",
+  "term": "massinha",
+  "mode": "curado",
+  "n": 1,
+  "arasaac_id": 2529,
+  "keywords": [
+   "plasticina"
+  ],
+  "alternativas": [],
+  "motivo": "pt-PT: plasticina"
+ },
+ {
+  "id": "cobertor",
+  "label": "cobertor",
+  "cat": "coisa",
+  "term": "cobertor",
+  "mode": "bestsearch",
+  "n": 1,
+  "arasaac_id": 2459,
+  "keywords": [
+   "cobertor",
+   "manta"
+  ],
+  "alternativas": [],
+  "motivo": null
+ },
+ {
+  "id": "cabeca",
+  "label": "cabeça",
+  "cat": "coisa",
+  "term": "cabeça",
+  "mode": "bestsearch",
+  "n": 1,
+  "arasaac_id": 2673,
+  "keywords": [
+   "cabeça"
+  ],
+  "alternativas": [],
+  "motivo": null
+ },
+ {
+  "id": "barriga",
+  "label": "barriga",
+  "cat": "coisa",
+  "term": "barriga",
+  "mode": "bestsearch",
+  "n": 1,
+  "arasaac_id": 2786,
+  "keywords": [
+   "estômago",
+   "barriga"
+  ],
+  "alternativas": [],
+  "motivo": null
+ },
+ {
+  "id": "dente",
+  "label": "dente",
+  "cat": "coisa",
+  "term": "dente",
+  "mode": "bestsearch",
+  "n": 1,
+  "arasaac_id": 10267,
+  "keywords": [
+   "dente"
+  ],
+  "alternativas": [],
+  "motivo": null
+ },
+ {
+  "id": "ouvido",
+  "label": "ouvido",
+  "cat": "coisa",
+  "term": "ouvido",
+  "mode": "bestsearch",
+  "n": 1,
+  "arasaac_id": 39498,
+  "keywords": [
+   "ouvido"
+  ],
+  "alternativas": [],
+  "motivo": null
+ },
+ {
+  "id": "perna",
+  "label": "perna",
+  "cat": "coisa",
+  "term": "perna",
+  "mode": "bestsearch",
+  "n": 2,
+  "arasaac_id": 8666,
+  "keywords": [
+   "perna"
+  ],
+  "alternativas": [
+   37166
+  ],
+  "motivo": null
+ },
+ {
+  "id": "mao",
+  "label": "mão",
+  "cat": "coisa",
+  "term": "mão",
+  "mode": "bestsearch",
+  "n": 1,
+  "arasaac_id": 2928,
+  "keywords": [
+   "mão",
+   "mão direita"
+  ],
+  "alternativas": [],
+  "motivo": null
+ },
+ {
+  "id": "banheiro",
+  "label": "banheiro",
+  "cat": "lugar",
+  "term": "banheiro",
+  "mode": "curado",
+  "n": 1,
+  "arasaac_id": 5921,
+  "keywords": [
+   "casa de banho"
+  ],
+  "alternativas": [],
+  "motivo": "pt-PT: casa de banho"
+ },
+ {
+  "id": "casa",
+  "label": "casa",
+  "cat": "lugar",
+  "term": "casa",
+  "mode": "bestsearch",
+  "n": 2,
+  "arasaac_id": 2317,
+  "keywords": [
+   "casa"
+  ],
+  "alternativas": [
+   6964
+  ],
+  "motivo": null
+ },
+ {
+  "id": "escola",
+  "label": "escola",
+  "cat": "lugar",
+  "term": "escola",
+  "mode": "bestsearch",
+  "n": 3,
+  "arasaac_id": 3082,
+  "keywords": [
+   "escola",
+   "colégio"
+  ],
+  "alternativas": [
+   6454,
+   32446
+  ],
+  "motivo": null
+ },
+ {
+  "id": "parque",
+  "label": "parque",
+  "cat": "lugar",
+  "term": "parque",
+  "mode": "curado",
+  "n": 22,
+  "arasaac_id": 2859,
+  "keywords": [
+   "parque infantil"
+  ],
+  "alternativas": [
+   39572,
+   5939,
+   6283,
+   29157,
+   32420
+  ],
+  "motivo": "busca devolveu 'comboio de parque'"
+ },
+ {
+  "id": "quarto",
+  "label": "quarto",
+  "cat": "lugar",
+  "term": "quarto",
+  "mode": "curado",
+  "n": 9,
+  "arasaac_id": 5988,
+  "keywords": [
+   "quarto",
+   "dormitório"
+  ],
+  "alternativas": [
+   5436,
+   15549,
+   15732,
+   32422,
+   33068
+  ],
+  "motivo": "busca devolveu fração 1/4"
+ },
+ {
+  "id": "cozinha",
+  "label": "cozinha",
+  "cat": "lugar",
+  "term": "cozinha",
+  "mode": "bestsearch",
+  "n": 5,
+  "arasaac_id": 5965,
+  "keywords": [
+   "cozinha"
+  ],
+  "alternativas": [
+   10752,
+   10753,
+   25966,
+   33070
+  ],
+  "motivo": null
+ },
+ {
+  "id": "rua",
+  "label": "rua",
+  "cat": "lugar",
+  "term": "rua",
+  "mode": "bestsearch",
+  "n": 1,
+  "arasaac_id": 2299,
+  "keywords": [
+   "rua",
+   "avenida"
+  ],
+  "alternativas": [],
+  "motivo": null
+ },
+ {
+  "id": "carro",
+  "label": "carro",
+  "cat": "lugar",
+  "term": "carro",
+  "mode": "bestsearch",
+  "n": 4,
+  "arasaac_id": 2339,
+  "keywords": [
+   "carro",
+   "automóvel"
+  ],
+  "alternativas": [
+   5948,
+   6981,
+   30618
+  ],
+  "motivo": null
+ },
+ {
+  "id": "sala_aula",
+  "label": "sala de aula",
+  "cat": "lugar",
+  "term": "sala de aula",
+  "mode": "bestsearch",
+  "n": 6,
+  "arasaac_id": 5913,
+  "keywords": [
+   "sala de aula"
+  ],
+  "alternativas": [
+   9814,
+   9815,
+   15734,
+   33072,
+   39686
+  ],
+  "motivo": null
+ },
+ {
+  "id": "la_fora",
+  "label": "lá fora",
+  "cat": "lugar",
+  "term": "fora",
+  "mode": "bestsearch",
+  "n": 1,
+  "arasaac_id": 5475,
+  "keywords": [
+   "fora"
+  ],
+  "alternativas": [],
+  "motivo": null
+ },
+ {
+  "id": "feliz",
+  "label": "feliz",
+  "cat": "descricao",
+  "term": "feliz",
+  "mode": "bestsearch",
+  "n": 3,
+  "arasaac_id": 9907,
+  "keywords": [
+   "contente",
+   "feliz"
+  ],
+  "alternativas": [
+   32123,
+   39814
+  ],
+  "motivo": null
+ },
+ {
+  "id": "triste",
+  "label": "triste",
+  "cat": "descricao",
+  "term": "triste",
+  "mode": "bestsearch",
+  "n": 4,
+  "arasaac_id": 2606,
+  "keywords": [
+   "triste"
+  ],
+  "alternativas": [
+   11959,
+   31939,
+   35545
+  ],
+  "motivo": null
+ },
+ {
+  "id": "bravo",
+  "label": "bravo",
+  "cat": "descricao",
+  "term": "zangado",
+  "mode": "bestsearch",
+  "n": 5,
+  "arasaac_id": 2374,
+  "keywords": [
+   "chateado",
+   "zangado"
+  ],
+  "alternativas": [
+   21820,
+   31884,
+   35539,
+   38936
+  ],
+  "motivo": null
+ },
+ {
+  "id": "cansado",
+  "label": "cansado",
+  "cat": "descricao",
+  "term": "cansado",
+  "mode": "bestsearch",
+  "n": 3,
+  "arasaac_id": 2314,
+  "keywords": [
+   "cansado"
+  ],
+  "alternativas": [
+   31925,
+   35537
+  ],
+  "motivo": null
+ },
+ {
+  "id": "medo",
+  "label": "medo",
+  "cat": "descricao",
+  "term": "medo",
+  "mode": "bestsearch",
+  "n": 4,
+  "arasaac_id": 10261,
+  "keywords": [
+   "medo",
+   "temor"
+  ],
+  "alternativas": [
+   38417,
+   39248,
+   39668
+  ],
+  "motivo": null
+ },
+ {
+  "id": "fome",
+  "label": "fome",
+  "cat": "descricao",
+  "term": "fome",
+  "mode": "bestsearch",
+  "n": 1,
+  "arasaac_id": 35559,
+  "keywords": [
+   "fome"
+  ],
+  "alternativas": [],
+  "motivo": null
+ },
+ {
+  "id": "sede",
+  "label": "sede",
+  "cat": "descricao",
+  "term": "sede",
+  "mode": "bestsearch",
+  "n": 1,
+  "arasaac_id": 7273,
+  "keywords": [
+   "sedento",
+   "ter sede",
+   "sede"
+  ],
+  "alternativas": [],
+  "motivo": null
+ },
+ {
+  "id": "dor",
+  "label": "dor",
+  "cat": "descricao",
+  "term": "dor",
+  "mode": "bestsearch",
+  "n": 1,
+  "arasaac_id": 2367,
+  "keywords": [
+   "dor"
+  ],
+  "alternativas": [],
+  "motivo": null
+ },
+ {
+  "id": "calor",
+  "label": "calor",
+  "cat": "descricao",
+  "term": "calor",
+  "mode": "bestsearch",
+  "n": 2,
+  "arasaac_id": 35561,
+  "keywords": [
+   "calor"
+  ],
+  "alternativas": [
+   35597
+  ],
+  "motivo": null
+ },
+ {
+  "id": "frio",
+  "label": "frio",
+  "cat": "descricao",
+  "term": "frio",
+  "mode": "curado",
+  "n": 5,
+  "arasaac_id": 35583,
+  "keywords": [
+   "ter frio"
+  ],
+  "alternativas": [
+   4652,
+   26865,
+   35557,
+   35589
+  ],
+  "motivo": "busca devolveu copo com gelo; queremos 'ter frio'"
+ },
+ {
+  "id": "barulho",
+  "label": "barulho",
+  "cat": "descricao",
+  "term": "barulho",
+  "mode": "curado",
+  "n": 2,
+  "arasaac_id": 7157,
+  "keywords": [
+   "ruidoso",
+   "o ruido perturba-me",
+   "molestar",
+   "molesto"
+  ],
+  "alternativas": [
+   38945
+  ],
+  "motivo": "busca devolveu 'fazer barulho'; queremos 'barulho incomoda'"
+ },
+ {
+  "id": "mais",
+  "label": "mais",
+  "cat": "descricao",
+  "term": "mais",
+  "mode": "bestsearch",
+  "n": 3,
+  "arasaac_id": 3220,
+  "keywords": [
+   "mais",
+   "+"
+  ],
+  "alternativas": [
+   5508,
+   26913
+  ],
+  "motivo": null
+ },
+ {
+  "id": "grande",
+  "label": "grande",
+  "cat": "descricao",
+  "term": "grande",
+  "mode": "bestsearch",
+  "n": 1,
+  "arasaac_id": 4658,
+  "keywords": [
+   "grande",
+   "maior"
+  ],
+  "alternativas": [],
+  "motivo": null
+ },
+ {
+  "id": "pequeno",
+  "label": "pequeno",
+  "cat": "descricao",
+  "term": "pequeno",
+  "mode": "bestsearch",
+  "n": 1,
+  "arasaac_id": 4716,
+  "keywords": [
+   "pequeno",
+   "menor",
+   "pequena"
+  ],
+  "alternativas": [],
+  "motivo": null
+ },
+ {
+  "id": "gostoso",
+  "label": "gostoso",
+  "cat": "descricao",
+  "term": "gostoso",
+  "mode": "curado",
+  "n": 1,
+  "arasaac_id": 32340,
+  "keywords": [
+   "agradável",
+   "saboroso",
+   "saborosa"
+  ],
+  "alternativas": [],
+  "motivo": "pt-BR coloquial; ARASAAC: saboroso"
+ },
+ {
+  "id": "quente",
+  "label": "quente",
+  "cat": "descricao",
+  "term": "quente",
+  "mode": "bestsearch",
+  "n": 2,
+  "arasaac_id": 4583,
+  "keywords": [
+   "quente"
+  ],
+  "alternativas": [
+   26716
+  ],
+  "motivo": null
+ },
+ {
+  "id": "doente",
+  "label": "doente",
+  "cat": "descricao",
+  "term": "doente",
+  "mode": "bestsearch",
+  "n": 8,
+  "arasaac_id": 3308,
+  "keywords": [
+   "doente"
+  ],
+  "alternativas": [
+   28741,
+   28742,
+   32296,
+   38481,
+   38908
+  ],
+  "motivo": null
+ },
+ {
+  "id": "enjoado",
+  "label": "enjoado",
+  "cat": "descricao",
+  "term": "enjoo",
+  "mode": "bestsearch",
+  "n": 1,
+  "arasaac_id": 35569,
+  "keywords": [
+   "enjoo"
+  ],
+  "alternativas": [],
+  "motivo": null
+ },
+ {
+  "id": "oi",
+  "label": "oi",
+  "cat": "social",
+  "term": "olá",
+  "mode": "bestsearch",
+  "n": 3,
+  "arasaac_id": 6009,
+  "keywords": [
+   "olá",
+   "cumprimentar",
+   "saudação"
+  ],
+  "alternativas": [
+   6522,
+   34567
+  ],
+  "motivo": null
+ },
+ {
+  "id": "tchau",
+  "label": "tchau",
+  "cat": "social",
+  "term": "tchau",
+  "mode": "curado",
+  "n": 1,
+  "arasaac_id": 6028,
+  "keywords": [
+   "adeus",
+   "até logo",
+   "até à vista"
+  ],
+  "alternativas": [],
+  "motivo": "pt-PT: adeus"
+ },
+ {
+  "id": "por_favor",
+  "label": "por favor",
+  "cat": "social",
+  "term": "por favor",
+  "mode": "bestsearch",
+  "n": 3,
+  "arasaac_id": 8194,
+  "keywords": [
+   "por favor",
+   "rogar"
+  ],
+  "alternativas": [
+   8195,
+   38907
+  ],
+  "motivo": null
+ },
+ {
+  "id": "obrigado",
+  "label": "obrigado",
+  "cat": "social",
+  "term": "obrigado",
+  "mode": "bestsearch",
+  "n": 4,
+  "arasaac_id": 8129,
+  "keywords": [
+   "obrigado"
+  ],
+  "alternativas": [
+   8128,
+   31206,
+   36093
+  ],
+  "motivo": null
+ },
+ {
+  "id": "sim",
+  "label": "sim",
+  "cat": "social",
+  "term": "sim",
+  "mode": "bestsearch",
+  "n": 4,
+  "arasaac_id": 5584,
+  "keywords": [
+   "sim"
+  ],
+  "alternativas": [
+   5583,
+   31973,
+   34521
+  ],
+  "motivo": null
+ },
+ {
+  "id": "eu_te_amo",
+  "label": "eu te amo",
+  "cat": "social",
+  "term": "amar",
+  "mode": "bestsearch",
+  "n": 6,
+  "arasaac_id": 6600,
+  "keywords": [
+   "amar"
+  ],
+  "alternativas": [
+   6898,
+   11519,
+   11517,
+   11536,
+   11538
+  ],
+  "motivo": null
+ },
+ {
+  "id": "bom_dia",
+  "label": "bom dia",
+  "cat": "social",
+  "term": "bom dia",
+  "mode": "bestsearch",
+  "n": 2,
+  "arasaac_id": 6944,
+  "keywords": [
+   "bom dia"
+  ],
+  "alternativas": [
+   38568
+  ],
+  "motivo": null
+ },
+ {
+  "id": "boa_noite",
+  "label": "boa noite",
+  "cat": "social",
+  "term": "boa noite",
+  "mode": "bestsearch",
+  "n": 2,
+  "arasaac_id": 6942,
+  "keywords": [
+   "boa noite"
+  ],
+  "alternativas": [
+   38569
+  ],
+  "motivo": null
+ },
+ {
+  "id": "desculpa",
+  "label": "desculpa",
+  "cat": "social",
+  "term": "desculpa",
+  "mode": "bestsearch",
+  "n": 2,
+  "arasaac_id": 38360,
+  "keywords": [
+   "peço desculpa!",
+   "pedir perdão",
+   "desculpa!",
+   "pedir desculpa"
+  ],
+  "alternativas": [
+   38361
+  ],
+  "motivo": null
+ },
+ {
+  "id": "vez",
+  "label": "minha vez",
+  "cat": "social",
+  "term": "vez",
+  "mode": "bestsearch",
+  "n": 4,
+  "arasaac_id": 7158,
+  "keywords": [
+   "a minha vez",
+   "é a minha vez",
+   "vez",
+   "turno"
+  ],
+  "alternativas": [
+   22190,
+   27385,
+   39544
+  ],
+  "motivo": null
+ },
+ {
+  "id": "pronto",
+  "label": "acabei",
+  "cat": "social",
+  "term": "terminar",
+  "mode": "bestsearch",
+  "n": 1,
+  "arasaac_id": 5358,
+  "keywords": [
+   "acabar",
+   "fim",
+   "terminar",
+   "finalizar"
+  ],
+  "alternativas": [],
+  "motivo": null
+ },
+ {
+  "id": "nao",
+  "label": "não",
+  "cat": "negacao",
+  "term": "não",
+  "mode": "bestsearch",
+  "n": 5,
+  "arasaac_id": 5525,
+  "keywords": [
+   "não",
+   "negar"
+  ],
+  "alternativas": [
+   5526,
+   31859,
+   34341,
+   39149
+  ],
+  "motivo": null
+ },
+ {
+  "id": "nao_quero",
+  "label": "não quero",
+  "cat": "negacao",
+  "term": "não querer",
+  "mode": "bestsearch",
+  "n": 1,
+  "arasaac_id": 6156,
+  "keywords": [
+   "não quero",
+   "não querer"
+  ],
+  "alternativas": [],
+  "motivo": null
+ },
+ {
+  "id": "chega",
+  "label": "acabou/chega",
+  "cat": "negacao",
+  "term": "basta",
+  "mode": "curado",
+  "n": 2,
+  "arasaac_id": 28429,
+  "keywords": [
+   "acabar",
+   "finalizar",
+   "acabou!",
+   "acabou"
+  ],
+  "alternativas": [
+   4733
+  ],
+  "motivo": "busca 'basta' devolveu 'abastado'"
+ },
+ {
+  "id": "agora",
+  "label": "agora",
+  "cat": "tempo",
+  "term": "agora",
+  "mode": "bestsearch",
+  "n": 2,
+  "arasaac_id": 13026,
+  "keywords": [
+   "agora"
+  ],
+  "alternativas": [
+   32747
+  ],
+  "motivo": null
+ },
+ {
+  "id": "depois",
+  "label": "depois",
+  "cat": "tempo",
+  "term": "depois",
+  "mode": "bestsearch",
+  "n": 2,
+  "arasaac_id": 13080,
+  "keywords": [
+   "depois",
+   "logo"
+  ],
+  "alternativas": [
+   32749
+  ],
+  "motivo": null
+ },
+ {
+  "id": "hoje",
+  "label": "hoje",
+  "cat": "tempo",
+  "term": "hoje",
+  "mode": "bestsearch",
+  "n": 2,
+  "arasaac_id": 7131,
+  "keywords": [
+   "hoje"
+  ],
+  "alternativas": [
+   38276
+  ],
+  "motivo": null
+ },
+ {
+  "id": "amanha",
+  "label": "amanhã",
+  "cat": "tempo",
+  "term": "amanhã",
+  "mode": "bestsearch",
+  "n": 2,
+  "arasaac_id": 7152,
+  "keywords": [
+   "amanhã"
+  ],
+  "alternativas": [
+   38278
+  ],
+  "motivo": null
+ },
+ {
+  "id": "onde",
+  "label": "onde?",
+  "cat": "tempo",
+  "term": "onde",
+  "mode": "bestsearch",
+  "n": 1,
+  "arasaac_id": 7764,
+  "keywords": [
+   "onde",
+   "onde?"
+  ],
+  "alternativas": [],
+  "motivo": null
+ },
+ {
+  "id": "quando",
+  "label": "quando?",
+  "cat": "tempo",
+  "term": "quando",
+  "mode": "bestsearch",
+  "n": 3,
+  "arasaac_id": 22621,
+  "keywords": [
+   "quando"
+  ],
+  "alternativas": [
+   24053,
+   32874
+  ],
+  "motivo": null
+ },
+ {
+  "id": "o_que",
+  "label": "o quê?",
+  "cat": "tempo",
+  "term": "que",
+  "mode": "curado",
+  "n": 3,
+  "arasaac_id": 22620,
+  "keywords": [
+   "que",
+   "o quê?",
+   "o que"
+  ],
+  "alternativas": [
+   11351,
+   22624
+  ],
+  "motivo": "busca devolveu símbolo abstrato"
+ }
+]

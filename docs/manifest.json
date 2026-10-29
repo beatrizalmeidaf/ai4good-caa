@@ -1,0 +1,12 @@
+{
+  "name": "Zuli",
+  "short_name": "Zuli",
+  "description": "Prancha de comunicação alternativa com sugestões por IA no próprio aparelho.",
+  "start_url": "./",
+  "display": "fullscreen",
+  "orientation": "any",
+  "background_color": "#f3f6fb",
+  "theme_color": "#f9c440",
+  "lang": "pt-BR",
+  "icons": [{ "src": "assets/zuli.png", "sizes": "384x384", "type": "image/png", "purpose": "any" }]
+}

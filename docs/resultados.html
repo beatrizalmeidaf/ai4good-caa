@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Zuli · Resultados</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="icon" href="assets/zuli-64.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Fredoka:wght@500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: relatório de uma coluna (~75ch) com tabelas e barras de largura total. Identidade Zuli. */
+:root {
+  --bg: #f3f6fb; --surface: #ffffff; --ink: #17305e; --ink-2: #5a6b88; --line: #d9e1ee;
+  --zuli: #f9c440; --zuli-soft: #fff3cf; --bar: #17305e; --bar-2: #b8c4d8; --warn: #9a5b00;
+  --f-display: "Fredoka", "Atkinson Hyperlegible", system-ui, sans-serif;
+  --f-body: "Atkinson Hyperlegible", system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --bg: #101a2c; --surface: #18243a; --ink: #eaf0fa; --ink-2: #a9b6cc; --line: #2a3a55; --zuli-soft: #3a3320; --bar: #f9c440; --bar-2: #4a5a78; --warn: #f0b45a; color-scheme: dark; }
+}
+:root[data-theme="dark"] { --bg: #101a2c; --surface: #18243a; --ink: #eaf0fa; --ink-2: #a9b6cc; --line: #2a3a55; --zuli-soft: #3a3320; --bar: #f9c440; --bar-2: #4a5a78; --warn: #f0b45a; color-scheme: dark; }
+* { box-sizing: border-box; }
+html { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.55 var(--f-body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+img { max-width: 100%; }
+.wrap { max-width: 980px; margin: 0 auto; padding-block: 24px 56px; display: grid; gap: 36px; }
+header { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+header img { width: 72px; height: 72px; }
+h1, h2, h3 { font-family: var(--f-display); font-weight: 600; text-wrap: balance; line-height: 1.2; margin: 0; }
+h1 { font-size: 2rem; } h2 { font-size: 1.4rem; } h3 { font-size: 1.05rem; }
+p, li { max-width: 75ch; }
+p { margin: 0; }
+a { color: var(--ink); font-weight: 700; }
+.muted { color: var(--ink-2); }
+section { display: grid; gap: 14px; }
+.lead { font-size: 1.1rem; }
+.findings { display: grid; gap: 10px; margin: 0; padding-left: 1.3em; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+.stat { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; display: grid; gap: 2px; align-content: start; }
+.stat .v { font-family: var(--f-display); font-size: 1.8rem; font-variant-numeric: tabular-nums; }
+.stat .d { font-size: .88rem; color: var(--ink-2); }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 12px; min-width: 0; }
+.three { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
+.bars { display: grid; gap: 8px; }
+.bar { display: grid; grid-template-columns: minmax(0, 10.5rem) 1fr; gap: 10px; align-items: center; font-size: .86rem; }
+.bar .n { line-height: 1.2; overflow-wrap: anywhere; }
+.bar .track { position: relative; height: 20px; border-left: 1px solid var(--line); }
+.bar .fill { position: absolute; inset: 0 auto 0 0; background: var(--bar-2); border-radius: 0 4px 4px 0; }
+.bar.hl .fill { background: var(--bar); }
+.bar .val { position: absolute; top: 0; padding-left: 6px; line-height: 20px; font-family: var(--f-mono); font-size: .8rem; white-space: nowrap; }
+.axis { font-size: .78rem; color: var(--ink-2); }
+.tbl { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; }
+table { border-collapse: collapse; width: 100%; font-size: .88rem; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); }
+tr:last-child td { border-bottom: 0; }
+th { font-size: .72rem; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-2); }
+td.num, th.num { text-align: right; font-family: var(--f-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+tr.hl td { background: var(--zuli-soft); }
+.note { border-left: 4px solid var(--zuli); padding: 6px 0 6px 12px; color: var(--ink-2); }
+.convo { display: grid; gap: 6px; font-size: .92rem; }
+.convo .a { color: var(--ink-2); }
+.convo .c { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
+.convo .c img { width: 44px; height: 44px; background: #fff; border-radius: 8px; border: 1px solid var(--line); }
+footer { font-size: .85rem; color: var(--ink-2); border-top: 1px solid var(--line); padding-top: 14px; display: grid; gap: 6px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <img src="assets/zuli.png" alt="">
+    <div style="display:grid;gap:4px">
+      <h1>Resultados do Zuli</h1>
+      <p class="muted">Prova de conceito AI4Good · <a href="./">abrir a prancha</a></p>
+    </div>
+  </header>
+
+  <section>
+    <p class="lead" id="lead">Carregando…</p>
+    <div class="stats" id="stats"></div>
+  </section>
+
+  <section>
+    <h2>Leitura</h2>
+    <ol class="findings" id="conclusoes"></ol>
+  </section>
+
+  <section>
+    <h2>Acerto das 6 sugestões</h2>
+    <p class="muted">Porcentagem das vezes em que o pictograma que a criança queria estava entre as sugestões. Três testes, todos com frases que o modelo não viu no treino.</p>
+    <div class="three" id="charts"></div>
+    <p class="axis">Barras de 0 a 100%. Em destaque, o modelo que roda na prancha.</p>
+  </section>
+
+  <section>
+    <h2>Tabela completa</h2>
+    <p class="muted">Top-1 e top-6: pictograma certo na 1ª sugestão ou entre as 6. Fim: o botão falar aparece nas sugestões quando a frase acabou. Conceito: a página certa da prancha é a mais provável. Toques a menos: em relação à prancha sem sugestões (Núcleo = 1 toque, outras páginas = 2).</p>
+    <div class="tbl"><table id="tabela"></table></div>
+  </section>
+
+  <section>
+    <h2>Como os dados foram feitos</h2>
+    <ol class="findings" id="metodo"></ol>
+    <div class="panel"><h3>Exemplos de conversas do conjunto de teste</h3><div id="exemplos" class="convo"></div></div>
+    <p class="note">As frases ainda não foram revisadas por fonoaudiólogo(a). O próximo passo é validar uma amostra e coletar uso real, com consentimento.</p>
+  </section>
+
+  <footer>
+    <span>Pictogramas: Sergio Palao. Origem: <a href="https://arasaac.org" target="_blank" rel="noopener">ARASAAC</a>. Licença CC BY-NC-SA 4.0. Propriedade: Governo de Aragão (Espanha).</span>
+    <span>Mensagens de CAA de origem: turk9k (crowdsourcing de mensagens de CAA) e UNL-AAC-Phrases (MIT).</span>
+  </footer>
+</div>
+<script type="module">
+const $ = s => document.querySelector(s);
+const fmt = v => String(v).replace(".", ",");
+const TESTES = { conversa_nova: "Conversas inéditas", cenario_novo: "Situações inéditas", mensagem_real: "Mensagens reais de CAA, adaptadas" };
+fetch("data/resultados.json").then(r => r.json()).then(R => {
+  const M = R.metricas, best = M._melhor, d = R.dataset;
+  $("#lead").textContent = R.lead;
+  $("#stats").innerHTML = R.numeros.map(([v, t]) => `<div class="stat"><span class="v">${v}</span><span class="d">${t}</span></div>`).join("");
+  $("#conclusoes").innerHTML = R.conclusoes.map(t => `<li>${t}</li>`).join("");
+  $("#metodo").innerHTML = R.metodo.map(t => `<li>${t}</li>`).join("");
+  $("#charts").innerHTML = Object.entries(TESTES).filter(([k]) => M[k]).map(([k, title]) => {
+    const rows = Object.entries(M[k]).filter(([n]) => !n.includes("sem mensagens")).sort((a, b) => b[1].top6 - a[1].top6);
+    return `<div class="panel"><h3>${title}</h3><div class="bars" role="img" aria-label="Acerto nas sugestões, ${title}">${rows.map(([n, v]) =>
+      `<div class="bar ${n === best ? "hl" : ""}" title="${n}: ${fmt(v.top6)}%"><span class="n">${n}</span><span class="track"><span class="fill" style="width:${v.top6 * .8}%"></span><span class="val" style="left:${v.top6 * .8}%">${fmt(v.top6)}%</span></span></div>`).join("")}</div></div>`;
+  }).join("");
+  const cols = [["top1", "top-1"], ["top6", "top-6"], ["fim_top6", "fim"], ["conceito_top1", "conceito"], ["economia_toques", "toques a menos"]];
+  let html = `<thead><tr><th>Teste</th><th>Preditor</th>${cols.map(([, l]) => `<th class="num">${l}</th>`).join("")}</tr></thead><tbody>`;
+  for (const [k, title] of Object.entries(TESTES)) {
+    if (!M[k]) continue;
+    for (const [n, v] of Object.entries(M[k]).sort((a, b) => b[1].top6 - a[1].top6))
+      html += `<tr class="${n === best ? "hl" : ""}"><td>${title}</td><td>${n}</td>${cols.map(([c]) => `<td class="num">${fmt(v[c])}%</td>`).join("")}</tr>`;
+  }
+  $("#tabela").innerHTML = html + "</tbody>";
+  $("#exemplos").innerHTML = (R.exemplos || []).map(t => `<div><div class="a">Adulto: ${t.adulto || "(silêncio)"}</div><div class="c">${t.seq.map(([id, l]) => `<img src="p/${id}.webp" alt="${l}" title="${l}">`).join("")}<span class="muted">${t.frase}</span></div></div>`).join("");
+}).catch(e => { $("#lead").textContent = "Não deu para carregar os resultados: " + e.message; });
+</script>
+</body>
+</html>
