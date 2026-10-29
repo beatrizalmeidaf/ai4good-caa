@@ -77,6 +77,7 @@ function boasVindas() {
       <p class="lead">Agora é só entregar o tablet para ${esc(d.nome)}.</p>
       <div class="wz-dica"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg>
         <p>Para voltar a esta área, <b>segure por 1 segundo</b> o botão com este desenho, no canto de baixo da prancha, e digite o PIN.</p></div>
+      <details class="wz-cores"><summary><b>Por que os desenhos têm cores?</b></summary><p class="small muted">Cada tipo de palavra tem sempre a mesma cor (chave Fitzgerald, padrão de comunicação alternativa). Assim a criança aprende onde procurar.</p>${legendaCores()}</details>
       <a class="btn primary big" href="./">Abrir a prancha de ${esc(d.nome)}</a></div>`;
   }
   $("#gate").onclick = e => {
@@ -125,11 +126,11 @@ function cabecalho() {
   $("#h-sub").textContent = P ? `${P.genero === "m" ? "menino" : "menina"}${P.idade ? `, ${P.idade} anos` : ""} · voz ${P.genero === "m" ? "masculina" : "feminina"}` : "";
 }
 function aba(v) {
-  if (!["desenvolvimento", "treino", "perfil", "ajustes"].includes(v)) v = "desenvolvimento";
+  if (!["desenvolvimento", "treino", "perfil", "ajustes", "guia"].includes(v)) v = "desenvolvimento";
   document.querySelectorAll("nav.tabs button").forEach(b => b.setAttribute("aria-selected", b.dataset.v === v));
   document.querySelectorAll("section.view").forEach(s => s.hidden = s.id !== "v-" + v);
   if (!P && v !== "perfil") return;
-  ({ desenvolvimento: renderDev, treino: renderTreino, perfil: () => renderPerfil(false), ajustes: renderAjustes })[v]();
+  ({ desenvolvimento: renderDev, treino: renderTreino, perfil: () => renderPerfil(false), ajustes: renderAjustes, guia: renderGuia })[v]();
 }
 
 /* ---------------- gráficos (SVG simples) ---------------- */
@@ -271,6 +272,44 @@ function renderPerfil(novo) {
     perfis.remover(b.dataset.rm); P = perfis.ativo(); O = P ? perfis.opt(P) : null; cabecalho(); renderPerfil(!P);
   });
   $("#p-nova")?.addEventListener("click", () => renderPerfil(true));
+}
+
+
+/* ---------------- guia e cores ---------------- */
+// Chave Fitzgerald: cada tipo de palavra tem uma cor (padrão usado em CAA no mundo todo)
+const CORES = [
+  ["pessoa", "Amarelo · pessoas", "quem: eu, você, mãe, amigo", ["eu", "mãe", "amigo"]],
+  ["acao", "Verde · ações", "o que faz: comer, brincar, ir", ["comer", "brincar", "ir"]],
+  ["descricao", "Azul · sentir e descrever", "como é ou está: feliz, grande, quente", ["feliz", "grande", "cansado"]],
+  ["coisa", "Laranja · coisas", "objetos, comidas, animais, corpo", ["bola", "suco", "cachorro"]],
+  ["lugar", "Roxo · lugares", "onde: casa, escola, parque", ["casa", "escola", "parque"]],
+  ["social", "Rosa · conversa", "oi, tchau, obrigado, por favor", ["oi", "obrigado", "por favor"]],
+  ["negacao", "Vermelho · não e parar", "não, acabar, parar", ["não", "acabar", "parar"]],
+  ["tempo", "Cinza · perguntas e tempo", "onde, quando, agora, depois", ["onde", "agora", "depois"]],
+];
+export function legendaCores(byLabel = {}) {
+  return `<div class="cores">${CORES.map(([c, t, d, ex]) => `<div class="cor" style="--cat:var(--c-${c})"><span class="sw"></span><b>${t}</b><small>${d}</small>
+    ${ex.some(l => byLabel[l]) ? `<span class="ex">${ex.filter(l => byLabel[l]).map(l => `<img src="${pic(byLabel[l].id)}" alt="${esc(l)}" title="${esc(l)}">`).join("")}</span>` : ""}</div>`).join("")}</div>`;
+}
+function renderGuia() {
+  const byLabel = Object.fromEntries(V.vocab.map(w => [w.label, w]));
+  $("#v-guia").innerHTML = `
+    <div class="card"><h3>Por que os desenhos têm cores diferentes?</h3>
+      <p>As cores seguem a <b>chave Fitzgerald</b>, um padrão usado em comunicação alternativa no mundo todo. Cada tipo de palavra tem sempre a mesma cor. Com o tempo, a criança aprende onde procurar: quer dizer quem, vai no amarelo; quer dizer o que fazer, vai no verde.</p>
+      ${legendaCores(byLabel)}
+      <p class="muted small">A mesma cor aparece na borda e no fundo do desenho, e na aba da categoria na parte de baixo da prancha.</p></div>
+    <div class="card"><h3>As cores ajudam a montar a frase</h3>
+      <p>A ordem mais comum de uma frase vira um caminho de cores:</p>
+      <div class="ordem"><span style="background:color-mix(in srgb,var(--c-pessoa) 30%,#fff)">quem · amarelo</span>→<span style="background:color-mix(in srgb,var(--c-acao) 30%,#fff)">faz · verde</span>→<span style="background:color-mix(in srgb,var(--c-coisa) 30%,#fff)">o quê · laranja</span></div>
+      <p class="muted small">Exemplo: eu (amarelo) + querer (verde) + suco (laranja).</p></div>
+    <div class="card"><h3>Dicas para usar com a criança</h3>
+      <ol class="small" style="margin:0;padding-left:1.2em;display:grid;gap:6px">
+        <li><b>Mostre usando.</b> Fale com a criança tocando você mesmo nos desenhos. É assim que ela aprende onde está cada palavra.</li>
+        <li><b>A prancha não muda de lugar.</b> Só a faixa amarela de sugestões muda. Isso ajuda a criança a decorar os caminhos.</li>
+        <li><b>Toque no Zuli para falar.</b> A frase só é falada quando a criança toca no Zuli. Comemore cada frase.</li>
+        <li><b>Use a linha "Adulto"</b> (em Ajustes) quando fizer uma pergunta. Ela adapta as sugestões à sua pergunta.</li>
+        <li><b>Toda tentativa conta.</b> No treino de fala, o Zuli nunca diz que errou. Uma estrela já é uma tentativa.</li>
+      </ol></div>`;
 }
 
 /* ---------------- ajustes ---------------- */

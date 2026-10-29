@@ -155,6 +155,21 @@ nav.tabs button { border: 0; border-radius: 999px; padding: 8px 18px; margin: 0;
 nav.tabs button[aria-selected="true"] { background: var(--accent); color: var(--accent-ink); }
 .card, .kpi { border: 0; box-shadow: 0 4px 18px rgba(23, 48, 94, .06); border-radius: 20px; }
 @media (max-width: 560px) { .wz-como { grid-template-columns: 1fr; } .wizard { padding: 18px 16px 22px; } }
+
+/* ---------- guia de cores (chave Fitzgerald, a mesma da prancha) ---------- */
+:root { --c-pessoa: #f2c919; --c-acao: #47a85a; --c-coisa: #ef9437; --c-descricao: #4b8dd0; --c-social: #e27aae; --c-negacao: #df5252; --c-lugar: #9468c8; --c-tempo: #95a2ae; }
+.cores { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; width: 100%; text-align: left; }
+.cor { --cat: var(--c-tempo); display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 10px; align-items: center; padding: 10px 12px; border-radius: 16px;
+  background: color-mix(in srgb, var(--cat) 15%, #fff); border: 3px solid color-mix(in srgb, var(--cat) 55%, #fff); color: #17305e; }
+.cor .sw { width: 22px; height: 22px; border-radius: 50%; background: var(--cat); grid-row: span 2; }
+.cor b { font-size: .95rem; } .cor small { color: #4c5b77; font-size: .82rem; }
+.cor .ex { grid-column: 1 / -1; display: flex; gap: 6px; }
+.cor .ex img { width: 40px; height: 40px; background: #fff; border-radius: 8px; padding: 2px; }
+.ordem { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; justify-content: center; font-weight: 700; }
+.ordem span { padding: 6px 12px; border-radius: 12px; color: #17305e; }
+.wz-cores { width: 100%; text-align: left; background: var(--bg); border-radius: 16px; padding: 10px 14px; }
+.wz-cores summary { cursor: pointer; }
+.wz-cores[open] { display: grid; gap: 10px; }
 </style>
 </head>
 <body>
@@ -170,11 +185,13 @@ nav.tabs button[aria-selected="true"] { background: var(--accent); color: var(--
       <button type="button" role="tab" data-v="treino">Treino de fala</button>
       <button type="button" role="tab" data-v="perfil">Criança</button>
       <button type="button" role="tab" data-v="ajustes">Ajustes</button>
+      <button type="button" role="tab" data-v="guia">Guia e cores</button>
     </nav>
     <section class="view" id="v-desenvolvimento"></section>
     <section class="view" id="v-treino" hidden></section>
     <section class="view" id="v-perfil" hidden></section>
     <section class="view" id="v-ajustes" hidden></section>
+    <section class="view" id="v-guia" hidden></section>
     <p class="muted small">Os dados ficam só neste aparelho. <a href="resultados.html">Resultados da pesquisa</a> · Pictogramas: Sergio Palao, <a href="https://arasaac.org" target="_blank" rel="noopener">ARASAAC</a> (CC BY-NC-SA 4.0).</p>
   </div>
 </div>

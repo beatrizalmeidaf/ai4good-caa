@@ -22,41 +22,62 @@ PAGINAS = [  # (id, nome, cor)
     ("lugares", "Lugares", "lugar"), ("escola", "Escola", "coisa"), ("coisas", "Coisas", "coisa"),
     ("conversa", "Conversa", "social"), ("perguntas", "Perguntas e tempo", "tempo"),
 ]
-NEG = {"não", "nao", "nunca", "nada", "parar", "acabar", "chega", "ninguém"}
-PRONOME = {"eu", "você", "ele", "ela", "nós", "eles", "elas", "meu", "minha", "seu", "sua", "nosso", "a gente", "vocês"}
-RESPOSTA = {"sim", "ok", "tudo bem", "talvez", "obrigado", "por favor", "oi", "tchau", "desculpa", "bom dia", "boa noite", "boa tarde"}
-PERGUNTA = {"o que", "que", "onde", "quando", "quem", "por que", "porque", "como", "qual", "quanto"}
-TEMPO_CAT = ("day hours", "time", "calendar", "week", "season", "month")
+# ---- cores (chave Fitzgerald) e páginas ----
+# Ordem: listas explícitas > verbo pela terminação > tipo gramatical do ARASAAC > categoria por tema.
+# (As categorias do ARASAAC sozinhas erravam: "jantar" ia para "tempo" por estar em "day hours", "casa" para "pessoas".)
+NEG = {"não", "nao", "nunca", "nada", "parar", "acabar", "acabou", "chega", "ninguém", "não querer", "não gostar"}
+PRONOME = {"eu", "você", "ele", "ela", "nós", "eles", "elas", "meu", "minha", "seu", "sua", "nosso", "a gente", "vocês",
+           "comigo", "contigo", "alguém", "todo mundo", "todos",
+           "amigo", "amiga", "amigos", "criança", "crianças", "menino", "menina", "bebê", "bebe", "mãe", "pai", "mamãe", "papai",
+           "irmão", "irmã", "avó", "avô", "tio", "tia", "primo", "prima", "professor", "professora", "colega", "família", "pessoas"}
+RESPOSTA = {"sim", "ok", "tudo bem", "talvez", "obrigado", "por favor", "oi", "olá", "tchau", "desculpa", "bom dia", "boa noite",
+            "boa tarde", "minha vez", "parabéns", "vamos", "legal", "eba", "oba", "de nada", "tá bom"}
+PERGUNTA = {"o que", "que", "onde", "quando", "quem", "por que", "porque", "como", "qual", "quanto", "quantos", "quantas"}
+TEMPO = {"agora", "depois", "hoje", "amanhã", "ontem", "antes", "sempre", "já", "de novo", "tempo", "dia", "hora", "noite",
+         "tarde", "manhã", "minuto", "ano", "fim de semana", "verão", "inverno", "semana", "mês", "cedo", "logo", "ainda", "outra vez"}
+LIGACAO = {"com", "no", "na", "nos", "nas", "para", "pra", "de", "do", "da", "e", "mas", "ou", "se", "até", "sem", "embora", "tão",
+           "em", "ao", "também", "então", "que"}
+NAO_VERBO = {"lugar", "jantar", "açúcar", "colher", "luar", "mar", "par", "ar", "bar", "mulher", "prazer", "dever", "talher", "lar",
+             "olhar", "sabor", "cor", "dor", "flor", "amor", "calor", "melhor", "pior", "maior", "menor", "professor", "favor",
+             "hambúrguer", "zíper", "suéter", "lazer"}
+OBJETO_CAT = ("building", "room", "tool", "utensil", "hygiene", "furniture", "sport", "toy", "clothes", "food")
 
 def _has(text, words):
     return any(re.search(r"\b" + re.escape(w), text) for w in words)
 
 TEMAS = [  # (página, cor, palavras de categoria ARASAAC) na ordem de prioridade
     ("sentir", "descricao", ("feeling", "emotion", "symptom", "sensation", "human response")),
-    ("pessoas", "pessoa", ("family", "professional", "person", "people", "pronoun", "relative", "baby")),
     ("comida", "coisa", ("food", "beverage", "gastronomy", "fruit", "vegetable", "feeding", "dessert", "cookery", "baking", "meal", "sweet")),
+    ("pessoas", "pessoa", ("family", "professional", "person", "people", "relative", "baby")),
     ("animais", "coisa", ("animal", "mammal", "bird", "insect", "oviparous", "viviparous", "pet", "fish", "reptile")),
     ("lugares", "lugar", ("transport", "vehicle", "building", "room", "place", "facility", "city", "nature", "landscape",
                           "astronomy", "atmospheric", "meteorolog", "beach", "street")),
     ("corpo", "coisa", ("anatomy", "body", "health", "medical", "medicine", "hospital", "sanitary", "disease", "nursing")),
     ("roupa", "coisa", ("clothes", "footwear", "accessor", "hygiene", "garment")),
     ("escola", "coisa", ("educational", "school", "stationery", "classroom", "letter", "number")),
-    ("brincar", "coisa", ("toy", "game", "leisure", "sport", "music", "party", "mass media", "recreation", "art")),
+    ("brincar", "coisa", ("toy", "game", "leisure", "sport", "music", "party", "mass media", "recreation", "art", "christmas", "celebration")),
 ]
+
+def parece_verbo(label):
+    w = label.split()
+    return len(w) >= 1 and w[0].endswith(("ar", "er", "ir", "ôr")) and w[0] not in NAO_VERBO and len(w[0]) >= 2
 
 def pagina(m, label):
     cats, tags = " ".join(m["cats"]).lower(), " ".join(m["tags"]).lower(); t = m["type"]
-    if label in PERGUNTA or _has(cats, TEMPO_CAT): return "perguntas", "tempo"
     if label in NEG: return "conversa", "negacao"
     if label in PRONOME: return "pessoas", "pessoa"
     if label in RESPOSTA: return "conversa", "social"
-    if t == 5 or _has(cats, ("expression", "courtesy", "greeting")): return "conversa", "social"
-    if t == 6: return "perguntas", "tempo"
-    if t == 3: return "acoes", "acao"
+    if label in PERGUNTA or label in TEMPO: return "perguntas", "tempo"
+    if label in LIGACAO: return "perguntas", "tempo"
+    if parece_verbo(label): return "acoes", "acao"
+    if t == 3 and len(label.split()) > 1: return "acoes", "acao"  # expressões verbais: "fazer xixi", "tomar banho"
     if t == 4:
         return ("sentir", "descricao") if _has(cats + " " + tags, TEMAS[0][2]) else ("descrever", "descricao")
+    if label.split()[0] in ("preciso", "sinto", "quero", "tenho", "gosto"): return "acoes", "acao"  # verbo conjugado
     for text in (cats, tags):
         for pg, cor, words in TEMAS:
+            # pessoa só pela categoria do desenho e só para substantivos ("casa", "banho", "amor" não são pessoas)
+            if pg == "pessoas" and (text is tags or t not in (1, 2) or _has(cats, OBJETO_CAT)): continue
             if _has(text, words): return pg, cor
     return "coisas", "coisa"
 
@@ -82,7 +103,8 @@ def api_fallback(misses):
 LEMA = {"está": "estar", "estou": "estar", "tá": "estar", "é": "ser", "sou": "ser", "quero": "querer", "quer": "querer",
         "tenho": "ter", "tem": "ter", "gosto": "gostar", "gosta": "gostar", "vou": "ir", "vai": "ir", "posso": "poder",
         "pode": "poder", "dói": "doer", "doeu": "doer", "fiz": "fazer", "fui": "ir", "vi": "ver", "comi": "comer",
-        "brinquei": "brincar", "minha": "meu", "sua": "seu", "obrigada": "obrigado"}
+        "brinquei": "brincar", "minha": "meu", "sua": "seu", "obrigada": "obrigado",
+        "preciso": "precisar", "precisa": "precisar", "sinto": "sentir", "acho": "achar", "sei": "saber", "manha": "manhã"}
 
 def main(src):
     m = Mapper()

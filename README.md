@@ -56,4 +56,8 @@ e abrir http://localhost:8000.
   Propriedade: Governo de Aragão (Espanha). Uso não comercial.
 - Mensagens de CAA usadas como base para adaptação: turk9k (crowdsourcing de mensagens de CAA)
   e UNL-AAC-Phrases (MIT). Verificar a licença do turk9k antes de redistribuir o conjunto.
+- Voz feminina: XTTS-v2 (Coqui Public Model License, uso não comercial) clonando uma leitura do LibriVox
+  do Multilingual LibriSpeech (CC BY 4.0, falante 12114), com o tom 3 semitons mais alto.
+- As cores dos pictogramas seguem a chave Fitzgerald (amarelo pessoas, verde ações, azul sentir e descrever,
+  laranja coisas, roxo lugares, rosa conversa, vermelho não, cinza perguntas e tempo). Explicação na aba "Guia e cores" da área dos pais.
 - As frases de treino ainda não foram revisadas por fonoaudiólogo(a).

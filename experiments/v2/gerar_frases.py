@@ -9,9 +9,10 @@ Uso: python gerar_frases.py [--teste]
 import json, random, re, sys, pathlib, csv
 R = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(R))
-from cenarios import CENARIOS, PARCEIRO
+from cenarios import CENARIOS, CENARIOS2, PARCEIRO, INTERESSES, IDADES
 
 TESTE = "--teste" in sys.argv
+LEVA2 = "--leva2" in sys.argv  # segunda leva: mais situações, idade e interesse da criança, menos frases repetidas
 # modelo já baixado no servidor (MoE, 3B ativos: rápido e bom em pt-BR)
 MODELO = "/local/user_beatrizalmeida/hf_cache/models--Qwen--Qwen3-30B-A3B-Instruct-2507/snapshots/0d7cf23991f47feeb3a57ecb4c9cee8ea4a17bfe"
 OUT = R / "out"; OUT.mkdir(exist_ok=True)
@@ -29,7 +30,7 @@ REGRAS = """Regras para os pictogramas:
 - Expressões fixas podem ser um pictograma só: ["bom dia","good morning"], ["por favor","please"], ["obrigado","thank you"], ["fazer xixi","pee"].
 - Varie bastante: pedidos, recusas, escolhas, comentários, sentimentos, perguntas, reclamações, humor, respostas curtas de uma palavra."""
 
-def prompt_cenario(cen, local, periodo, foco, n):
+def prompt_cenario(cen, local, periodo, foco, n, perfil=None):
     tipos = "\n".join(f'- "{k}": {v}' for k, v in PARCEIRO.items())
     return f"""Escreva {n} conversas curtas e diferentes entre um adulto (mãe, pai, professora, terapeuta, avó...) e uma criança que se comunica com uma prancha de pictogramas.
 Situação: {cen}. Período: {PER[periodo]}. Lugar: {local}.
@@ -42,7 +43,7 @@ Tipos de fala do adulto:
 {REGRAS}
 - No máximo 1 em cada 3 respostas da criança pode ser um pedido com "querer". O resto: comentar, recusar, responder sim/não, contar o que aconteceu, dizer o que sente, perguntar, chamar alguém, brincar.
 - Use palavras específicas da situação (objetos, lugares, pessoas, ações), não só palavras genéricas.
-- A resposta da criança tem que fazer sentido como resposta à fala do adulto.
+- A resposta da criança tem que fazer sentido como resposta à fala do adulto.{perfil or ""}
 
 Responda só com um array JSON de conversas. Cada conversa é um array de trocas:
 [[{{"adulto": "Oi! Como foi a escola?", "tipo_adulto": "o_que_aconteceu", "frase": "Eu brinquei de bola com o Pedro.", "pictos": [["eu","I"],["brincar","play"],["bola","ball"],["amigo","friend"]]}}, ...], ...]"""
@@ -66,7 +67,25 @@ Responda só com um array JSON com exatamente {len(msgs)} itens, na mesma ordem.
 {{"n": 1, "ok": false}} quando não serve para criança, ou
 {{"n": 1, "ok": true, "adulto": "fala do adulto em português (pode ser vazio)", "tipo_adulto": "...", "local": "...", "periodo": "...", "frase": "...", "pictos": [["lema_pt","lema_en"], ...]}}"""
 
+PERFIL2 = """
+- Esta criança tem {idade} e adora {interesse}. Quando fizer sentido, ela fala disso (sem forçar).
+- Evite frases batidas como "eu quero suco", "eu quero brincar", "eu quero água", "sim", "não", "tchau". Prefira frases menos óbvias e palavras variadas da situação.
+- Pelo menos metade das respostas deve ter um substantivo, ação ou adjetivo específico da situação."""
+
+def jobs_leva2():
+    rnd = random.Random(2)
+    js = []
+    for cen, local, periodos in CENARIOS2 + CENARIOS:
+        for foco in PARCEIRO:
+            for r in range(2 if (cen, local, periodos) in CENARIOS2 else 1):
+                per = rnd.choice(periodos)
+                perfil = PERFIL2.format(idade=rnd.choice(IDADES), interesse=rnd.choice(INTERESSES))
+                js.append(dict(fonte="cenario2", cenario=cen, local=local, periodo=per,
+                               prompt=prompt_cenario(cen, local, per, foco, 5, perfil)))
+    return js
+
 def jobs():
+    if LEVA2: return jobs_leva2()
     rnd = random.Random(0)
     js = []
     reps = 1 if TESTE else 3
@@ -103,18 +122,18 @@ if __name__ == "__main__":
     tok = llm.get_tokenizer()
     texts = [tok.apply_chat_template([{"role": "user", "content": j["prompt"]}], tokenize=False,
                                      add_generation_prompt=True) for j in js]
-    outs = llm.generate(texts, SamplingParams(temperature=0.95, top_p=0.95, max_tokens=4096, seed=0))
+    outs = llm.generate(texts, SamplingParams(temperature=1.0 if LEVA2 else 0.95, top_p=0.95, max_tokens=4096, seed=0))
     n_ok = n_bad = 0
-    with open(OUT / ("frases_teste.jsonl" if TESTE else "frases_raw.jsonl"), "w") as f:
+    with open(OUT / ("frases_teste.jsonl" if TESTE else "frases_raw2.jsonl" if LEVA2 else "frases_raw.jsonl"), "w", encoding="utf-8") as f:
         for j, o in zip(js, outs):
             items = parse(o.outputs[0].text)
             if items is None: n_bad += 1; continue
-            if j["fonte"] == "cenario":
+            if j["fonte"] in ("cenario", "cenario2"):
                 for c, conv in enumerate(items):
                     if not isinstance(conv, list): continue
                     for t, it in enumerate(conv):
                         if not valid(it) or it.get("tipo_adulto") not in PARCEIRO: continue
-                        rec = dict(fonte="cenario", cenario=j["cenario"], local=j["local"], periodo=j["periodo"],
+                        rec = dict(fonte=j["fonte"], cenario=j["cenario"], local=j["local"], periodo=j["periodo"],
                                    conversa=f"{js.index(j)}-{c}", turno=t, **{x: it.get(x) for x in ("tipo_adulto", "adulto", "frase", "pictos")})
                         f.write(json.dumps(rec, ensure_ascii=False) + "\n"); n_ok += 1
                 continue
