@@ -1,14 +1,13 @@
+# referências clonadas e dados de terceiros (baixados pelos scripts)
 refs/
 data_raw/
+
+# Python
 __pycache__/
 *.pyc
+.venv*/
+
+# saídas pesadas ou regeneráveis dos experimentos
 *.npz
 experiments/v1/cache/
-experiments/v2/out/pictos_png/
-experiments/v2/out/folhas/
-experiments/v2/out/dataset.json
-experiments/v2/out/frases_teste.jsonl
-experiments/v2/out/*log.txt
-.venv*/
-audio/
-p/
+experiments/v2/out/
