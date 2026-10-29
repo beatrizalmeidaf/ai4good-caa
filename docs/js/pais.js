@@ -291,6 +291,7 @@ function renderAjustes() {
         <div class="field"><span>Onde a prancha está sendo usada</span>${seg("local", [["casa", "casa"], ["escola", "escola"], ["rua", "passeio"], ["saude", "saúde"], ["terapia", "terapia"]])}</div>
         ${chk("periodoAuto", "Período do dia automático (pelo relógio)")}
         <div class="field"><span>Voz</span>${seg("fonteVoz", [["gravada", "voz do Zuli (funciona offline)"], ["aparelho", "voz do tablet/celular"]])}</div>
+        <p class="small"><a href="vozes.html">Ouvir e comparar as vozes que estamos testando</a></p>
         <div class="field"><span>Velocidade da voz</span>${seg("velocidade", [[0.85, "devagar"], [1, "normal"], [1.12, "rápida"]])}</div>
         ${chk("treinoMicrofone", "Treino com microfone", "O Zuli escuta e avalia a fala no próprio aparelho (baixa ~80 MB na primeira vez). Desligado, o adulto avalia.")}
         <div class="field"><span>Preditor</span>${seg("preditor", [["slm", "SLM de símbolos"], ["ngram", "n-grama (comparação)"]])}</div>
