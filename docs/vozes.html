@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Zuli · Vozes</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="icon" href="assets/zuli-64.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Fredoka:wght@500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: uma coluna; cada voz é um cartão com números à esquerda e botões de ouvir à direita. */
+:root {
+  --bg: #f3f6fb; --surface: #fff; --ink: #17305e; --ink-2: #5a6b88; --line: #d9e1ee; --zuli: #f9c440; --zuli-soft: #fff4d1;
+  --ok: #2e8540; --meh: #a15c00; --bad: #c0392b;
+  --f-display: "Fredoka", system-ui, sans-serif; --f-body: "Atkinson Hyperlegible", system-ui, sans-serif; --f-mono: "IBM Plex Mono", ui-monospace, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #0f1828; --surface: #172338; --ink: #e9eff9; --ink-2: #a7b4ca; --line: #2a3a55; --zuli-soft: #3a3320; --ok: #6fcf7f; --meh: #f0b45a; --bad: #ff8a7a; color-scheme: dark; } }
+:root[data-theme="dark"] { --bg: #0f1828; --surface: #172338; --ink: #e9eff9; --ink-2: #a7b4ca; --line: #2a3a55; --zuli-soft: #3a3320; --ok: #6fcf7f; --meh: #f0b45a; --bad: #ff8a7a; color-scheme: dark; }
+* { box-sizing: border-box; }
+html { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 var(--f-body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.wrap { max-width: 980px; margin: 0 auto; padding-block: 22px 48px; display: grid; gap: 18px; }
+h1, h2 { font-family: var(--f-display); font-weight: 600; margin: 0; text-wrap: balance; }
+h1 { font-size: 1.8rem; } h2 { font-size: 1.15rem; }
+p { margin: 0; max-width: 72ch; }
+.muted { color: var(--ink-2); }
+a { color: var(--ink); font-weight: 700; }
+header { display: flex; gap: 14px; align-items: center; }
+header img { width: 60px; height: 60px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 16px; display: grid; gap: 12px; grid-template-columns: minmax(0, 15rem) minmax(0, 1fr); align-items: start; }
+.card.top { border: 2px solid var(--zuli); }
+.info { display: grid; gap: 4px; }
+.nums { display: flex; gap: 14px; flex-wrap: wrap; font-family: var(--f-mono); font-size: .88rem; font-variant-numeric: tabular-nums; }
+.pill { display: inline-block; border-radius: 999px; padding: 1px 10px; font-weight: 700; font-family: var(--f-body); font-size: .8rem; }
+.pill.ok { background: color-mix(in srgb, var(--ok) 18%, transparent); color: var(--ok); }
+.pill.meh { background: color-mix(in srgb, var(--meh) 18%, transparent); color: var(--meh); }
+.pill.bad { background: color-mix(in srgb, var(--bad) 18%, transparent); color: var(--bad); }
+.plays { display: flex; flex-wrap: wrap; gap: 6px; }
+.plays button { border: 2px solid var(--line); background: var(--surface); border-radius: 999px; padding: 4px 12px; cursor: pointer; font: inherit; color: inherit; font-size: .86rem; }
+.plays button.on { background: var(--zuli); border-color: var(--zuli); color: #17305e; }
+.row2 { display: grid; gap: 6px; }
+.row2 b { font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-2); }
+.note { border-left: 4px solid var(--zuli); padding: 6px 0 6px 12px; color: var(--ink-2); }
+@media (max-width: 640px) { .card { grid-template-columns: minmax(0, 1fr); } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><img src="assets/zuli.png" alt=""><div><h1>Qual voz o Zuli deve ter?</h1><p class="muted"><a href="./">voltar à prancha</a></p></div></header>
+  <p>Toque nas frases para ouvir cada voz. "Reconhecimento" é a porcentagem de palavras que o Whisper entendeu certo, numa lista de 150 palavras da prancha. É um sinal aproximado: o ouvido de vocês vale mais. A versão "mais jovem" é a mesma voz com o tom 3 semitons mais alto.</p>
+  <div id="lista"><p class="muted">Carregando…</p></div>
+  <p class="note">Referências de voz para clonagem (XTTS): leituras do LibriVox no Multilingual LibriSpeech, CC BY 4.0. Para uma voz de criança de verdade, o caminho é gravar uns 30 segundos de uma criança, com autorização dos responsáveis, e clonar.</p>
+</div>
+<script>
+const NOMES = {
+  "kokoro-f": ["Kokoro · feminina (atual)", "Voz usada hoje na prancha."], "kokoro-m": ["Kokoro · masculina (atual)", "Voz usada hoje na prancha."],
+  "piper-faber": ["Piper · Faber", "pt-BR, masculina, leve (roda até no navegador)."], "piper-cadu": ["Piper · Cadu", "pt-BR, masculina, leve."],
+  "piper-jeff": ["Piper · Jeff", "pt-BR, masculina, leve."],
+};
+const desc = n => {
+  if (NOMES[n]) return NOMES[n];
+  const motor = n.startsWith("f5-") ? "F5-TTS pt-BR" : "XTTS-v2", ref = n.replace(/^(xtts|f5)-/, "");
+  if (ref.startsWith("crianca")) return [`${motor} · voz de criança (${ref.endsWith("-f") ? "menina" : "menino"})`, "Clonada da gravação enviada pela equipe."];
+  return [`${motor} · referência ${ref}`, "Clona a voz de uma leitura em português (LibriVox)."];
+};
+let tocando = null;
+function tocar(btn, url) {
+  if (tocando) { tocando.a.pause(); tocando.b.classList.remove("on"); }
+  const a = new Audio(url); btn.classList.add("on"); a.onended = () => btn.classList.remove("on"); a.play(); tocando = { a, b: btn };
+}
+Promise.all([fetch("vozes/resultados.json").then(r => r.json()), fetch("vozes/frases.json").then(r => r.json())]).then(([R, F]) => {
+  const nomes = Object.keys(R).sort((a, b) => R[b].acerto - R[a].acerto);
+  const pill = v => `<span class="pill ${v >= 80 ? "ok" : v >= 65 ? "meh" : "bad"}">${String(v).replace(".", ",")}%</span>`;
+  // Kokoro: só existem as palavras soltas (as 6 primeiras amostras)
+  const botoes = pasta => F.map((f, i) => pasta.startsWith("kokoro") && i >= 6 ? "" : `<button type="button" data-u="vozes/${pasta}/${i}.mp3">${f}</button>`).join("");
+  document.getElementById("lista").innerHTML = nomes.map((n, k) => {
+    const [t, d] = desc(n), jovem = !n.startsWith("kokoro");
+    return `<div class="card ${k === 0 ? "top" : ""}"><div class="info"><h2>${t}</h2><p class="muted">${d}</p>
+      <div class="nums"><span>Reconhecimento ${pill(R[n].acerto)}</span><span>${R[n].ms_por_palavra} ms/palavra</span></div></div>
+      <div class="row2"><b>Normal</b><div class="plays">${botoes(n)}</div>${jovem ? `<b>Mais jovem</b><div class="plays">${botoes(n + "-jovem")}</div>` : ""}</div></div>`;
+  }).join("");
+  document.getElementById("lista").addEventListener("click", e => { const b = e.target.closest("button[data-u]"); if (b) tocar(b, b.dataset.u); });
+}).catch(e => { document.getElementById("lista").innerHTML = `<p class="muted">As amostras ainda não foram geradas (${e.message}).</p>`; });
+</script>
+</body>
+</html>
