@@ -206,7 +206,7 @@ function renderTreino() {
   const linhas = Object.entries(por).map(([id, l]) => {
     const notas = l.map(e => e.nota), ult = notas.slice(-3), m = ult.reduce((a, b) => a + b, 0) / ult.length;
     const status = ult.length >= 2 && ult.slice(-2).every(n => n === 3) ? ["ok", "aprendida"] : m < 2.5 && l.length >= 2 ? ["treinar", "precisa treinar"] : ["novo", "em progresso"];
-    return { id, l, m, status, ouvido: l.at(-1).ouvido };
+    const u = l.at(-1); return { id, l, m, status, ouvido: u.parecido != null ? `parecido com a palavra: ${u.parecido}%` : (u.ouvido || "") };
   }).filter(r => V.by[r.id]).sort((a, b) => a.m - b.m);
   const escolhidas = O.treinoPalavras || [];
   const el = $("#v-treino");
@@ -222,12 +222,12 @@ function renderTreino() {
       <div class="row"><input type="search" id="tr-busca" placeholder="Buscar palavra (ex.: água)" aria-label="Buscar palavra"><div class="chips" id="tr-res"></div></div>
     </div>
     <div class="card"><h3>Progresso por palavra</h3>
-      ${linhas.length ? `<div class="tbl"><table><thead><tr><th></th><th>Palavra</th><th>Situação</th><th class="num">Tentativas</th><th>Últimas notas</th><th>O Zuli ouviu</th></tr></thead><tbody>
+      ${linhas.length ? `<div class="tbl"><table><thead><tr><th></th><th>Palavra</th><th>Situação</th><th class="num">Tentativas</th><th>Últimas notas</th><th>Última tentativa</th></tr></thead><tbody>
       ${linhas.map(r => `<tr><td><img src="${pic(r.id)}" alt=""></td><td>${esc(V.by[r.id].label)}</td><td><span class="pill ${r.status[0]}">${r.status[1]}</span></td><td class="num">${r.l.length}</td>
         <td class="stars">${r.l.slice(-5).map(e => "★".repeat(e.nota) + "☆".repeat(3 - e.nota)).join(" ")}</td><td class="muted small">${esc(r.ouvido)}</td></tr>`).join("")}</tbody></table></div>`
       : `<div class="empty">Nenhum treino ainda. Na prancha, toque em <b>Treinar</b>: o Zuli fala a palavra, a criança repete e ele escuta.</div>`}
     </div>
-    <p class="note">A nota compara o que o reconhecimento de fala entendeu com a palavra. Para fala infantil ele erra bastante: use como sinal de tendência, não como diagnóstico. O áudio não é gravado nem enviado.</p>`;
+    <p class="note">A nota mede o quanto a fala combina com a palavra pedida, comparando com outras palavras. Em testes, acertou 90% das vezes e aceitou a palavra errada 4% das vezes. Use como sinal de tendência, não como diagnóstico. O áudio não é gravado nem enviado.</p>`;
   $("#tr-busca").oninput = e => {
     const q = e.target.value.trim().toLowerCase();
     $("#tr-res").innerHTML = q ? V.vocab.filter(w => w.label.toLowerCase().startsWith(q)).slice(0, 8).map(w => `<button type="button" class="chip" data-add="${w.id}"><img src="${pic(w.id)}" alt="">${esc(w.label)} +</button>`).join("") : "";

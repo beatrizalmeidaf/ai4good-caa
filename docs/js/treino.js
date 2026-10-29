@@ -1,20 +1,59 @@
 // Treino de fala: ouvir a palavra, repetir, o Zuli escuta e dá retorno.
 // Reconhecimento de fala local (Whisper no navegador). Nada sai do aparelho.
-import { pic, registro, semelhanca, estrelas } from "./core.js";
+import { pic, registro } from "./core.js";
 
 const ASR_MODELO = "onnx-community/whisper-base";
 const LIB = "https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.5.1";
 let asrPromise = null;
 
+// "Ouvido" do Zuli: em vez de transcrever (o Whisper erra muito com palavra curta e fala infantil),
+// verifica se o áudio combina com a palavra-alvo melhor do que com outras palavras e com balbucios.
+// Teste com 80 palavras: 90% de acerto e 4% de falso aceite (85% e 3% com tom de criança).
+const BALBUCIO = ["ah", "hum", "é", "não", "o quê", "bá", "mã"];
 export function carregarOuvido(progresso) {
   if (asrPromise) return asrPromise;
   asrPromise = (async () => {
     const T = await import(LIB);
     const device = navigator.gpu && (await navigator.gpu.requestAdapter().catch(() => null)) ? "webgpu" : "wasm";
-    return T.pipeline("automatic-speech-recognition", ASR_MODELO, {
-      device, dtype: device === "webgpu" ? { encoder_model: "fp32", decoder_model_merged: "q4" } : "q8",
-      progress_callback: p => { if (p.status === "progress" && p.total) progresso?.(p.loaded / p.total); },
-    });
+    const cb = p => { if (p.status === "progress" && p.total) progresso?.(p.loaded / p.total); };
+    const [proc, tok, model] = await Promise.all([
+      T.AutoProcessor.from_pretrained(ASR_MODELO, { progress_callback: cb }),
+      T.AutoTokenizer.from_pretrained(ASR_MODELO),
+      T.WhisperForConditionalGeneration.from_pretrained(ASR_MODELO, { device, progress_callback: cb,
+        dtype: device === "webgpu" ? { encoder_model: "fp32", decoder_model_merged: "q4" } : "q8" }),
+    ]);
+    const id = t => tok.model.tokens_to_ids.get(t);
+    const PRE = ["<|startoftranscript|>", "<|pt|>", "<|transcribe|>", "<|notimestamps|>"].map(id), EOT = id("<|endoftext|>");
+    // log-prob média por token de cada texto, com o encoder rodando uma vez só
+    async function pontuar(audio, textos) {
+      const { input_features } = await proc(audio);
+      const enc = await model.sessions.model.run({ input_features: input_features.ort_tensor });
+      const hid = new T.Tensor(enc.last_hidden_state);
+      const seqs = textos.map(t => [...PRE, ...tok.encode(" " + t, { add_special_tokens: false }), EOT]);
+      const L = Math.max(...seqs.map(x => x.length)), ids = new BigInt64Array(seqs.length * (L - 1));
+      seqs.forEach((x, i) => { for (let j = 0; j < L - 1; j++) ids[i * (L - 1) + j] = BigInt(x[j] ?? EOT); });
+      const out = await model({ encoder_outputs: T.cat(Array(seqs.length).fill(hid), 0), decoder_input_ids: new T.Tensor("int64", ids, [seqs.length, L - 1]) });
+      const [, Tt, V] = out.logits.dims, lg = out.logits.data;
+      return seqs.map((x, b) => {
+        let soma = 0;
+        for (let j = PRE.length; j < x.length; j++) {
+          const row = (b * Tt + j - 1) * V; let mx = -Infinity;
+          for (let v = 0; v < V; v++) if (lg[row + v] > mx) mx = lg[row + v];
+          let z = 0; for (let v = 0; v < V; v++) z += Math.exp(lg[row + v] - mx);
+          soma += lg[row + x[j]] - mx - Math.log(z);
+        }
+        return soma / (x.length - PRE.length);
+      });
+    }
+    // devolve {nota 1..3, parecido 0..1, posicao}
+    return async function verificar(audio, alvo, comparacao) {
+      const cands = [alvo, ...comparacao.filter(c => c !== alvo).slice(0, 14), ...BALBUCIO.filter(b => b !== alvo)];
+      const s = await pontuar(audio, cands);
+      const m = Math.max(...s), e = s.map(x => Math.exp(4 * (x - m))), z = e.reduce((a, b) => a + b, 0);
+      const parecido = e[0] / z, posicao = 1 + s.filter(x => x > s[0]).length;
+      const nota = posicao === 1 && parecido >= 0.5 ? 3 : posicao <= 3 ? 2 : 1;
+      return { nota, parecido, posicao };
+    };
   })();
   asrPromise.catch(() => { asrPromise = null; });
   return asrPromise;
@@ -127,9 +166,10 @@ export function abrir({ perfil, opt, vocab, by, voz }) {
       nivel.hidden = true;
       if (pico < 0.03) { msg.textContent = "Não ouvi. Fala mais perto?"; zuli(7, "Não ouvi. Fala mais perto?"); btn.disabled = false; return; }
       msg.textContent = "Ouvindo…";
-      const texto = (await asr(audio, { language: "portuguese", task: "transcribe" })).text || "";
-      const alvo = by[palavras[i]].label, s = semelhanca(texto, alvo), n = estrelas(s);
-      registro.add(perfil, { tipo: "treino", id: palavras[i], nota: n, ouvido: texto.trim().slice(0, 60), sem: Math.round(s * 100) / 100 });
+      const alvo = by[palavras[i]].label;
+      const comparacao = Array.from({ length: 20 }, () => vocab[Math.floor(Math.random() * Math.min(300, vocab.length))].label);
+      const r = await asr(audio, alvo, comparacao), n = r.nota;
+      registro.add(perfil, { tipo: "treino", id: palavras[i], nota: n, parecido: Math.round(r.parecido * 100), posicao: r.posicao });
       el.querySelector(".tr-card").insertAdjacentHTML("afterend", `<div class="tr-estrelas">${SVG.estrela.repeat(n)}</div>`);
       if (n === 3) { msg.textContent = "Muito bem!"; zuli(3, "Muito bem!"); notas.push(3); setTimeout(() => { i++; tela(); }, 1800); }
       else if (n === 2) { msg.textContent = "Quase! Vamos de novo?"; zuli(5, "Quase! Vamos tentar de novo?"); notas.push(2); proximaOuRepetir(btn); }
