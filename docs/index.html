@@ -49,6 +49,10 @@ h1 { font-family: var(--f-display); font-weight: 600; font-size: 2.6rem; margin:
 .como b { width: 28px; height: 28px; border-radius: 50%; background: var(--zuli); display: grid; place-items: center; font-family: var(--f-display); }
 .nota { display: flex; gap: 10px; align-items: center; text-align: left; font-size: .92rem; color: var(--ink-2); background: var(--bg); border-radius: 16px; padding: 10px 14px; }
 .nota svg { width: 28px; height: 28px; flex: none; color: var(--ink-2); }
+.mais { width: 100%; text-align: left; }
+.mais summary { cursor: pointer; text-align: center; color: var(--ink-2); font-weight: 700; padding: 6px; }
+.mais-itens { display: grid; gap: 8px; margin-top: 8px; }
+.mais-itens .btn { font-size: 1rem; padding: 12px 16px; }
 footer { display: flex; gap: 8px 18px; flex-wrap: wrap; justify-content: center; font-size: .9rem; color: var(--ink-2); }
 footer a { color: var(--ink-2); }
 @media (max-width: 480px) { h1 { font-size: 2.2rem; } .como { grid-template-columns: 1fr; } }
@@ -78,13 +82,24 @@ footer a { color: var(--ink-2); }
     <p style="margin:0;font-size:.9rem" class="muted">Leva 1 minuto: nome da criança, voz e um PIN para os adultos.</p>
   </section>
 
+  <details class="mais">
+    <summary>Mais opções</summary>
+    <div class="mais-itens">
+      <label class="btn adulto" for="importar">Já usa o Zuli em outro aparelho? Abrir arquivo</label>
+      <input type="file" id="importar" accept=".json,application/json" hidden>
+      <a class="btn adulto" href="pais.html#perfil" id="op-outra" hidden>Adicionar outra criança</a>
+      <a class="btn adulto" href="pais.html#perfil" id="op-trocar" hidden>Trocar de família (apagar dados deste aparelho)</a>
+      <p class="muted" id="imp-msg" style="margin:0;font-size:.9rem;min-height:1.3em"></p>
+    </div>
+  </details>
+
   <div class="nota"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8.5-7 10-4-1.5-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg>
     <span>Não precisa de cadastro nem de login. Tudo fica guardado só neste aparelho e funciona sem internet depois do primeiro acesso.</span></div>
 
   <footer><a href="resultados.html">Como o Zuli aprende</a><a href="vozes.html">Vozes</a><a href="https://github.com/beatrizalmeidaf/ai4good-caa" target="_blank" rel="noopener">Código</a><span>Pictogramas: ARASAAC (CC BY-NC-SA)</span></footer>
 </main>
 <script type="module">
-import { perfis } from "./js/core.js";
+import { perfis, importarCrianca } from "./js/core.js";
 const lista = perfis.lista();
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 if (lista.length) {
@@ -92,9 +107,15 @@ if (lista.length) {
   document.getElementById("lista-criancas").innerHTML = lista.map(p =>
     `<a class="btn crianca" href="prancha.html" data-id="${p.id}"><img src="assets/zuli.png" alt="">Prancha de ${esc(p.nome)}</a>`).join("");
   document.getElementById("lista-criancas").addEventListener("click", e => { const a = e.target.closest("a[data-id]"); if (a) perfis.usar(a.dataset.id); });
+  document.getElementById("op-outra").hidden = document.getElementById("op-trocar").hidden = false;
 } else {
   document.getElementById("sem-perfil").hidden = false;
 }
+document.getElementById("importar").addEventListener("change", async e => {
+  const f = e.target.files[0]; if (!f) return;
+  try { const p = await importarCrianca(f); document.getElementById("imp-msg").textContent = `${p.nome} foi adicionada a este aparelho.`; setTimeout(() => location.reload(), 900); }
+  catch (err) { document.getElementById("imp-msg").textContent = err.message; }
+});
 if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js").catch(() => {});
 </script>
 </body>

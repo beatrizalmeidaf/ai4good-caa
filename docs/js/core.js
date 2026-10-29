@@ -47,6 +47,35 @@ export const registro = {
   },
 };
 
+/* ---------------- levar os dados para outro aparelho ---------------- */
+// Arquivo .zuli.json com tudo de uma criança: perfil, ajustes, aprendizado da prancha e histórico.
+export function exportarCrianca(p) {
+  const dados = { formato: "zuli-1", exportado: new Date().toISOString(), perfil: p,
+    ajustes: store.get(`opt-${p.id}`, {}), pessoal: store.get(`pessoal-${p.id}`, null), historico: registro.ler(p) };
+  const blob = new Blob([JSON.stringify(dados)], { type: "application/json" });
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
+  a.download = `zuli-${p.nome.replace(/[^\p{L}\p{N}]+/gu, "-").toLowerCase()}-${dados.exportado.slice(0, 10)}.zuli.json`;
+  document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+// Lê o arquivo e cadastra a criança neste aparelho. Se já existir (mesmo id), substitui.
+export async function importarCrianca(arquivo) {
+  let d;
+  try { d = JSON.parse(await arquivo.text()); } catch { throw new Error("O arquivo não é um arquivo do Zuli."); }
+  if (d?.formato !== "zuli-1" || !d.perfil?.id || !d.perfil?.nome) throw new Error("O arquivo não é um arquivo do Zuli.");
+  const p = { id: String(d.perfil.id), nome: String(d.perfil.nome).slice(0, 30), genero: d.perfil.genero === "m" ? "m" : "f",
+    idade: d.perfil.idade || null, criado: d.perfil.criado || Date.now() };
+  perfis.salvar(p); perfis.usar(p.id);
+  if (d.ajustes) store.set(`opt-${p.id}`, d.ajustes);
+  if (d.pessoal) store.set(`pessoal-${p.id}`, d.pessoal);
+  if (Array.isArray(d.historico)) store.set(`log-${p.id}`, d.historico.slice(-4000));
+  return p;
+}
+// Trocar de família: apaga tudo do Zuli neste aparelho (crianças, histórico, PIN).
+export function apagarTudo() {
+  try { Object.keys(localStorage).filter(k => k.startsWith("zuli-")).forEach(k => localStorage.removeItem(k)); } catch {}
+  try { sessionStorage.removeItem("zuli-pais"); } catch {}
+}
+
 /* PIN dos pais: guardado como hash, nunca em texto */
 export async function hashPin(pin) {
   const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode("zuli:" + pin));

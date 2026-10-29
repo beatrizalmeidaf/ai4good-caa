@@ -1,5 +1,5 @@
 // Área dos pais: PIN, perfil da criança, painel de desenvolvimento, treino de fala e ajustes.
-import { store, perfis, registro, hashPin, carregarVocab, pic, Voz, OPT_PADRAO } from "./core.js";
+import { store, perfis, registro, hashPin, carregarVocab, pic, Voz, OPT_PADRAO, exportarCrianca, importarCrianca, apagarTudo } from "./core.js";
 
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -272,8 +272,16 @@ function renderPerfil(novo) {
   el.innerHTML = (novo || !P ? form() : form(P)) + (lista.length ? `<div class="card"><h3>Crianças neste aparelho</h3>
       ${lista.map(p => `<div class="row" style="justify-content:space-between"><span><b>${esc(p.nome)}</b> <span class="muted small">${p.genero === "m" ? "menino" : "menina"}${p.id === P?.id ? " · ativa" : ""}</span></span>
         <span class="row">${p.id !== P?.id ? `<button type="button" class="btn" data-usar="${p.id}">Usar</button>` : ""}<button type="button" class="btn perigo" data-rm="${p.id}">Apagar</button></span></div>`).join("")}
-      <div><button type="button" class="btn" id="p-nova">Adicionar outra criança</button></div>
-      <p class="note">Cada criança tem sua voz, seu aprendizado e seu histórico, guardados só neste aparelho. Para usar em vários aparelhos e compartilhar com a terapeuta, o próximo passo é uma conta na nuvem.</p></div>` : "");
+      <div class="row"><button type="button" class="btn" id="p-nova">Adicionar outra criança</button></div>
+      <p class="note">Cada criança tem sua voz, seu aprendizado e seu histórico, guardados só neste aparelho.</p></div>` : "")
+    + `<div class="card"><h3>Levar para outro aparelho</h3>
+      <p class="small muted">Baixe um arquivo com tudo de uma criança (ajustes, o que a prancha aprendeu e o histórico) e abra no outro tablet, celular ou computador. Também serve para enviar à terapeuta.</p>
+      <div class="row">${P ? `<button type="button" class="btn" id="p-exportar">Baixar dados de ${esc(P.nome)}</button>` : ""}
+        <label class="btn" for="p-importar">Abrir arquivo do Zuli</label><input type="file" id="p-importar" accept=".json,application/json" hidden></div>
+      <p class="small" id="p-msg" style="min-height:1.4em"></p></div>
+    <div class="card"><h3>Trocar de família</h3>
+      <p class="small muted">Apaga todas as crianças, os históricos e o PIN deste aparelho, e volta para a recepção. Baixe os dados antes, se quiser guardar.</p>
+      <div class="row"><button type="button" class="btn perigo" id="p-apagar-tudo">Apagar tudo deste aparelho</button></div></div>`;
   let gen = (novo || !P) ? "f" : P.genero;
   $("#p-gen").onclick = e => { const b = e.target.closest("button"); if (!b) return; gen = b.dataset.v; $("#p-gen").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); };
   $("#p-ouvir").onclick = () => { const v = new Voz(gen); v.desbloquear(); v.falar([{ chave: "zuli_0", texto: "Oi! Eu sou o Zuli!" }]); };
@@ -289,6 +297,17 @@ function renderPerfil(novo) {
     perfis.remover(b.dataset.rm); P = perfis.ativo(); O = P ? perfis.opt(P) : null; cabecalho(); renderPerfil(!P);
   });
   $("#p-nova")?.addEventListener("click", () => renderPerfil(true));
+  $("#p-exportar")?.addEventListener("click", () => { exportarCrianca(P); $("#p-msg").textContent = "Arquivo baixado. Abra-o no outro aparelho em Criança > Abrir arquivo do Zuli."; });
+  $("#p-importar").addEventListener("change", async e => {
+    const f = e.target.files[0]; if (!f) return;
+    try { P = await importarCrianca(f); O = perfis.opt(P); cabecalho(); renderPerfil(false); $("#p-msg").textContent = `${P.nome} foi adicionada a este aparelho.`; }
+    catch (err) { $("#p-msg").textContent = err.message; }
+  });
+  $("#p-apagar-tudo").addEventListener("click", e => {
+    const b = e.currentTarget;
+    if (b.dataset.conf !== "1") { b.dataset.conf = "1"; b.textContent = "Tem certeza? Toque de novo para apagar tudo"; return; }
+    apagarTudo(); location.href = "./";
+  });
 }
 
 
@@ -369,10 +388,7 @@ function renderAjustes() {
   const confirmar = (b, f) => { if (b.dataset.conf !== "1") { b.dataset.conf = "1"; b.dataset.txt = b.textContent; b.textContent = "Toque de novo para confirmar"; return; } f(); b.textContent = b.dataset.txt; b.dataset.conf = ""; };
   $("#a-aprend").onclick = e => confirmar(e.target, () => { store.del(`pessoal-${P.id}`); $("#a-msg").textContent = "Aprendizado apagado."; });
   $("#a-hist").onclick = e => confirmar(e.target, () => { store.del(`log-${P.id}`); $("#a-msg").textContent = "Histórico apagado."; });
-  $("#a-exportar").onclick = () => {
-    const blob = new Blob([JSON.stringify({ perfil: P, ajustes: O, historico: registro.ler(P) }, null, 1)], { type: "application/json" });
-    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `zuli-${P.nome}.json`; a.click();
-  };
+  $("#a-exportar").onclick = () => exportarCrianca(P);
   $("#a-pin").onclick = () => { store.del("pin"); sess.set(false); $("#main").hidden = true; $("#gate").hidden = false; portao(); };
 }
 
